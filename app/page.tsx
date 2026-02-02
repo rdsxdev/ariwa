@@ -4,17 +4,24 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import { motion } from "motion/react";
 import toast from "react-hot-toast";
 import wordExists from "@/utils/checkWord";
+import { generateRandomWord } from "@/utils/generateRandomWord";
 
 export default function Home() {
-  const [word, setWord] = useState("paste".toUpperCase());
-  const [chances, setChances] = useState(5);
+  const [wordLength, setWordLength] = useState(5);
+  const [word, setWord] = useState("");
+
+  useEffect(() => {
+    setWord(generateRandomWord(wordLength).toUpperCase());
+  }, [wordLength]);
+
+  const [chances, setChances] = useState(6);
   const [life, setLife] = useState(0);
+
+  // const x = generateRandomWord(wordLength);
 
   const layout = new Array(chances)
     .fill("")
-    .map((x) => [
-      ...new Array(word.split("").length).fill({ letter: "", status: "" }),
-    ]);
+    .map((x) => [...new Array(wordLength).fill({ letter: "", status: "" })]);
 
   let [attempts, setAttempts] =
     useState<{ letter: string; status: string }[][]>(layout);
@@ -27,7 +34,8 @@ export default function Home() {
   // console.log(attempts);
 
   function addLetter(letter: string) {
-    if (currentIndex < word.length) {
+    if (currentIndex < wordLength) {
+      console.log(wordLength);
       let localIndex = currentIndex;
 
       setCurrentIndex((org) => org + 1);
@@ -74,6 +82,8 @@ export default function Home() {
   }
 
   function submitAttempt() {
+    console.log(word);
+
     if (life < chances) {
       if (attempts[life].filter((x) => x.letter === "").length > 0) {
         toast("Finish the word atleast?", {
@@ -98,87 +108,52 @@ export default function Home() {
           letters.forEach((letter) => {
             dict[letter] = wordArray.filter((l) => l === letter).length;
           });
-          // for (let idx = 0; idx < word.length; idx++) {
-          //   // @ts-ignore
-          //   setAttempts((org) =>
-          //     org.map((x, i) => {
-          //       if (i === life) {
-          //         return x.map((y, i) => {
-          //           if (i === idx) {
-          //             if (!wordArray.includes(attemptArray[idx])) {
-          //               return {
-          //                 ...y,
-          //                 status: "INCORRECT",
-          //               };
-          //             } else if (
-          //               wordArray.filter((x) => x === attemptArray[idx])
-          //                 .length < dict[attemptArray[idx]]
-          //             ) {
-          //               return {
-          //                 ...y,
-          //                 status: "INCORRECT",
-          //               };
-          //             } else if (wordArray[idx] === attemptArray[idx]) {
-          //               return {
-          //                 ...y,
-          //                 status: "CORRECT",
-          //               };
-          //             } else if (wordArray.includes(attemptArray[idx])) {
-          //               return {
-          //                 ...y,
-          //                 status: "EXISTS",
-          //               };
-          //             } else {
-          //               return {
-          //                 ...y,
-          //                 status: "INCORRECT",
-          //               };
-          //             }
-          //           } else {
-          //             return y;
-          //           }
-          //         });
-          //       } else {
-          //         return x;
-          //       }
-          //     }),
-          //   );
-          // }
-
-          let finalArray: { letter: string; status: string }[] = [];
-
-          wordArray.forEach((letter, idx) => {
-            console.log(letter, attemptArray[idx]);
-            if (letter === attemptArray[idx]) {
-              finalArray.push({
-                letter: attemptArray[idx],
-                status: "CORRECT",
-              });
-            } else if (attemptArray.includes(letter)) {
-              finalArray.push({
-                letter: attemptArray[idx],
-                status: "EXISTS",
-              });
-            } else if (letter !== attemptArray[idx]) {
-              finalArray.push({
-                letter: attemptArray[idx],
-
-                status: "INCORRECT",
-              });
-            }
-          });
-
-          console.log(...finalArray);
-
-          setAttempts((org) => {
-            return org.map((x, i) => {
-              if (i === life) {
-                return finalArray;
-              } else {
-                return x;
-              }
-            });
-          });
+          for (let idx = 0; idx < wordLength; idx++) {
+            // @ts-ignore
+            setAttempts((org) =>
+              org.map((x, i) => {
+                if (i === life) {
+                  return x.map((y, i) => {
+                    if (i === idx) {
+                      if (!wordArray.includes(attemptArray[idx])) {
+                        return {
+                          ...y,
+                          status: "INCORRECT",
+                        };
+                      } else if (
+                        wordArray.filter((x) => x === attemptArray[idx])
+                          .length < dict[attemptArray[idx]]
+                      ) {
+                        return {
+                          ...y,
+                          status: "INCORRECT",
+                        };
+                      } else if (wordArray[idx] === attemptArray[idx]) {
+                        return {
+                          ...y,
+                          status: "CORRECT",
+                        };
+                      } else if (wordArray.includes(attemptArray[idx])) {
+                        return {
+                          ...y,
+                          status: "EXISTS",
+                        };
+                      } else {
+                        return {
+                          ...y,
+                          status: "INCORRECT",
+                        };
+                      }
+                    } else {
+                      return y;
+                    }
+                  });
+                } else {
+                  return x;
+                }
+              }),
+            );
+          }
 
           setLife((org) => org + 1);
           setCurrentIndex(0);
@@ -218,9 +193,10 @@ export default function Home() {
       }}
       className="h-svh w-screen overflow-hidden flex justify-center items-center flex-col "
     >
-      {/* <div className="mb-6 text-4xl  text-center  w-full font-semibold flex justify-center items-center h-16 fixed top-0">
-        <img className="w-8 mx-3" src="/logo.svg" alt="" /> ARIWA
-      </div> */}
+      <div className="mb-6 text-xl  text-center  w-full  flex justify-start items-center h-16 fixed top-0 ">
+        <img className="w-6 mx-3" src="/logo.svg" alt="" /> ARIWA
+      </div>
+      <div className="absolute top-3 right-3 text-red-500">{word}</div>
       <div className="h-full w-full">
         <input
           ref={keyboardRef}
@@ -269,7 +245,7 @@ export default function Home() {
                             : word.status === "INCORRECT"
                               ? "opacity-50 bg-foreground/10   text-foreground"
                               : word.status === "EXISTS"
-                                ? "bg-amber-500 text-foreground"
+                                ? "bg-amber-600 text-foreground"
                                 : ""
                           : word.letter === ""
                             ? ""
@@ -277,10 +253,10 @@ export default function Home() {
                       }
                       ${
                         j !== life
-                          ? "border-foreground/30"
+                          ? "border-foreground/10"
                           : currentIndex === i
                             ? "border-foreground"
-                            : "border-foreground/30"
+                            : "border-foreground/20"
                       } duration-150`}
                     >
                       {word.letter}

@@ -2,19 +2,18 @@
 
 :root {
   --foreground: #ffffff;
-  --background: #000000;
+  --background: #010101;
 }
 
+/*  */
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
-  /* --color-theme: #bcc89d; */
-  /* --color-theme-dark: #858f67; */
-  /* --color-theme-black: #1e1e1e; */
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
 }
 
+/*  */
 body {
   background: var(--background);
   color: var(--foreground);
