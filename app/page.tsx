@@ -7,7 +7,7 @@ import wordExists from "@/utils/checkWord";
 import { generateRandomWord } from "@/utils/generateRandomWord";
 
 export default function Home() {
-  const [wordLength, setWordLength] = useState(5);
+  const [wordLength, setWordLength] = useState(6);
   const [word, setWord] = useState("");
 
   useEffect(() => {
@@ -98,8 +98,8 @@ export default function Home() {
         });
       } else {
         if (
-          // wordExists(attempts[life].map((x) => x.letter).join(""))
-          true
+          wordExists(attempts[life].map((x) => x.letter).join(""))
+          // true
         ) {
           const wordArray = word.split("");
           const attemptArray = attempts[life].map((x) => x.letter);
