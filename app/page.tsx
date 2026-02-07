@@ -10,7 +10,7 @@ export default function Home() {
   /**
    The word length has to be between 3 and 13
    */
-  const [wordLength, setWordLength] = useState(5);
+  const [wordLength, setWordLength] = useState(3);
 
   const [word, setWord] = useState("");
   const [hint, setHint] = useState("");
