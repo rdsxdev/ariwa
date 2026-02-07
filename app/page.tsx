@@ -10,7 +10,7 @@ export default function Home() {
   /**
    The word length has to be between 3 and 13
    */
-  const [wordLength, setWordLength] = useState(8);
+  const [wordLength, setWordLength] = useState(4);
 
   const [word, setWord] = useState("");
   const [hint, setHint] = useState("");
@@ -22,7 +22,7 @@ export default function Home() {
     setHint(luckyLad.type);
   }, [wordLength]);
 
-  const [chances, setChances] = useState(5);
+  const [chances, setChances] = useState(6);
   const [life, setLife] = useState(0);
 
   // const x = generateRandomWord(wordLength);
