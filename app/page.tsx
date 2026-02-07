@@ -12,14 +12,14 @@ export default function Home() {
    */
   const [wordLength, setWordLength] = useState(5);
 
-  const [word, setWord] = useState("PASTE");
+  const [word, setWord] = useState("");
   const [hint, setHint] = useState("");
   console.log(word);
   useEffect(() => {
     const luckyLad = generateRandomWord(wordLength);
 
-    // setWord(luckyLad.word.toUpperCase());
-    // setHint(luckyLad.type);
+    setWord(luckyLad.word.toUpperCase());
+    setHint(luckyLad.type);
   }, [wordLength]);
 
   const [chances, setChances] = useState(5);
@@ -262,8 +262,8 @@ export default function Home() {
                         ${
                           j === life
                             ? currentIndex === i
-                              ? "border-foreground/80"
-                              : "border-foreground/80"
+                              ? "bg-foreground/40"
+                              : "bg-foreground/20"
                             : "border-foreground/50"
                         } duration-150`}
                       >
