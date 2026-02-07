@@ -7,14 +7,22 @@ import wordExists from "@/utils/checkWord";
 import { generateRandomWord } from "@/utils/generateRandomWord";
 
 export default function Home() {
-  const [wordLength, setWordLength] = useState(6);
-  const [word, setWord] = useState("");
+  /**
+   The word length has to be between 3 and 13
+   */
+  const [wordLength, setWordLength] = useState(5);
 
+  const [word, setWord] = useState("PASTE");
+  const [hint, setHint] = useState("");
+  console.log(word);
   useEffect(() => {
-    setWord(generateRandomWord(wordLength).toUpperCase());
+    const luckyLad = generateRandomWord(wordLength);
+
+    // setWord(luckyLad.word.toUpperCase());
+    // setHint(luckyLad.type);
   }, [wordLength]);
 
-  const [chances, setChances] = useState(6);
+  const [chances, setChances] = useState(5);
   const [life, setLife] = useState(0);
 
   // const x = generateRandomWord(wordLength);
@@ -26,12 +34,7 @@ export default function Home() {
   let [attempts, setAttempts] =
     useState<{ letter: string; status: string }[][]>(layout);
 
-  useEffect(() => {
-    // console.log(...attempts[0]);
-  }, [attempts]);
-
   const [currentIndex, setCurrentIndex] = useState(0);
-  // console.log(attempts);
 
   function addLetter(letter: string) {
     if (currentIndex < wordLength) {
@@ -82,8 +85,6 @@ export default function Home() {
   }
 
   function submitAttempt() {
-    console.log(word);
-
     if (life < chances) {
       if (attempts[life].filter((x) => x.letter === "").length > 0) {
         toast("Finish the word atleast?", {
@@ -98,8 +99,8 @@ export default function Home() {
         });
       } else {
         if (
-          wordExists(attempts[life].map((x) => x.letter).join(""))
-          // true
+          // wordExists(attempts[life].map((x) => x.letter).join(""))
+          true
         ) {
           const wordArray = word.split("");
           const attemptArray = attempts[life].map((x) => x.letter);
@@ -196,7 +197,7 @@ export default function Home() {
       <div className="mb-6 text-xl  text-center  w-full  flex justify-start items-center h-16 fixed top-0 ">
         <img className="w-6 mx-3" src="/logo.svg" alt="" /> ARIWA
       </div>
-      <div className="absolute top-3 right-3 text-red-500">{word}</div>
+
       <div className="h-full w-full">
         <input
           ref={keyboardRef}
@@ -223,50 +224,61 @@ export default function Home() {
           name=""
           id=""
         />
-        <div className="gap-1 flex flex-col  p-6 h-full justify-center items-center">
-          {attempts.map((atp, j) => {
-            return (
-              <div key={j} className="flex items-center justify-center  gap-1">
-                {atp.map((word, i) => {
-                  return (
-                    <motion.div
-                      initial={{
-                        scale: 1,
-                      }}
-                      animate={{
-                        scale: j !== life ? 1 : currentIndex === i ? 0.96 : 1,
-                      }}
-                      key={i}
-                      className={`h-16 aspect-square border text-center flex justify-center items-center text-2xl font-semibold rounded-sm
-                      ${
-                        j !== life
-                          ? word.status === "CORRECT"
-                            ? "bg-green-800 text-foreground"
-                            : word.status === "INCORRECT"
-                              ? "opacity-50 bg-foreground/10   text-foreground"
-                              : word.status === "EXISTS"
-                                ? "bg-amber-600 text-foreground"
-                                : ""
-                          : word.letter === ""
-                            ? ""
-                            : "bg-foreground/10 "
-                      }
-                      ${
-                        j !== life
-                          ? "border-foreground/10"
-                          : currentIndex === i
-                            ? "border-foreground"
-                            : "border-foreground/20"
-                      } duration-150`}
-                    >
-                      {word.letter}
-                      {/* { currentIndex === i ? word.letter : "-"} */}
-                    </motion.div>
-                  );
-                })}
-              </div>
-            );
-          })}
+        <div className="flex flex-col-reverse justify-center items-center h-full">
+          <div className=" text-foreground uppercase font-bold min-h-6">
+            {hint}
+          </div>
+          <div className="gap-1 flex flex-col  p-6  justify-center items-center">
+            {attempts.map((atp, j) => {
+              return (
+                <div
+                  key={j}
+                  className="flex items-center justify-center  gap-1"
+                >
+                  {atp.map((word, i) => {
+                    return (
+                      <motion.div
+                        initial={{
+                          scale: 1,
+                        }}
+                        animate={{
+                          scale: j !== life ? 1 : currentIndex === i ? 0.96 : 1,
+                        }}
+                        key={i}
+                        className={`h-18 aspect-square  text-center flex justify-center items-center text-3xl font-bold rounded-xl border-4 border-background
+                        ${
+                          j !== life
+                            ? word.status === "CORRECT"
+                              ? "bg-[#06b246] text-background border-[#06b24610]"
+                              : word.status === "INCORRECT"
+                                ? "bg-foreground/40 text-foreground/50"
+                                : word.status === "EXISTS"
+                                  ? "bg-[#066497] text-background border-[#066497]"
+                                  : ""
+                            : word.letter === ""
+                              ? ""
+                              : "bg-foreground/10 "
+                        }
+                        ${
+                          j === life
+                            ? currentIndex === i
+                              ? "border-foreground/80"
+                              : "border-foreground/80"
+                            : "border-foreground/50"
+                        } duration-150`}
+                      >
+                        {/* <p className="text-sm ">
+                          {i}:{j} - {life}
+                        </p> */}
+                        {word.letter}
+                        {/* { currentIndex === i ? word.letter : "-"} */}
+                      </motion.div>
+                    );
+                  })}
+                </div>
+              );
+            })}
+          </div>
         </div>
         <div className="text-white h-full ">d</div>
       </div>

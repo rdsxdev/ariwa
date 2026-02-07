@@ -12,9 +12,12 @@ const Press_Start_2P_FONT = Press_Start_2P({
   weight: ["400"],
 });
 
-const poppins = Rubik({
+const poppins = Poppins({
   weight: ["300", "400", "500", "600", "700", "800", "900"],
 });
+// const poppins = Rubik({
+//   weight: ["300", "400", "500", "600", "700", "800", "900"],
+// });
 
 export const metadata: Metadata = {
   title: "ARIWA",
