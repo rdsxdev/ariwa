@@ -6,6 +6,7 @@ import toast from "react-hot-toast";
 import wordExists from "@/utils/checkWord";
 import { generateRandomWord } from "@/utils/generateRandomWord";
 import { Lightbulb } from "lucide-react";
+import { Keyboard } from "@/components/Keyboard";
 
 export default function Home() {
   /**
@@ -15,7 +16,7 @@ export default function Home() {
 
   const [word, setWord] = useState("");
   const [hint, setHint] = useState("");
-  console.log(word);
+  // console.log(word);
   useEffect(() => {
     const luckyLad = generateRandomWord(wordLength);
 
@@ -23,7 +24,7 @@ export default function Home() {
     setHint(luckyLad.type);
   }, [wordLength]);
 
-  const [chances, setChances] = useState(5);
+  const [chances, setChances] = useState(6);
   const [life, setLife] = useState(0);
 
   // const x = generateRandomWord(wordLength);
@@ -39,7 +40,7 @@ export default function Home() {
 
   function addLetter(letter: string) {
     if (currentIndex < wordLength) {
-      console.log(wordLength);
+      // console.log(wordLength);
       let localIndex = currentIndex;
 
       setCurrentIndex((org) => org + 1);
@@ -192,14 +193,9 @@ export default function Home() {
   const hintSound =
     typeof Audio !== "undefined" ? new Audio("/hint.mp3") : undefined;
 
-  const qwertyLettersRow1 = ["q", "w", "e", "r", "t", "y", "u", "i", "o", "p"];
-  const qwertyLettersRow2 = ["a", "s", "d", "f", "g", "h", "j", "k", "l"];
-  const qwertyLettersRow3 = ["z", "x", "c", "v", "b", "n", "m"];
+  const [lastPressedKey, setLastPressedKey] = useState<string | null>(null);
 
-  const keyLetterBase =
-    "p-2 w-13 flex justify-center items-center aspect-square bg-foreground/10 rounded-xl uppercase font-semibold";
-
-  console.log(attempts);
+  // console.log(lastPressedKey);
 
   return (
     <main
@@ -225,6 +221,7 @@ export default function Home() {
               submitAttempt();
             }
             if (!e.ctrlKey) {
+              setLastPressedKey(code);
               if (letters.includes(code)) {
                 add?.play();
                 addLetter(code);
@@ -234,32 +231,14 @@ export default function Home() {
                 removeLetter();
               }
             }
+            setTimeout(() => {
+              setLastPressedKey(null);
+            }, 100);
           }}
           name=""
           id=""
         />
         <div className="flex flex-col-reverse justify-center items-center h-full max-w-fit w-fit gap-2">
-          <div className=" min-h-36 min-w-lg flex-col space-y-1">
-            <div className="flex gap-1 justify-center items-center ">
-              {qwertyLettersRow1.map((letter) => {
-                return (
-                  <motion.div className={`${keyLetterBase} `}>
-                    {letter}
-                  </motion.div>
-                );
-              })}
-            </div>
-            <div className="flex gap-1 justify-center items-center">
-              {qwertyLettersRow2.map((letter) => {
-                return <div className={`${keyLetterBase}`}>{letter}</div>;
-              })}
-            </div>
-            <div className="flex gap-1 justify-center items-center">
-              {qwertyLettersRow3.map((letter) => {
-                return <div className={`${keyLetterBase}`}>{letter}</div>;
-              })}
-            </div>
-          </div>
           <div className="flex justify-start items-center w-full min-h-16">
             <motion.button
               onClick={() => {
@@ -312,6 +291,7 @@ export default function Home() {
               {hint}
             </div> */}
           </div>
+          <Keyboard lastPressedKey={lastPressedKey}></Keyboard>
           <div className="gap-1 flex flex-col    justify-center items-center">
             {attempts.map((atp, j) => {
               return (
