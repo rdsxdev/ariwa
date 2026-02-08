@@ -1,16 +1,17 @@
 "use client";
 
 import { useEffect, useMemo, useRef, useState } from "react";
-import { motion } from "motion/react";
+import { AnimatePresence, motion } from "motion/react";
 import toast from "react-hot-toast";
 import wordExists from "@/utils/checkWord";
 import { generateRandomWord } from "@/utils/generateRandomWord";
+import { Lightbulb } from "lucide-react";
 
 export default function Home() {
   /**
    The word length has to be between 3 and 13
    */
-  const [wordLength, setWordLength] = useState(4);
+  const [wordLength, setWordLength] = useState(5);
 
   const [word, setWord] = useState("");
   const [hint, setHint] = useState("");
@@ -22,7 +23,7 @@ export default function Home() {
     setHint(luckyLad.type);
   }, [wordLength]);
 
-  const [chances, setChances] = useState(6);
+  const [chances, setChances] = useState(5);
   const [life, setLife] = useState(0);
 
   // const x = generateRandomWord(wordLength);
@@ -174,6 +175,8 @@ export default function Home() {
     }
   }
 
+  const [showHint, setShowHint] = useState(false);
+
   // console.log(attempts);
 
   const keyboardRef = useRef<HTMLInputElement>(null);
@@ -182,10 +185,21 @@ export default function Home() {
     String.fromCharCode(65 + i),
   );
 
-  const add =
-    typeof Audio !== "undefined" ? new Audio("/remove.mp3") : undefined;
+  const add = typeof Audio !== "undefined" ? new Audio("/add.mp3") : undefined;
   const remove =
-    typeof Audio !== "undefined" ? new Audio("/add.mp3") : undefined;
+    typeof Audio !== "undefined" ? new Audio("/remove.mp3") : undefined;
+
+  const hintSound =
+    typeof Audio !== "undefined" ? new Audio("/hint.mp3") : undefined;
+
+  const qwertyLettersRow1 = ["q", "w", "e", "r", "t", "y", "u", "i", "o", "p"];
+  const qwertyLettersRow2 = ["a", "s", "d", "f", "g", "h", "j", "k", "l"];
+  const qwertyLettersRow3 = ["z", "x", "c", "v", "b", "n", "m"];
+
+  const keyLetterBase =
+    "p-2 w-13 flex justify-center items-center aspect-square bg-foreground/10 rounded-xl uppercase font-semibold";
+
+  console.log(attempts);
 
   return (
     <main
@@ -194,11 +208,11 @@ export default function Home() {
       }}
       className="h-svh w-screen overflow-hidden flex justify-center items-center flex-col "
     >
-      <div className="mb-6 text-xl  text-center  w-full  flex justify-start items-center h-16 fixed top-0 ">
+      {/* <div className="mb-6 text-xl  text-center  w-full  flex justify-start items-center h-16 fixed top-0 ">
         <img className="w-6 mx-3" src="/logo.svg" alt="" /> ARIWA
-      </div>
+      </div> */}
 
-      <div className="h-full w-full">
+      <div className="h-full w-full flex justify-center items-center">
         <input
           ref={keyboardRef}
           autoFocus
@@ -224,11 +238,81 @@ export default function Home() {
           name=""
           id=""
         />
-        <div className="flex flex-col-reverse justify-center items-center h-full">
-          <div className=" text-foreground uppercase font-bold min-h-6">
-            {hint}
+        <div className="flex flex-col-reverse justify-center items-center h-full max-w-fit w-fit gap-2">
+          <div className=" min-h-36 min-w-lg flex-col space-y-1">
+            <div className="flex gap-1 justify-center items-center ">
+              {qwertyLettersRow1.map((letter) => {
+                return (
+                  <motion.div className={`${keyLetterBase} `}>
+                    {letter}
+                  </motion.div>
+                );
+              })}
+            </div>
+            <div className="flex gap-1 justify-center items-center">
+              {qwertyLettersRow2.map((letter) => {
+                return <div className={`${keyLetterBase}`}>{letter}</div>;
+              })}
+            </div>
+            <div className="flex gap-1 justify-center items-center">
+              {qwertyLettersRow3.map((letter) => {
+                return <div className={`${keyLetterBase}`}>{letter}</div>;
+              })}
+            </div>
           </div>
-          <div className="gap-1 flex flex-col  p-6  justify-center items-center">
+          <div className="flex justify-start items-center w-full min-h-16">
+            <motion.button
+              onClick={() => {
+                setShowHint((x) => true);
+                hintSound?.play();
+              }}
+              style={{
+                minWidth: "3em",
+              }}
+              initial={{
+                width: "3em",
+              }}
+              animate={{
+                width: showHint ? "100%" : "3em",
+              }}
+              transition={{
+                duration: 0.4,
+                ease: "easeInOut",
+              }}
+              className={`p-2  rounded-xl hover:bg-correct hover:text-white  border-correct/60   text-correct border-4 cursor-pointer  flex text-center justify-between items-center ${showHint && "bg-correct  text-white"}`}
+            >
+              <motion.p className="uppercase">
+                <Lightbulb></Lightbulb>
+              </motion.p>
+
+              <AnimatePresence>
+                {showHint && (
+                  <motion.p
+                    initial={{
+                      opacity: 0,
+                    }}
+                    animate={{
+                      opacity: 1,
+                    }}
+                    exit={{
+                      opacity: 1,
+                    }}
+                    transition={{
+                      delay: 0.5,
+                    }}
+                    className="uppercase font-semibold italic whitespace-nowrap"
+                  >
+                    {hint}
+                  </motion.p>
+                )}
+              </AnimatePresence>
+              <div></div>
+            </motion.button>
+            {/* <div className=" text-foreground uppercase font-semibold min-h-6 ">
+              {hint}
+            </div> */}
+          </div>
+          <div className="gap-1 flex flex-col    justify-center items-center">
             {attempts.map((atp, j) => {
               return (
                 <div
@@ -245,16 +329,16 @@ export default function Home() {
                           scale: j !== life ? 1 : currentIndex === i ? 0.96 : 1,
                         }}
                         key={i}
-                        className={`h-18 aspect-square  text-center flex justify-center items-center text-3xl font-bold rounded-xl border-4 border-background
+                        className={`h-16 aspect-square  text-center flex justify-center items-center text-3xl font-bold rounded-xl /border-4 /border-foreground/10
                         ${
                           j !== life
                             ? word.status === "CORRECT"
-                              ? "bg-[#06b246] text-background border-[#06b24610]"
+                              ? "bg-correct text-background "
                               : word.status === "INCORRECT"
                                 ? "bg-foreground/40 text-foreground/50"
                                 : word.status === "EXISTS"
-                                  ? "bg-[#066497] text-background border-[#066497]"
-                                  : ""
+                                  ? "bg-incorrect text-background "
+                                  : "bg-foreground/10"
                             : word.letter === ""
                               ? ""
                               : "bg-foreground/10 "
@@ -263,8 +347,8 @@ export default function Home() {
                           j === life
                             ? currentIndex === i
                               ? "bg-foreground/40"
-                              : "bg-foreground/20"
-                            : "border-foreground/50"
+                              : "bg-foreground/20 "
+                            : ""
                         } duration-150`}
                       >
                         {/* <p className="text-sm ">
