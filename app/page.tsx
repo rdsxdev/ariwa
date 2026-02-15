@@ -39,6 +39,7 @@ export default function Home() {
   const [currentIndex, setCurrentIndex] = useState(0);
 
   function addLetter(letter: string) {
+    add?.play();
     if (currentIndex < wordLength) {
       // console.log(wordLength);
       let localIndex = currentIndex;
@@ -202,12 +203,8 @@ export default function Home() {
       onClick={() => {
         if (keyboardRef.current) keyboardRef.current.focus();
       }}
-      className="h-svh w-screen overflow-hidden flex justify-center items-center flex-col "
+      className="min-h-screen w-screen  overflow-hidden flex justify-center items-center flex-col "
     >
-      {/* <div className="mb-6 text-xl  text-center  w-full  flex justify-start items-center h-16 fixed top-0 ">
-        <img className="w-6 mx-3" src="/logo.svg" alt="" /> ARIWA
-      </div> */}
-
       <div className="h-full w-full flex justify-center items-center">
         <input
           ref={keyboardRef}
@@ -223,7 +220,6 @@ export default function Home() {
             if (!e.ctrlKey) {
               setLastPressedKey(code);
               if (letters.includes(code)) {
-                add?.play();
                 addLetter(code);
               }
               if (e.code === "Backspace") {
@@ -291,7 +287,12 @@ export default function Home() {
               {hint}
             </div> */}
           </div>
-          <Keyboard lastPressedKey={lastPressedKey}></Keyboard>
+          {addLetter && (
+            <Keyboard
+              addLetter={addLetter}
+              lastPressedKey={lastPressedKey}
+            ></Keyboard>
+          )}
           <div className="gap-1 flex flex-col    justify-center items-center">
             {attempts.map((atp, j) => {
               return (
@@ -344,7 +345,6 @@ export default function Home() {
             })}
           </div>
         </div>
-        <div className="text-white h-full ">d</div>
       </div>
     </main>
   );

@@ -9,24 +9,48 @@ const keyLetterBase =
 
 export function Keyboard({
   lastPressedKey,
+  addLetter,
 }: {
   lastPressedKey: string | null;
+  addLetter: (letter: string) => void;
 }) {
+  console.log(addLetter);
   return (
     <div className=" min-h-36 min-w-lg flex-col space-y-1">
       <div className="flex gap-1 justify-center items-center ">
         {qwertyLettersRow1.map((letter) => {
-          return <Key letter={letter} lastPressedKey={lastPressedKey} />;
+          return (
+            <Key
+              addLetter={addLetter}
+              key={letter}
+              letter={letter}
+              lastPressedKey={lastPressedKey}
+            />
+          );
         })}
       </div>
       <div className="flex gap-1 justify-center items-center">
         {qwertyLettersRow2.map((letter) => {
-          return <Key letter={letter} lastPressedKey={lastPressedKey} />;
+          return (
+            <Key
+              addLetter={addLetter}
+              key={letter}
+              letter={letter}
+              lastPressedKey={lastPressedKey}
+            />
+          );
         })}
       </div>
       <div className="flex gap-1 justify-center items-center">
         {qwertyLettersRow3.map((letter) => {
-          return <Key letter={letter} lastPressedKey={lastPressedKey} />;
+          return (
+            <Key
+              addLetter={addLetter}
+              key={letter}
+              letter={letter}
+              lastPressedKey={lastPressedKey}
+            />
+          );
         })}
       </div>
     </div>
@@ -36,18 +60,25 @@ export function Keyboard({
 export function Key({
   letter,
   lastPressedKey,
+  addLetter,
 }: {
   letter: string;
   lastPressedKey: string | null;
+  addLetter: (letter: string) => void;
 }) {
   return (
     <motion.div
       key={letter}
-      animate={{
-        scale:
-          lastPressedKey?.toLowerCase() === letter.toLowerCase() ? "0.8" : "1",
+      onClick={() => {
+        addLetter(letter.toUpperCase());
       }}
-      className={`${keyLetterBase} duration-150 border 
+      whileTap={{
+        scale: 0.8,
+      }}
+      animate={{
+        scale: lastPressedKey?.toLowerCase() === letter.toLowerCase() ? 0.8 : 1,
+      }}
+      className={`${keyLetterBase} cursor-pointer select-none duration-150 border 
                     ${
                       lastPressedKey?.toLowerCase() === letter.toLowerCase()
                         ? "border-foreground/60 bg-foreground/40"
