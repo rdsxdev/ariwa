@@ -41,7 +41,6 @@ export default function Home() {
   function addLetter(letter: string) {
     add?.play();
     if (currentIndex < wordLength) {
-      // console.log(wordLength);
       let localIndex = currentIndex;
 
       setCurrentIndex((org) => org + 1);
@@ -196,16 +195,14 @@ export default function Home() {
 
   const [lastPressedKey, setLastPressedKey] = useState<string | null>(null);
 
-  // console.log(lastPressedKey);
-
   return (
     <main
       onClick={() => {
         if (keyboardRef.current) keyboardRef.current.focus();
       }}
-      className="min-h-screen w-screen  overflow-hidden flex justify-center items-center flex-col "
+      className="overflow-hidden  flex justify-center items-center flex-col "
     >
-      <div className="h-full w-full flex justify-center items-center">
+      <div className="h-full py-20  min-h-screen w-full flex justify-center items-center">
         <input
           ref={keyboardRef}
           autoFocus
@@ -234,8 +231,8 @@ export default function Home() {
           name=""
           id=""
         />
-        <div className="flex flex-col-reverse justify-center items-center h-full max-w-fit w-fit gap-2">
-          <div className="flex justify-start items-center w-full min-h-16">
+        <div className="flex flex-col-reverse justify-center items-center h-full max-w-fit w-fit gap-3">
+          <div className="flex justify-start items-center w-full min-h-16 hidden">
             <motion.button
               onClick={() => {
                 setShowHint((x) => true);
@@ -283,12 +280,10 @@ export default function Home() {
               </AnimatePresence>
               <div></div>
             </motion.button>
-            {/* <div className=" text-foreground uppercase font-semibold min-h-6 ">
-              {hint}
-            </div> */}
           </div>
           {addLetter && (
             <Keyboard
+              letterStatus={attempts.flat().filter((x) => x.letter && x.status)}
               addLetter={addLetter}
               lastPressedKey={lastPressedKey}
             ></Keyboard>
@@ -310,7 +305,7 @@ export default function Home() {
                           scale: j !== life ? 1 : currentIndex === i ? 0.96 : 1,
                         }}
                         key={i}
-                        className={`h-16 aspect-square  text-center flex justify-center items-center text-3xl font-bold rounded-xl /border-4 /border-foreground/10
+                        className={`h-16 aspect-square  text-center flex justify-center items-center text-3xl font-bold rounded-md /border-4 /border-foreground/10
                         ${
                           j !== life
                             ? word.status === "CORRECT"

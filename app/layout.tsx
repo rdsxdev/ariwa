@@ -8,6 +8,7 @@ import {
 } from "next/font/google";
 import "./globals.css";
 import { Toaster } from "react-hot-toast";
+import Navbar from "@/components/Navbar";
 const Press_Start_2P_FONT = Press_Start_2P({
   weight: ["400"],
 });
@@ -20,7 +21,7 @@ const poppins = Poppins({
 // });
 
 export const metadata: Metadata = {
-  title: "ARIWA",
+  title: "WordRush",
   description: "A Really Improved Wordle Alternative",
 };
 
@@ -32,6 +33,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={`${poppins.className} antialiased`}>
+        <Navbar></Navbar>
         <Toaster />
         {children}
       </body>
