@@ -7,193 +7,33 @@ import wordExists from "@/utils/checkWord";
 import { generateRandomWord } from "@/utils/generateRandomWord";
 import { Lightbulb } from "lucide-react";
 import { Keyboard } from "@/components/Keyboard";
+import useSinglePlayerData from "@/context/SinglePlayerDataContext";
 
 export default function Home() {
-  /**
-   The word length has to be between 3 and 13
-   */
-  const [wordLength, setWordLength] = useState(5);
-
-  const [word, setWord] = useState("");
-  const [hint, setHint] = useState("");
-  // console.log(word);
-  useEffect(() => {
-    const luckyLad = generateRandomWord(wordLength);
-
-    setWord(luckyLad.word.toUpperCase());
-    setHint(luckyLad.type);
-  }, [wordLength]);
-
-  const [chances, setChances] = useState(6);
-  const [life, setLife] = useState(0);
-
-  // const x = generateRandomWord(wordLength);
-
-  const layout = new Array(chances)
-    .fill("")
-    .map((x) => [...new Array(wordLength).fill({ letter: "", status: "" })]);
-
-  let [attempts, setAttempts] =
-    useState<{ letter: string; status: string }[][]>(layout);
-
-  const [currentIndex, setCurrentIndex] = useState(0);
-
-  function addLetter(letter: string) {
-    add?.play();
-    if (currentIndex < wordLength) {
-      let localIndex = currentIndex;
-
-      setCurrentIndex((org) => org + 1);
-      localIndex = localIndex + 1;
-      setAttempts((org) =>
-        org.map((x, i) => {
-          if (i === life) {
-            return x.map((y, i) => {
-              if (i === currentIndex) {
-                return { letter, status: "" };
-              } else {
-                return y;
-              }
-            });
-          } else {
-            return x;
-          }
-        }),
-      );
-    }
-  }
-
-  function removeLetter() {
-    if (currentIndex > 0) {
-      let localIndex = currentIndex;
-      setCurrentIndex((org) => org - 1);
-      localIndex = localIndex - 1;
-      setAttempts((org) =>
-        org.map((x, i) => {
-          if (i === life) {
-            return x.map((y, i) => {
-              if (i === localIndex) {
-                return { letter: "", status: "" };
-              } else {
-                return y;
-              }
-            });
-          } else {
-            return x;
-          }
-        }),
-      );
-    }
-  }
-
-  function submitAttempt() {
-    if (life < chances) {
-      if (attempts[life].filter((x) => x.letter === "").length > 0) {
-        toast("Finish the word atleast?", {
-          style: {
-            background: "#1a1a1a",
-            color: "#ffffff",
-            boxShadow: "none",
-            filter: "none",
-            borderRadius: "3px",
-          },
-          position: "bottom-center",
-        });
-      } else {
-        if (
-          // wordExists(attempts[life].map((x) => x.letter).join(""))
-          true
-        ) {
-          const wordArray = word.split("");
-          const attemptArray = attempts[life].map((x) => x.letter);
-
-          const dict: any = {};
-          letters.forEach((letter) => {
-            dict[letter] = wordArray.filter((l) => l === letter).length;
-          });
-          for (let idx = 0; idx < wordLength; idx++) {
-            // @ts-ignore
-            setAttempts((org) =>
-              org.map((x, i) => {
-                if (i === life) {
-                  return x.map((y, i) => {
-                    if (i === idx) {
-                      if (!wordArray.includes(attemptArray[idx])) {
-                        return {
-                          ...y,
-                          status: "INCORRECT",
-                        };
-                      } else if (
-                        wordArray.filter((x) => x === attemptArray[idx])
-                          .length < dict[attemptArray[idx]]
-                      ) {
-                        return {
-                          ...y,
-                          status: "INCORRECT",
-                        };
-                      } else if (wordArray[idx] === attemptArray[idx]) {
-                        return {
-                          ...y,
-                          status: "CORRECT",
-                        };
-                      } else if (wordArray.includes(attemptArray[idx])) {
-                        return {
-                          ...y,
-                          status: "EXISTS",
-                        };
-                      } else {
-                        return {
-                          ...y,
-                          status: "INCORRECT",
-                        };
-                      }
-                    } else {
-                      return y;
-                    }
-                  });
-                } else {
-                  return x;
-                }
-              }),
-            );
-          }
-
-          setLife((org) => org + 1);
-          setCurrentIndex(0);
-        } else {
-          toast("Not a word bruv.", {
-            style: {
-              background: "#1a1a1a",
-              color: "#ffffff",
-              boxShadow: "none",
-              filter: "none",
-              borderRadius: "3px",
-            },
-            position: "bottom-center",
-          });
-        }
-      }
-    }
-  }
-
   const [showHint, setShowHint] = useState(false);
-
-  // console.log(attempts);
-
   const keyboardRef = useRef<HTMLInputElement>(null);
-
-  const letters = Array.from({ length: 26 }, (_, i) =>
-    String.fromCharCode(65 + i),
-  );
-
-  const add = typeof Audio !== "undefined" ? new Audio("/add.mp3") : undefined;
-  const remove =
-    typeof Audio !== "undefined" ? new Audio("/remove.mp3") : undefined;
 
   const hintSound =
     typeof Audio !== "undefined" ? new Audio("/hint.mp3") : undefined;
 
   const [lastPressedKey, setLastPressedKey] = useState<string | null>(null);
+
+  const {
+    addLetter,
+    attempts,
+    chances,
+    currentStatus,
+    hint,
+    layout,
+    letterSizeForMobile,
+    life,
+    removeLetter,
+    submitAttempt,
+    word,
+    wordLength,
+    letters,
+    currentIndex,
+  } = useSinglePlayerData()!;
 
   return (
     <main
@@ -202,8 +42,9 @@ export default function Home() {
       }}
       className="overflow-hidden  flex justify-center items-center flex-col "
     >
-      <div className="h-full py-20  min-h-screen w-full flex justify-center items-center">
+      <div className="h-full pt-16 pb-6  min-h-screen w-full flex justify-center items-center">
         <input
+          readOnly
           ref={keyboardRef}
           autoFocus
           type="text"
@@ -220,7 +61,6 @@ export default function Home() {
                 addLetter(code);
               }
               if (e.code === "Backspace") {
-                remove?.play();
                 removeLetter();
               }
             }
@@ -281,19 +121,31 @@ export default function Home() {
               <div></div>
             </motion.button>
           </div>
+
           {addLetter && (
             <Keyboard
+              submitAttempt={submitAttempt}
               letterStatus={attempts.flat().filter((x) => x.letter && x.status)}
               addLetter={addLetter}
+              removeLetter={removeLetter}
               lastPressedKey={lastPressedKey}
             ></Keyboard>
           )}
+          <div className="flex text-correct  min-h-10 gap-px text-3xl">
+            {currentStatus.map((x, i) => {
+              if (x) {
+                return <p key={i}>{x}</p>;
+              } else {
+                return <p key={i}>_</p>;
+              }
+            })}
+          </div>
           <div className="gap-1 flex flex-col    justify-center items-center">
             {attempts.map((atp, j) => {
               return (
                 <div
                   key={j}
-                  className="flex items-center justify-center  gap-1"
+                  className="flex items-center justify-center  gap-1 "
                 >
                   {atp.map((word, i) => {
                     return (
@@ -305,7 +157,9 @@ export default function Home() {
                           scale: j !== life ? 1 : currentIndex === i ? 0.96 : 1,
                         }}
                         key={i}
-                        className={`h-16 aspect-square  text-center flex justify-center items-center text-3xl font-bold rounded-md /border-4 /border-foreground/10
+                        className={`h-16 ${
+                          letterSizeForMobile[wordLength]
+                        } aspect-square  text-center flex justify-center items-center text-3xl max-md:text-xl font-bold rounded-md /border-4 /border-foreground/10
                         ${
                           j !== life
                             ? word.status === "CORRECT"

@@ -8,17 +8,21 @@ const qwertyLettersRow3 = ["z", "x", "c", "v", "b", "n", "m"];
 export function Keyboard({
   lastPressedKey,
   addLetter,
+  removeLetter,
   letterStatus,
+  submitAttempt,
 }: {
   lastPressedKey: string | null;
   addLetter: (letter: string) => void;
+  removeLetter: () => void;
+  submitAttempt: () => void;
   letterStatus: { letter: string; status: string }[];
 }) {
-  console.log(letterStatus);
+  // console.log(letterStatus);
 
   return (
-    <div className=" min-h-36 min-w-lg flex-col space-y-1">
-      <div className="flex gap-1 justify-center items-center ">
+    <div className=" min-h-36 min-w-lg flex-col space-y-1 max-md:space-y-px">
+      <div className="flex gap-1 max-md:gap-px justify-center items-center ">
         {qwertyLettersRow1.map((letter) => {
           let status = letterStatus
             .filter((x) => x.letter === letter.toUpperCase())
@@ -31,7 +35,7 @@ export function Keyboard({
               : status.includes("INCORRECT")
                 ? "INCORRECT"
                 : "";
-          console.log(statusToPass);
+          // console.log(statusToPass);
           return (
             <Key
               addLetter={addLetter}
@@ -43,7 +47,7 @@ export function Keyboard({
           );
         })}
       </div>
-      <div className="flex gap-1 justify-center items-center">
+      <div className="flex gap-1 max-md:gap-px justify-center items-center">
         {qwertyLettersRow2.map((letter) => {
           let status = letterStatus
             .filter((x) => x.letter === letter.toUpperCase())
@@ -67,12 +71,13 @@ export function Keyboard({
           );
         })}
       </div>
-      <div className="flex gap-1 justify-center items-center">
+      <div className="flex gap-1 max-md:gap-px justify-center items-center">
         <Key
           addLetter={addLetter}
           key={"enter"}
           letter={"Enter"}
           lastPressedKey={lastPressedKey}
+          submitAttempt={submitAttempt}
         />
         {qwertyLettersRow3.map((letter) => {
           let status = letterStatus
@@ -99,6 +104,7 @@ export function Keyboard({
         <Key
           addLetter={addLetter}
           key={"Backspace"}
+          removeLetter={removeLetter}
           letter={"Backspace"}
           lastPressedKey={lastPressedKey}
         />
@@ -112,17 +118,27 @@ export function Key({
   lastPressedKey,
   addLetter,
   status,
+  removeLetter,
+  submitAttempt,
 }: {
   letter: string;
   lastPressedKey: string | null;
   addLetter: (letter: string) => void;
+  removeLetter?: () => void;
+  submitAttempt?: () => void;
   status?: string;
 }) {
-  console.log(letter.toUpperCase(), status);
+  // console.log(letter.toUpperCase(), status);
   return (
     <motion.div
       key={letter}
       onClick={() => {
+        if (letter === "Backspace") {
+          if (removeLetter) removeLetter();
+        }
+        if (letter === "Enter") {
+          if (submitAttempt) submitAttempt();
+        }
         if (letter !== "Enter" && letter !== "Backspace") {
           addLetter(letter.toUpperCase());
         }
@@ -133,7 +149,7 @@ export function Key({
       animate={{
         scale: lastPressedKey?.toLowerCase() === letter.toLowerCase() ? 0.8 : 1,
       }}
-      className={`p-3 py-3   min-w-12 w-fit   flex justify-center items-center  rounded-md uppercase font-semibold cursor-pointer select-none duration-150 border 
+      className={`p-3 py-3   min-w-12 max-md:min-w-8  max-md:h-12  ${(letter === "Enter" || letter === "Backspace") && "max-md:w-16"}  max-md:px-2 max-md:text-xs w-fit   flex justify-center items-center  rounded-md uppercase font-semibold cursor-pointer select-none duration-150 border 
 ${
   lastPressedKey?.toLowerCase() === letter.toLowerCase()
     ? "border-foreground/60 bg-foreground/40"
@@ -151,7 +167,7 @@ ${
 }
 `}
     >
-      {letter !== "Backspace" ? letter : <Delete />}
+      {letter !== "Backspace" ? letter : <Delete className="max-md:size-5" />}
     </motion.div>
   );
 }

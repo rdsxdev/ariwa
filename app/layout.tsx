@@ -9,6 +9,7 @@ import {
 import "./globals.css";
 import { Toaster } from "react-hot-toast";
 import Navbar from "@/components/Navbar";
+import { SinglePlayerDataProvider } from "@/context/SinglePlayerDataContext";
 const Press_Start_2P_FONT = Press_Start_2P({
   weight: ["400"],
 });
@@ -33,9 +34,11 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={`${poppins.className} antialiased`}>
-        <Navbar></Navbar>
-        <Toaster />
-        {children}
+        <SinglePlayerDataProvider>
+          <Navbar></Navbar>
+          <Toaster />
+          {children}
+        </SinglePlayerDataProvider>
       </body>
     </html>
   );
