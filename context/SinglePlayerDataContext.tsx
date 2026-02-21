@@ -34,18 +34,18 @@ function SinglePlayerDataProvider({
   /**
    The word length has to be between 3 and 9
    */
-  const [wordLength, setWordLength] = useState(5);
+  const [wordLength, setWordLength] = useState(6);
   const letterSizeForMobile = [
     "",
     "",
     "",
-    "max-md:h-15",
+    "max-md:h-18",
+    "max-md:h-16",
+    "max-md:h-16",
     "max-md:h-14",
-    "max-md:h-13",
     "max-md:h-12",
     "max-md:h-10",
     "max-md:h-9",
-    "max-md:h-8",
   ];
 
   const add = typeof Audio !== "undefined" ? new Audio("/add.mp3") : undefined;

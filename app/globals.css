@@ -1,5 +1,9 @@
 @import "tailwindcss";
 
+* {
+  /* outline: 1px solid red; */
+}
+
 :root {
   --foreground: #2e363e;
   --background: #ececec;

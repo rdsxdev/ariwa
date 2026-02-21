@@ -21,8 +21,8 @@ export function Keyboard({
   // console.log(letterStatus);
 
   return (
-    <div className=" min-h-36 min-w-lg flex-col space-y-1 max-md:space-y-px">
-      <div className="flex gap-1 max-md:gap-px justify-center items-center ">
+    <div className=" min-h-36 min-w-lg max-md:min-w-fit flex-col space-y-1 max-md:space-y-px max-md:w-screen max-md:px-3">
+      <div className="flex gap-1 max-md:gap-px justify-center items-center max-md:justify-stretch">
         {qwertyLettersRow1.map((letter) => {
           let status = letterStatus
             .filter((x) => x.letter === letter.toUpperCase())
@@ -47,7 +47,7 @@ export function Keyboard({
           );
         })}
       </div>
-      <div className="flex gap-1 max-md:gap-px justify-center items-center">
+      <div className="flex gap-1 max-md:gap-px justify-center items-center max-md:justify-stretch">
         {qwertyLettersRow2.map((letter) => {
           let status = letterStatus
             .filter((x) => x.letter === letter.toUpperCase())
@@ -71,7 +71,7 @@ export function Keyboard({
           );
         })}
       </div>
-      <div className="flex gap-1 max-md:gap-px justify-center items-center">
+      <div className="flex gap-1 max-md:gap-px justify-center items-center max-md:justify-stretch">
         <Key
           addLetter={addLetter}
           key={"enter"}
@@ -149,7 +149,7 @@ export function Key({
       animate={{
         scale: lastPressedKey?.toLowerCase() === letter.toLowerCase() ? 0.8 : 1,
       }}
-      className={`p-3 py-3   min-w-12 max-md:min-w-8  max-md:h-12  ${(letter === "Enter" || letter === "Backspace") && "max-md:w-16"}  max-md:px-2 max-md:text-xs w-fit   flex justify-center items-center  rounded-md uppercase font-semibold cursor-pointer select-none duration-150 border 
+      className={`p-3 py-3   min-w-12 max-md:min-w-8 max-md:w-full  max-md:h-16  ${(letter === "Enter" || letter === "Backspace") && "max-md:min-w-16"}  max-md:px-2 max-md:text-sm w-fit   flex justify-center items-center  rounded-md uppercase font-semibold cursor-pointer select-none duration-150 border 
 ${
   lastPressedKey?.toLowerCase() === letter.toLowerCase()
     ? "border-foreground/60 bg-foreground/40"

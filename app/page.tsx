@@ -42,7 +42,7 @@ export default function Home() {
       }}
       className="overflow-hidden  flex justify-center items-center flex-col "
     >
-      <div className="h-full pt-16 pb-6  min-h-screen w-full flex justify-center items-center">
+      <div className="h-full pt-16 pb-6  min-h-screen w-full flex justify-center items-center ">
         <input
           readOnly
           ref={keyboardRef}
