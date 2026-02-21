@@ -4,19 +4,52 @@
   /* outline: 1px solid red; */
 }
 
-:root {
+@theme inline {
+  --color-background: #0f0f0f; /* true black */
+  --color-foreground: #f2f2f2; /* soft white */
+  --color-bright: #0f0f0f; /* slightly lifted black surface */
+
+  /* --color-correct: #00fff0;
+  --color-incorrect: #ff5722; */
+  --color-correct: #00cfd4;
+  --color-incorrect: #cc5522;
+  /*  */
+  /* --color-incorrect: #ff4848; */
+}
+/*  */
+/* --color-background: #0f1414;
+--color-foreground: #ecffff;
+--color-bright: #182020;
+--color-correct: #00ffb3;
+--color-incorrect: #ff0080; */
+
+/* --color-background: #0b1220;
+--color-foreground: #eaf2ff;
+--color-bright: #141c2d;
+--color-correct: #00cfff;
+--color-incorrect: #ff5c33; */
+/* --color-background: #10130f;
+--color-foreground: #f4ffe8;
+--color-bright: #191d17;
+--color-correct: #b4ff00;
+--color-incorrect: #ff006e; */
+
+/* --color-background: #0f1115;
+--color-foreground: #f1f5f9;
+--color-bright: #191d23;
+--color-correct: #00f5d4;
+--color-incorrect: #ff4d6d; */
+
+/* --color-background: #ececec;
+  --color-foreground: #2e363e;
+  --color-bright: #ffffff;
+  --color-correct: #01a8ad;
+  --color-incorrect: #e18554; */
+
+/* :root {
   --foreground: #2e363e;
   --background: #ececec;
-}
-
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --color-correct: #01a8ad;
-  --color-incorrect: #e18554;
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
+} */
 
 /*  */
 body {
@@ -34,3 +67,8 @@ body {
 
 @keyframes microAnimationGlow {
 }
+
+button {
+  cursor: pointer;
+}
+/*  */

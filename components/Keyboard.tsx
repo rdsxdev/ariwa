@@ -149,7 +149,7 @@ export function Key({
       animate={{
         scale: lastPressedKey?.toLowerCase() === letter.toLowerCase() ? 0.8 : 1,
       }}
-      className={`p-3 py-3   min-w-12 max-md:min-w-8 max-md:w-full  max-md:h-16  ${(letter === "Enter" || letter === "Backspace") && "max-md:min-w-16"}  max-md:px-2 max-md:text-sm w-fit   flex justify-center items-center  rounded-md uppercase font-semibold cursor-pointer select-none duration-150 border 
+      className={`p-3 py-3   min-w-12 max-md:min-w-8 max-md:w-full  max-md:h-16  ${(letter === "Enter" || letter === "Backspace") && "max-md:min-w-16"}  max-md:px-2 max-md:text-sm w-fit   flex justify-center items-center  rounded-md uppercase font-bold cursor-pointer select-none duration-100 border 
 ${
   lastPressedKey?.toLowerCase() === letter.toLowerCase()
     ? "border-foreground/60 bg-foreground/40"
@@ -157,13 +157,15 @@ ${
 }
                     
 ${
-  status === "CORRECT"
-    ? "bg-correct text-white"
-    : status === "EXISTS"
-      ? "bg-incorrect text-background"
-      : status === "INCORRECT"
-        ? "bg-foreground/50 text-background"
-        : "bg-foreground/10"
+  !status
+    ? "bg-foreground/10 text-foreground"
+    : status === "CORRECT"
+      ? "bg-correct text-background"
+      : status === "EXISTS"
+        ? "bg-incorrect text-foreground"
+        : status === "INCORRECT"
+          ? "bg-foreground/50 text-background"
+          : "bg-foreground/10"
 }
 `}
     >

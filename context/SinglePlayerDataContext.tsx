@@ -62,7 +62,7 @@ function SinglePlayerDataProvider({
     setHint(luckyLad.type);
   }, [wordLength]);
 
-  const [chances, setChances] = useState(5);
+  const [chances, setChances] = useState(6);
   const [life, setLife] = useState(0);
 
   // const x = generateRandomWord(wordLength);

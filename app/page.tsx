@@ -8,7 +8,8 @@ import { generateRandomWord } from "@/utils/generateRandomWord";
 import { Lightbulb } from "lucide-react";
 import { Keyboard } from "@/components/Keyboard";
 import useSinglePlayerData from "@/context/SinglePlayerDataContext";
-
+import { doc, setDoc } from "firebase/firestore";
+import { db } from "@/firebase";
 export default function Home() {
   const [showHint, setShowHint] = useState(false);
   const keyboardRef = useRef<HTMLInputElement>(null);
@@ -40,7 +41,7 @@ export default function Home() {
       onClick={() => {
         if (keyboardRef.current) keyboardRef.current.focus();
       }}
-      className="overflow-hidden  flex justify-center items-center flex-col "
+      className="overflow-hidden  flex justify-center items-center flex-col  bg-background"
     >
       <div className="h-full pt-16 pb-6  min-h-screen w-full flex justify-center items-center ">
         <input
@@ -131,7 +132,7 @@ export default function Home() {
               lastPressedKey={lastPressedKey}
             ></Keyboard>
           )}
-          <div className="flex text-correct  min-h-10 gap-px text-3xl">
+          <div className="flex text-correct  min-h-10 gap-px text-xl">
             {currentStatus.map((x, i) => {
               if (x) {
                 return <p key={i}>{x}</p>;
@@ -159,19 +160,19 @@ export default function Home() {
                         key={i}
                         className={`h-16 ${
                           letterSizeForMobile[wordLength]
-                        } aspect-square  text-center flex justify-center items-center text-3xl max-md:text-xl font-bold rounded-md /border-4 /border-foreground/10
+                        } aspect-square  text-center flex justify-center items-center text-3xl max-md:text-xl font-bold rounded-md /border-4 /border-foreground/10 
                         ${
-                          j !== life
-                            ? word.status === "CORRECT"
-                              ? "bg-correct text-background "
+                          j === life
+                            ? word.letter === ""
+                              ? "text-foreground"
+                              : "bg-foreground/10 text-foreground"
+                            : word.status === "CORRECT"
+                              ? "bg-correct text-background"
                               : word.status === "INCORRECT"
                                 ? "bg-foreground/40 text-foreground/50"
                                 : word.status === "EXISTS"
-                                  ? "bg-incorrect text-background "
+                                  ? "bg-incorrect text-foreground"
                                   : "bg-foreground/10"
-                            : word.letter === ""
-                              ? ""
-                              : "bg-foreground/10 "
                         }
                         ${
                           j === life
@@ -179,7 +180,7 @@ export default function Home() {
                               ? "bg-foreground/40"
                               : "bg-foreground/20 "
                             : ""
-                        } duration-150`}
+                        } duration-150 `}
                       >
                         {/* <p className="text-sm ">
                           {i}:{j} - {life}

@@ -1,7 +1,8 @@
 Checklist: 
-    ☐ Game UI setup
-    ☐ Word total view
+    ✔ Game UI setup @done(26-02-22 02:20)
+    ✔ Word total view @done(26-02-22 02:20)
+    ☐ No auth decider system
     ☐ Mutliple word type fix
-    ☐ auto saving state
+    ✘ auto saving state @cancelled(26-02-22 02:20)
     ☐ sound settings
     ☐ Game settings
