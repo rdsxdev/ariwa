@@ -20,21 +20,173 @@ export default function Home() {
   const [lastPressedKey, setLastPressedKey] = useState<string | null>(null);
 
   const {
-    addLetter,
     attempts,
     chances,
     currentStatus,
     hint,
-    layout,
     letterSizeForMobile,
     life,
-    removeLetter,
-    submitAttempt,
     word,
     wordLength,
-    letters,
     currentIndex,
+    setHint,
+    setWord,
+    setCurrentIndex,
+    setAttempts,
+    setLife,
   } = useSinglePlayerData()!;
+
+  useEffect(() => {
+    const luckyLad = generateRandomWord(wordLength);
+
+    setWord(luckyLad.word.toUpperCase());
+    setHint(luckyLad.type);
+  }, [wordLength]);
+
+  const add = typeof Audio !== "undefined" ? new Audio("/add.mp3") : undefined;
+  const remove =
+    typeof Audio !== "undefined" ? new Audio("/remove.mp3") : undefined;
+
+  function addLetter(letter: string) {
+    add?.play();
+    if (currentIndex < wordLength) {
+      let localIndex = currentIndex;
+
+      setCurrentIndex((org) => org + 1);
+      localIndex = localIndex + 1;
+      setAttempts((org) =>
+        org.map((x, i) => {
+          if (i === life) {
+            return x.map((y, i) => {
+              if (i === currentIndex) {
+                return { letter, status: "" };
+              } else {
+                return y;
+              }
+            });
+          } else {
+            return x;
+          }
+        }),
+      );
+    }
+  }
+
+  function removeLetter() {
+    remove?.play();
+    if (currentIndex > 0) {
+      let localIndex = currentIndex;
+      setCurrentIndex((org) => org - 1);
+      localIndex = localIndex - 1;
+      setAttempts((org) =>
+        org.map((x, i) => {
+          if (i === life) {
+            return x.map((y, i) => {
+              if (i === localIndex) {
+                return { letter: "", status: "" };
+              } else {
+                return y;
+              }
+            });
+          } else {
+            return x;
+          }
+        }),
+      );
+    }
+  }
+  const letters = Array.from({ length: 26 }, (_, i) =>
+    String.fromCharCode(65 + i),
+  );
+  function submitAttempt() {
+    if (life < chances) {
+      if (attempts[life].filter((x) => x.letter === "").length > 0) {
+        toast("Finish the word atleast?", {
+          style: {
+            background: "#1a1a1a",
+            color: "#ffffff",
+            boxShadow: "none",
+            filter: "none",
+            borderRadius: "3px",
+          },
+          position: "bottom-center",
+        });
+      } else {
+        if (
+          // wordExists(attempts[life].map((x) => x.letter).join(""))
+          true
+        ) {
+          const wordArray = word.split("");
+          const attemptArray = attempts[life].map((x) => x.letter);
+
+          const dict: any = {};
+          // letters.forEach((letter) => {
+          //   dict[letter] = wordArray.filter((l) => l === letter).length;
+          // });
+          for (let idx = 0; idx < wordLength; idx++) {
+            setAttempts((org) => {
+              const newAttempt = org.map((x, i) => {
+                if (i === life) {
+                  return x.map((y, i) => {
+                    if (i === idx) {
+                      if (!wordArray.includes(attemptArray[idx])) {
+                        return {
+                          ...y,
+                          status: "INCORRECT",
+                        };
+                      } else if (
+                        wordArray.filter((x) => x === attemptArray[idx])
+                          .length < dict[attemptArray[idx]]
+                      ) {
+                        return {
+                          ...y,
+                          status: "INCORRECT",
+                        };
+                      } else if (wordArray[idx] === attemptArray[idx]) {
+                        return {
+                          ...y,
+                          status: "CORRECT",
+                        };
+                      } else if (wordArray.includes(attemptArray[idx])) {
+                        return {
+                          ...y,
+                          status: "EXISTS",
+                        };
+                      } else {
+                        return {
+                          ...y,
+                          status: "INCORRECT",
+                        };
+                      }
+                    } else {
+                      return y;
+                    }
+                  });
+                } else {
+                  return x;
+                }
+              });
+              return newAttempt;
+            });
+          }
+
+          setLife((org) => org + 1);
+          setCurrentIndex(0);
+        } else {
+          toast("Not a word bruv.", {
+            style: {
+              background: "#1a1a1a",
+              color: "#ffffff",
+              boxShadow: "none",
+              filter: "none",
+              borderRadius: "3px",
+            },
+            position: "bottom-center",
+          });
+        }
+      }
+    }
+  }
 
   return (
     <main
@@ -160,7 +312,7 @@ export default function Home() {
                         key={i}
                         className={`h-16 ${
                           letterSizeForMobile[wordLength]
-                        } aspect-square  text-center flex justify-center items-center text-3xl max-md:text-xl font-bold rounded-md /border-4 /border-foreground/10 
+                        } aspect-square  text-center flex justify-center items-center text-3xl max-md:text-xl font-bold rounded-lg /border-4 /border-foreground/10 
                         ${
                           j === life
                             ? word.letter === ""
@@ -169,7 +321,7 @@ export default function Home() {
                             : word.status === "CORRECT"
                               ? "bg-correct text-background"
                               : word.status === "INCORRECT"
-                                ? "bg-foreground/40 text-foreground/50"
+                                ? "bg-foreground/40 text-foreground/90"
                                 : word.status === "EXISTS"
                                   ? "bg-incorrect text-foreground"
                                   : "bg-foreground/10"

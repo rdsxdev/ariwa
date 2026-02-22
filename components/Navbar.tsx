@@ -14,8 +14,8 @@ export default function Navbar() {
       <ModalContainer show={showAuthModal} setShow={setShowAuthModal}>
         <AuthPopup></AuthPopup>
       </ModalContainer>
-      <div className="w-1/3"></div>
-      <div className="flex justify-center items-center gap-3 w-1/3">
+      <div className="w-1/3 max-md:hidden"></div>
+      <div className="flex justify-center items-center gap-3 w-1/3 max-md:w-fit">
         <Logo size={36}></Logo>
         <div className="font-bold flex text-xl">
           <p className="text-correct">WORD</p>

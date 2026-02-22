@@ -1,5 +1,6 @@
 "use client";
 
+import Logo from "@/public/Logo";
 import { Lock, Mail, User, UserCircle } from "lucide-react";
 import { useState } from "react";
 import { useForm, SubmitHandler } from "react-hook-form";
@@ -11,10 +12,8 @@ export default function AuthPopup() {
     <div className="md:min-w-md min-w-[90vw]  md:min-h-fit  p-6 bg-background text-foreground rounded-md flex flex-col justify-center items-center gap-6 text-sm">
       <div className="flex justify-center items-center flex-col gap-2">
         <div className=" flex justify-center items-center gap-3 flex-col">
-          <div className="bg-correct/10 p-3 rounded-md">
-            <div className="text-correct">
-              <UserCircle></UserCircle>
-            </div>
+          <div className="">
+            <Logo size={50}></Logo>
           </div>
           {/* <img src="/logo.svg" className="w-10" alt="" /> */}
           <div className="text-base font-semibold flex gap-1">
@@ -26,16 +25,16 @@ export default function AuthPopup() {
           </div>
         </div>
       </div>
-      <div className="flex w-full space-x-2 text-center bg-[#f1f5f9] p-1 rounded-md">
+      <div className="flex w-full space-x-2 text-center bg-foreground/10 p-1 rounded-md">
         <button
           onClick={() => setCurrentView(0)}
-          className={`w-1/2 text-[#69788f] text-sm  duration-200 h-full rounded-sm p-1 ${currentView === 0 && "bg-white shadow-lg shadow-black/5 text-black"} `}
+          className={`w-1/2 text-foreground/50 text-sm  duration-200 h-full rounded-sm p-1 ${currentView === 0 && "bg-background shadow-lg shadow-black/5 text-foreground"} `}
         >
           Sign In
         </button>
         <button
           onClick={() => setCurrentView(1)}
-          className={`w-1/2 text-[#69788f] text-sm  duration-200 h-full rounded-sm p-1 ${currentView === 1 && "bg-white shadow-lg shadow-black/5 text-black"} `}
+          className={`w-1/2 text-foreground/50 text-sm  duration-200 h-full rounded-sm p-1 ${currentView === 1 && "bg-background shadow-lg shadow-black/5 text-black"} `}
         >
           Sign Up
         </button>
