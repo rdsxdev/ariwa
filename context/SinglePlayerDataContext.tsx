@@ -42,7 +42,7 @@ function SinglePlayerDataProvider({
   /**
    The word length has to be between 3 and 9
    */
-  const [wordLength, setWordLength] = useState(3);
+  const [wordLength, setWordLength] = useState(5);
   const letterSizeForMobile = [
     "",
     "",
@@ -64,7 +64,7 @@ function SinglePlayerDataProvider({
   const [hint, setHint] = useState("");
   // console.log(word);
 
-  const [chances, setChances] = useState(3);
+  const [chances, setChances] = useState(5);
   const [life, setLife] = useState(0);
 
   const [win, setWin] = useState(false);
