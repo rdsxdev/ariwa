@@ -4,10 +4,15 @@ import toast from "react-hot-toast";
 import wordExists from "@/utils/checkWord";
 import { generateRandomWord } from "@/utils/generateRandomWord";
 import {
+  ALargeSmall,
   Frown,
+  Gamepad,
+  Gamepad2,
+  LetterText,
   Lightbulb,
   RefreshCcw,
   RotateCw,
+  Settings,
   Trophy,
   X,
 } from "lucide-react";
@@ -17,10 +22,9 @@ import ModalContainer from "../Modal";
 
 function SinglePlayerTrialModeComponent() {
   const [showHint, setShowHint] = useState(false);
-  const keyboardRef = useRef<HTMLInputElement>(null);
+  const [showGameSettings, setShowGameSettings] = useState(false);
 
-  const hintSound =
-    typeof Audio !== "undefined" ? new Audio("/hint.mp3") : undefined;
+  const keyboardRef = useRef<HTMLInputElement>(null);
 
   const [lastPressedKey, setLastPressedKey] = useState<string | null>(null);
 
@@ -44,14 +48,17 @@ function SinglePlayerTrialModeComponent() {
     setWin,
     win,
     layout,
+    setWordLength,
+    setLayout,
   } = useSinglePlayerData()!;
+
+  const [localWordLength, setLocalWordLength] = useState(wordLength);
 
   useEffect(() => {
     const luckyLad = generateRandomWord(wordLength);
-
     setWord(luckyLad.word.toUpperCase());
     setHint(luckyLad.type);
-  }, [wordLength]);
+  }, []);
 
   const add = typeof Audio !== "undefined" ? new Audio("/add.mp3") : undefined;
   const remove =
@@ -196,14 +203,22 @@ function SinglePlayerTrialModeComponent() {
     }
   }
 
-  function resetWord() {
-    const luckyLad = generateRandomWord(wordLength);
+  function resetWord(newWordLength?: number) {
+    const lengthOfWordToGenerate = newWordLength || wordLength;
 
+    setWordLength(lengthOfWordToGenerate);
+    const luckyLad = generateRandomWord(lengthOfWordToGenerate);
     setWord(luckyLad.word.toUpperCase());
     setHint(luckyLad.type);
+    setAttempts(
+      new Array(chances)
+        .fill("")
+        .map((x) => [
+          ...new Array(lengthOfWordToGenerate).fill({ letter: "", status: "" }),
+        ]),
+    );
 
     setLife(0);
-    setAttempts(layout);
     setLose(false);
     setWin(false);
   }
@@ -216,6 +231,86 @@ function SinglePlayerTrialModeComponent() {
       className="overflow-hidden  flex justify-center items-center flex-col  bg-background"
     >
       {/* <div className="absolute left-0 top-0 text-white">{word}</div> */}
+
+      <ModalContainer
+        preventClosingByClickingOnBackground
+        show={showGameSettings}
+        setShow={setShowGameSettings}
+      >
+        <motion.div
+          initial={{
+            opacity: 0,
+          }}
+          animate={{
+            opacity: 1,
+          }}
+          exit={{
+            opacity: 0,
+          }}
+          className="text-white bg-background p-8 px-5 max-md:px-3 rounded-lg  flex justify-center items-center z-9999999999999999 pt-8"
+        >
+          <div className="flex justify-center items-center flex-col gap-6 w-full min-w-96 max-md:min-w-84">
+            <button
+              onClick={() => {
+                setShowGameSettings(false);
+                setLocalWordLength(wordLength);
+              }}
+              className="flex justify-end items-center w-full text-foreground/50 absolute top-3 right-3 cursor-pointer"
+            >
+              <X></X>
+            </button>
+            <div className="text-xl font-semibold text-left w-full">
+              Game Settings
+            </div>
+            <div className="w-full space-y-5">
+              <div className="flex justify-start items-center w-full gap-3">
+                <div className="text-correct bg-correct/10 p-2 rounded-md">
+                  <ALargeSmall size={26}></ALargeSmall>
+                </div>
+                <div className="flex flex-col gap-px">
+                  <div className="text-sm">Word Length</div>
+                  <div className="text-xs">
+                    Choose how many letters to guess
+                  </div>
+                </div>
+              </div>
+              <div className="flex justify-between w-full items-center">
+                <div className="text-sm w-1/2">Number of letters</div>
+                <div className="flex justify-end gap-3 w-1/2  items-center">
+                  <div
+                    onClick={() => {
+                      if (localWordLength > 3)
+                        setLocalWordLength((org) => org - 1);
+                    }}
+                    className="cursor-pointer border border-foreground/10 bg-foreground/20 p-2 rounded-full aspect-square text-center flex justify-center items-center min-w-8 h-full select-none"
+                  >
+                    -
+                  </div>
+                  <div className="text-center min-w-6">{localWordLength}</div>
+                  <div
+                    onClick={() => {
+                      if (localWordLength < 8)
+                        setLocalWordLength((org) => org + 1);
+                    }}
+                    className="cursor-pointer border border-foreground/10 bg-foreground/20 p-2 rounded-full aspect-square text-center flex justify-center items-center min-w-8 h-full select-none"
+                  >
+                    +
+                  </div>
+                </div>
+              </div>
+            </div>
+            <button
+              onClick={() => {
+                resetWord(localWordLength);
+                setShowGameSettings(false);
+              }}
+              className="flex gap-3 text-sm bg-incorrect p-3 w-full rounded-md text-center justify-center items-center hover:opacity-70 duration-200"
+            >
+              <p>Save Changes</p>
+            </button>
+          </div>
+        </motion.div>
+      </ModalContainer>
 
       <ModalContainer
         show={lose}
@@ -322,7 +417,7 @@ function SinglePlayerTrialModeComponent() {
         </motion.div>
       </ModalContainer>
 
-      <div className="h-full pt-16 pb-6  min-h-screen w-full flex justify-center items-center ">
+      <div className="h-full pt-16 pb-6  min-h-screen w-full flex justify-center items-center relative">
         <input
           readOnly
           ref={keyboardRef}
@@ -351,57 +446,8 @@ function SinglePlayerTrialModeComponent() {
           name=""
           id=""
         />
-        <div className="flex flex-col-reverse justify-center items-center h-full max-w-fit w-fit gap-3">
-          <div className="flex justify-start items-center w-full min-h-16 hidden">
-            <motion.button
-              onClick={() => {
-                setShowHint((x) => true);
-                hintSound?.play();
-              }}
-              style={{
-                minWidth: "3em",
-              }}
-              initial={{
-                width: "3em",
-              }}
-              animate={{
-                width: showHint ? "100%" : "3em",
-              }}
-              transition={{
-                duration: 0.4,
-                ease: "easeInOut",
-              }}
-              className={`p-2  rounded-xl hover:bg-correct hover:text-white  border-correct/60   text-correct border-4 cursor-pointer  flex text-center justify-between items-center ${showHint && "bg-correct  text-white"}`}
-            >
-              <motion.p className="uppercase">
-                <Lightbulb></Lightbulb>
-              </motion.p>
 
-              <AnimatePresence>
-                {showHint && (
-                  <motion.p
-                    initial={{
-                      opacity: 0,
-                    }}
-                    animate={{
-                      opacity: 1,
-                    }}
-                    exit={{
-                      opacity: 1,
-                    }}
-                    transition={{
-                      delay: 0.5,
-                    }}
-                    className="uppercase font-semibold italic whitespace-nowrap"
-                  >
-                    {hint}
-                  </motion.p>
-                )}
-              </AnimatePresence>
-              <div></div>
-            </motion.button>
-          </div>
-
+        <div className="flex flex-col-reverse justify-center items-center h-full max-w-fit w-fit gap-3 relative">
           {addLetter && (
             <Keyboard
               submitAttempt={submitAttempt}
@@ -411,6 +457,7 @@ function SinglePlayerTrialModeComponent() {
               lastPressedKey={lastPressedKey}
             ></Keyboard>
           )}
+
           <div className="flex text-correct  min-h-10 gap-px text-xl">
             {currentStatus.map((x, i) => {
               if (x) {
@@ -420,6 +467,7 @@ function SinglePlayerTrialModeComponent() {
               }
             })}
           </div>
+
           <div className="gap-1 flex flex-col    justify-center items-center">
             {attempts.map((atp, j) => {
               return (
@@ -472,6 +520,19 @@ function SinglePlayerTrialModeComponent() {
                 </div>
               );
             })}
+          </div>
+          <div className="absolute -left-36 top-0 text-white py-2 flex flex-col gap-4 max-md:relative max-md:flex-row max-md:left-auto max-md:justify-end max-md:w-full max-md:px-3">
+            {/* <button className="bg-correct/10 text-correct p-3 rounded-full border-3 border-correct/40">
+              <Lightbulb size={26}></Lightbulb>
+            </button> */}
+            <button
+              onClick={() => {
+                setShowGameSettings(true);
+              }}
+              className="bg-correct/10 text-correct p-3 rounded-full border-3 border-correct/40"
+            >
+              <Gamepad2 size={26}></Gamepad2>
+            </button>
           </div>
         </div>
       </div>

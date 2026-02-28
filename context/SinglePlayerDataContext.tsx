@@ -23,6 +23,9 @@ const SinglePlayerDataContext = createContext<{
   setAttempts: React.Dispatch<
     React.SetStateAction<{ letter: string; status: string }[][]>
   >;
+  setLayout: React.Dispatch<
+    React.SetStateAction<{ letter: string; status: string }[][]>
+  >;
   hint: string;
   chances: number;
   life: number;
@@ -34,6 +37,7 @@ const SinglePlayerDataContext = createContext<{
   setWin: React.Dispatch<React.SetStateAction<boolean>>;
   lose: boolean;
   setLose: React.Dispatch<React.SetStateAction<boolean>>;
+  setWordLength: React.Dispatch<React.SetStateAction<number>>;
 } | null>(null);
 
 function SinglePlayerDataProvider({
@@ -59,10 +63,11 @@ function SinglePlayerDataProvider({
   const add = typeof Audio !== "undefined" ? new Audio("/add.mp3") : undefined;
   const remove =
     typeof Audio !== "undefined" ? new Audio("/remove.mp3") : undefined;
-
+  const hintSound =
+    typeof Audio !== "undefined" ? new Audio("/hint.mp3") : undefined;
   const [word, setWord] = useState("");
   const [hint, setHint] = useState("");
-  // console.log(word);
+  console.log(word);
 
   const [chances, setChances] = useState(5);
   const [life, setLife] = useState(0);
@@ -85,15 +90,22 @@ function SinglePlayerDataProvider({
     } else if (latestAttempt) {
       setTimeout(() => {
         setWin(true);
+        hintSound?.play();
       }, 400);
     }
   }, [life]);
 
   // const x = generateRandomWord(wordLength);
 
-  const layout = new Array(chances)
-    .fill("")
-    .map((x) => [...new Array(wordLength).fill({ letter: "", status: "" })]);
+  const [layout, setLayout] = useState(
+    new Array(chances)
+      .fill("")
+      .map((x) => [...new Array(wordLength).fill({ letter: "", status: "" })]),
+  );
+
+  // const layout = new Array(chances)
+  //   .fill("")
+  //   .map((x) => [...new Array(wordLength).fill({ letter: "", status: "" })]);
 
   let [attempts, setAttempts] =
     useState<{ letter: string; status: string }[][]>(layout);
@@ -128,6 +140,8 @@ function SinglePlayerDataProvider({
   return (
     <SinglePlayerDataContext.Provider
       value={{
+        setWordLength,
+        setLayout,
         win,
         setWin,
         lose,

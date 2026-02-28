@@ -25,10 +25,11 @@ export default function Navbar() {
 
       <div className="w-1/3 flex justify-end items-center">
         <button
+          disabled
           onClick={() => {
             setShowAuthModal(true);
           }}
-          className="text-sm bg-incorrect text-white px-3 py-2 rounded-sm flex justify-center items-center gap-2"
+          className="text-sm bg-incorrect text-white px-3 py-2 rounded-sm flex justify-center items-center gap-2 disabled:opacity-50"
         >
           <User size={16}></User> <p>Log in</p>
         </button>
