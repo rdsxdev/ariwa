@@ -123,8 +123,8 @@ function SinglePlayerTrialModeComponent() {
         });
       } else {
         if (
-          // wordExists(attempts[life].map((x) => x.letter).join(""))
-          true
+          wordExists(attempts[life].map((x) => x.letter).join(""))
+          // true
         ) {
           const wordArray = word.split("");
           const attemptArray = attempts[life].map((x) => x.letter);
