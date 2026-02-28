@@ -6,10 +6,12 @@ export default function ModalContainer({
   children,
   show,
   setShow,
+  preventClosingByClickingOnBackground,
 }: {
   children: React.ReactNode;
   show: boolean;
   setShow: React.Dispatch<React.SetStateAction<boolean>>;
+  preventClosingByClickingOnBackground?: boolean;
 }) {
   return (
     <AnimatePresence>
@@ -24,11 +26,13 @@ export default function ModalContainer({
           exit={{
             opacity: 0,
           }}
-          className="absolute top-0 left-0 w-screen h-screen"
+          className="absolute top-0 left-0 w-screen h-screen z-999999999"
         >
           <div
             onClick={() => {
-              setShow(false);
+              if (!preventClosingByClickingOnBackground) {
+                setShow(false);
+              }
             }}
             className="bg-black/80 w-full h-full shadow-xl"
           ></div>

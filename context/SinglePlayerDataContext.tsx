@@ -30,6 +30,10 @@ const SinglePlayerDataContext = createContext<{
   layout: any[][];
   currentStatus: string[];
   currentIndex: number;
+  win: boolean;
+  setWin: React.Dispatch<React.SetStateAction<boolean>>;
+  lose: boolean;
+  setLose: React.Dispatch<React.SetStateAction<boolean>>;
 } | null>(null);
 
 function SinglePlayerDataProvider({
@@ -38,7 +42,7 @@ function SinglePlayerDataProvider({
   /**
    The word length has to be between 3 and 9
    */
-  const [wordLength, setWordLength] = useState(5);
+  const [wordLength, setWordLength] = useState(3);
   const letterSizeForMobile = [
     "",
     "",
@@ -58,10 +62,32 @@ function SinglePlayerDataProvider({
 
   const [word, setWord] = useState("");
   const [hint, setHint] = useState("");
-  console.log(word);
+  // console.log(word);
 
-  const [chances, setChances] = useState(5);
+  const [chances, setChances] = useState(3);
   const [life, setLife] = useState(0);
+
+  const [win, setWin] = useState(false);
+
+  const [lose, setLose] = useState(false);
+
+  useEffect(() => {
+    let latestAttempt =
+      attempts
+        .filter((x) => x[0].status)
+        .reverse()[0]
+        ?.filter((x) => x.status === "CORRECT").length === wordLength;
+
+    if (life === chances && !latestAttempt) {
+      setTimeout(() => {
+        setLose(true);
+      }, 400);
+    } else if (latestAttempt) {
+      setTimeout(() => {
+        setWin(true);
+      }, 400);
+    }
+  }, [life]);
 
   // const x = generateRandomWord(wordLength);
 
@@ -102,6 +128,10 @@ function SinglePlayerDataProvider({
   return (
     <SinglePlayerDataContext.Provider
       value={{
+        win,
+        setWin,
+        lose,
+        setLose,
         setAttempts,
         setLife,
         setCurrentIndex,

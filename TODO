@@ -1,7 +1,7 @@
 Checklist: 
     ✔ Game UI setup @done(26-02-22 02:20)
     ✔ Word total view @done(26-02-22 02:20)
-    ☐ No auth decider system
+    ☐ No auth endgame system
     ☐ Mutliple word type fix
     ✘ auto saving state @cancelled(26-02-22 02:20)
     ☐ sound settings
