@@ -219,6 +219,7 @@ function SinglePlayerTrialModeComponent() {
     );
 
     setLife(0);
+    setCurrentIndex(0);
     setLose(false);
     setWin(false);
   }
