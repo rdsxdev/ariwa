@@ -1,7 +1,7 @@
 Checklist: 
     ✔ Game UI setup @done(26-02-22 02:20)
     ✔ Word total view @done(26-02-22 02:20)
-    ☐ Changing word length in between a guess doesn't restore the current position in guess @bug
+    ✔ Changing word length in between a guess doesn't restore the current position in guess @bug @done(26-02-28 17:33)
     ☐ No auth endgame system
     ☐ Mutliple word type fix
     ✘ auto saving state @cancelled(26-02-22 02:20)
