@@ -19,6 +19,7 @@ const SinglePlayerDataContext = createContext<{
   setWord: React.Dispatch<React.SetStateAction<string>>;
   setHint: React.Dispatch<React.SetStateAction<string>>;
   setCurrentIndex: React.Dispatch<React.SetStateAction<number>>;
+  setChances: React.Dispatch<React.SetStateAction<number>>;
   setLife: React.Dispatch<React.SetStateAction<number>>;
   setAttempts: React.Dispatch<
     React.SetStateAction<{ letter: string; status: string }[][]>
@@ -140,6 +141,7 @@ function SinglePlayerDataProvider({
   return (
     <SinglePlayerDataContext.Provider
       value={{
+        setChances,
         setWordLength,
         setLayout,
         win,

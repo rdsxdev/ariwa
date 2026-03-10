@@ -10,7 +10,7 @@ export default function Navbar() {
   const [showAuthModal, setShowAuthModal] = useState(false);
 
   return (
-    <div className="fixed  w-full flex justify-between items-center py-2  z-9999 px-3">
+    <div className="fixed  w-full flex justify-between items-center py-2  z-9999 px-3 bg-background">
       <ModalContainer show={showAuthModal} setShow={setShowAuthModal}>
         <AuthPopup></AuthPopup>
       </ModalContainer>

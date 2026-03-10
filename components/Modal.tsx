@@ -26,7 +26,7 @@ export default function ModalContainer({
           exit={{
             opacity: 0,
           }}
-          className="absolute top-0 left-0 w-screen h-screen z-999999999"
+          className="absolute top-0 left-0 w-screen h-screen z-999999999 "
         >
           <div
             onClick={() => {
@@ -34,7 +34,7 @@ export default function ModalContainer({
                 setShow(false);
               }
             }}
-            className="bg-black/80 w-full h-full shadow-xl"
+            className="bg-black/90 w-full h-full shadow-xl"
           ></div>
           <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2">
             {children}

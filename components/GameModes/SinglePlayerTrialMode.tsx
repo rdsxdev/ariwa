@@ -8,6 +8,7 @@ import {
   Frown,
   Gamepad,
   Gamepad2,
+  Heart,
   LetterText,
   Lightbulb,
   RefreshCcw,
@@ -23,6 +24,7 @@ import ModalContainer from "../Modal";
 function SinglePlayerTrialModeComponent() {
   const [showHint, setShowHint] = useState(false);
   const [showGameSettings, setShowGameSettings] = useState(false);
+  const [showHintsMenu, setShowHintsMenu] = useState(false);
 
   const keyboardRef = useRef<HTMLInputElement>(null);
 
@@ -30,6 +32,7 @@ function SinglePlayerTrialModeComponent() {
 
   const {
     attempts,
+    setChances,
     chances,
     currentStatus,
     hint,
@@ -53,6 +56,7 @@ function SinglePlayerTrialModeComponent() {
   } = useSinglePlayerData()!;
 
   const [localWordLength, setLocalWordLength] = useState(wordLength);
+  const [localChances, setLocalChances] = useState(chances);
 
   useEffect(() => {
     const luckyLad = generateRandomWord(wordLength);
@@ -203,15 +207,17 @@ function SinglePlayerTrialModeComponent() {
     }
   }
 
-  function resetWord(newWordLength?: number) {
+  function resetWord(newWordLength?: number, newChances?: number) {
     const lengthOfWordToGenerate = newWordLength || wordLength;
-
+    const newChancesLength = newChances || chances;
+    console.log(newChances);
     setWordLength(lengthOfWordToGenerate);
+    setChances(newChancesLength);
     const luckyLad = generateRandomWord(lengthOfWordToGenerate);
     setWord(luckyLad.word.toUpperCase());
     setHint(luckyLad.type);
     setAttempts(
-      new Array(chances)
+      new Array(newChances)
         .fill("")
         .map((x) => [
           ...new Array(lengthOfWordToGenerate).fill({ letter: "", status: "" }),
@@ -250,18 +256,24 @@ function SinglePlayerTrialModeComponent() {
           }}
           className="text-white bg-background p-8 px-5 max-md:px-3 rounded-lg  flex justify-center items-center z-9999999999999999 pt-8"
         >
-          <div className="flex justify-center items-center flex-col gap-6 w-full min-w-96 max-md:min-w-84">
+          <div className="flex justify-center items-center flex-col gap-8 w-full min-w-110 max-md:min-w-84 max-md:w-fit">
             <button
               onClick={() => {
                 setShowGameSettings(false);
                 setLocalWordLength(wordLength);
+                setLocalChances(chances);
               }}
               className="flex justify-end items-center w-full text-foreground/50 absolute top-3 right-3 cursor-pointer"
             >
               <X></X>
             </button>
-            <div className="text-xl font-semibold text-left w-full">
-              Game Settings
+            <div className="w-full">
+              <div className="text-xl font-semibold text-left w-full">
+                Game Settings
+              </div>
+              <div className="text-sm  text-left w-full">
+                Saving these will reset the current game state.
+              </div>
             </div>
             <div className="w-full space-y-5">
               <div className="flex justify-start items-center w-full gap-3">
@@ -275,34 +287,73 @@ function SinglePlayerTrialModeComponent() {
                   </div>
                 </div>
               </div>
-              <div className="flex justify-between w-full items-center">
-                <div className="text-sm w-1/2">Number of letters</div>
-                <div className="flex justify-end gap-3 w-1/2  items-center">
-                  <div
-                    onClick={() => {
-                      if (localWordLength > 3)
-                        setLocalWordLength((org) => org - 1);
-                    }}
-                    className="cursor-pointer border border-foreground/10 bg-foreground/20 p-2 rounded-full aspect-square text-center flex justify-center items-center min-w-8 h-full select-none"
-                  >
-                    -
-                  </div>
-                  <div className="text-center min-w-6">{localWordLength}</div>
-                  <div
-                    onClick={() => {
-                      if (localWordLength < 8)
-                        setLocalWordLength((org) => org + 1);
-                    }}
-                    className="cursor-pointer border border-foreground/10 bg-foreground/20 p-2 rounded-full aspect-square text-center flex justify-center items-center min-w-8 h-full select-none"
-                  >
-                    +
+              <div className="flex justify-between w-full items-center flex-col">
+                <div className="flex gap-3 w-full justify-center items-center">
+                  {[3, 4, 5, 6, 7, 8].map((x) => {
+                    return (
+                      <motion.button
+                        whileTap={{
+                          scale: 0.95,
+                        }}
+                        transition={{
+                          duration: 0.4,
+                        }}
+                        onClick={() => {
+                          setLocalWordLength(x);
+                        }}
+                        key={x}
+                        className={`w-10 text-center aspect-square  rounded-md cursor-pointer ${localWordLength === x ? "bg-foreground text-background" : "bg-foreground/10"}`}
+                      >
+                        {x}
+                      </motion.button>
+                    );
+                  })}
+                </div>
+              </div>
+            </div>
+            <div className="w-full space-y-5 flex items-center justify-between flex-col">
+              <div className="flex justify-start items-center w-full gap-3">
+                <div className="text-correct bg-correct/10 p-2 rounded-md">
+                  <Heart size={26}></Heart>
+                </div>
+                <div className="flex flex-col gap-px">
+                  <div className="text-sm">Attempts</div>
+                  <div className="text-xs">
+                    Choose how many times you can try
                   </div>
                 </div>
+              </div>
+              <div className="flex justify-center gap-3 w-full  items-center">
+                <motion.button
+                  whileTap={{
+                    scale: 0.95,
+                  }}
+                  disabled={localChances === 1}
+                  onClick={() => {
+                    if (localChances > 1) setLocalChances((org) => org - 1);
+                  }}
+                  className="cursor-pointer border border-foreground/10 bg-foreground/20 p-2 rounded-md  text-center flex justify-center items-center min-w-8 w-1/4 h-full select-none disabled:opacity-45 "
+                >
+                  -
+                </motion.button>
+                <div className="text-center min-w-6 ">{localChances}</div>
+                <motion.button
+                  whileTap={{
+                    scale: 0.95,
+                  }}
+                  disabled={localChances === 10}
+                  onClick={() => {
+                    if (localChances < 10) setLocalChances((org) => org + 1);
+                  }}
+                  className="cursor-pointer border border-foreground/10 bg-foreground/20 p-2 rounded-md  text-center flex justify-center items-center min-w-8 w-1/4 h-full select-none disabled:opacity-45 "
+                >
+                  +
+                </motion.button>
               </div>
             </div>
             <button
               onClick={() => {
-                resetWord(localWordLength);
+                resetWord(localWordLength, localChances);
                 setShowGameSettings(false);
               }}
               className="flex gap-3 text-sm bg-incorrect p-3 w-full rounded-md text-center justify-center items-center hover:opacity-70 duration-200"
@@ -333,7 +384,7 @@ function SinglePlayerTrialModeComponent() {
           <div className="flex justify-center items-center flex-col gap-6 w-full min-w-84">
             <button
               onClick={() => {
-                resetWord();
+                setLose(false);
               }}
               className="flex justify-end items-center w-full text-foreground/50 absolute top-3 right-3 cursor-pointer"
             >
@@ -384,7 +435,7 @@ function SinglePlayerTrialModeComponent() {
           <div className="flex justify-center items-center flex-col gap-6 w-full min-w-84">
             <button
               onClick={() => {
-                resetWord();
+                setWin(false);
               }}
               className="flex justify-end items-center w-full text-foreground/50 absolute top-3 right-3 cursor-pointer"
             >
@@ -522,10 +573,10 @@ function SinglePlayerTrialModeComponent() {
               );
             })}
           </div>
-          <div className="absolute -left-36 top-0 text-white py-2 flex flex-col gap-4 max-md:relative max-md:flex-row max-md:left-auto max-md:justify-end max-md:w-full max-md:px-3">
-            {/* <button className="bg-correct/10 text-correct p-3 rounded-full border-3 border-correct/40">
+          <div className="absolute -left-20 top-0 text-white py-2 flex flex-col gap-4 max-md:relative max-md:flex-row max-md:left-auto max-md:justify-end max-md:w-full max-md:px-3">
+            <button className="bg-correct/10 text-correct p-3 rounded-full border-3 border-correct/40">
               <Lightbulb size={26}></Lightbulb>
-            </button> */}
+            </button>
             <button
               onClick={() => {
                 setShowGameSettings(true);
