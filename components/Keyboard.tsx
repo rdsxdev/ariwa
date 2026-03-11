@@ -22,7 +22,19 @@ export function Keyboard({
 
   return (
     <div className=" min-h-36 min-w-lg max-md:min-w-fit flex-col space-y-1 max-md:space-y-px max-md:w-screen max-md:px-3">
-      <div className="flex gap-1 max-md:gap-px justify-center items-center max-md:justify-stretch">
+      <motion.div
+        initial={{
+          opacity: 0,
+        }}
+        animate={{
+          opacity: 1,
+        }}
+        transition={{
+          duration: 0.5,
+          delay: 0.6,
+        }}
+        className="flex gap-1 max-md:gap-px justify-center items-center max-md:justify-stretch"
+      >
         {qwertyLettersRow1.map((letter) => {
           let status = letterStatus
             .filter((x) => x.letter === letter.toUpperCase())
@@ -46,8 +58,20 @@ export function Keyboard({
             />
           );
         })}
-      </div>
-      <div className="flex gap-1 max-md:gap-px justify-center items-center max-md:justify-stretch">
+      </motion.div>
+      <motion.div
+        initial={{
+          opacity: 0,
+        }}
+        animate={{
+          opacity: 1,
+        }}
+        transition={{
+          duration: 0.5,
+          delay: 0.7,
+        }}
+        className="flex gap-1 max-md:gap-px justify-center items-center max-md:justify-stretch"
+      >
         {qwertyLettersRow2.map((letter) => {
           let status = letterStatus
             .filter((x) => x.letter === letter.toUpperCase())
@@ -70,8 +94,20 @@ export function Keyboard({
             />
           );
         })}
-      </div>
-      <div className="flex gap-1 max-md:gap-px justify-center items-center max-md:justify-stretch">
+      </motion.div>
+      <motion.div
+        initial={{
+          opacity: 0,
+        }}
+        animate={{
+          opacity: 1,
+        }}
+        transition={{
+          duration: 0.5,
+          delay: 0.9,
+        }}
+        className="flex gap-1 max-md:gap-px justify-center items-center max-md:justify-stretch"
+      >
         <Key
           addLetter={addLetter}
           key={"enter"}
@@ -108,7 +144,7 @@ export function Keyboard({
           letter={"Backspace"}
           lastPressedKey={lastPressedKey}
         />
-      </div>
+      </motion.div>
     </div>
   );
 }

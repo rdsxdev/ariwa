@@ -596,11 +596,10 @@ export default memo(function SinglePlayerTrialModeComponent() {
                   opacity: 0,
                 }}
                 transition={{
-                  duration: 0.7,
                   ease: "easeInOut",
                 }}
                 whileTap={{
-                  scale: 0.8,
+                  scale: 0.98,
                 }}
                 onClick={() => {
                   resetWord();
@@ -623,11 +622,10 @@ export default memo(function SinglePlayerTrialModeComponent() {
                   opacity: 0,
                 }}
                 transition={{
-                  duration: 0.7,
                   ease: "easeInOut",
                 }}
                 whileTap={{
-                  scale: 0.8,
+                  scale: 0.98,
                 }}
                 className="bg-correct/10 text-correct p-3 rounded-full border-3 border-correct/40 w-fit text-sm items-center flex gap-2"
               >
@@ -646,10 +644,10 @@ export default memo(function SinglePlayerTrialModeComponent() {
                 opacity: 0,
               }}
               transition={{
-                duration: 0.7,
+                ease: "easeInOut",
               }}
               whileTap={{
-                scale: 0.8,
+                scale: 0.98,
               }}
               onClick={() => {
                 setShowGameSettings(true);
