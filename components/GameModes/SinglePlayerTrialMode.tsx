@@ -348,10 +348,17 @@ export default memo(function SinglePlayerTrialModeComponent() {
                 </div>
                 <div className="flex flex-col gap-px">
                   <div className="text-sm">Sound effects</div>
-                  <div className="text-xs"></div>
+                  {/* <div className="text-xs"></div> */}
                 </div>
               </div>
-              <div className="flex justify-center gap-3 w-full  items-center"></div>
+              <div className="flex justify-between gap-3 w-full  items-center">
+                <div className="text-sm">Volume</div>
+                <div className="flex items-center justify-center gap-2">
+                  <div>Off</div>
+                  <input type="range" min={0} max={10} />
+                  <div>Full</div>
+                </div>
+              </div>
             </div>
             <button
               onClick={() => {
