@@ -70,14 +70,9 @@ export default memo(function SinglePlayerTrialModeComponent() {
     setHint(luckyLad.type);
   }, []);
 
-  const add =
-    typeof Audio !== "undefined"
-      ? useMemo(() => new Audio("/add.mp3"), [])
-      : undefined;
+  const add = typeof Audio !== "undefined" ? new Audio("/add.mp3") : undefined;
   const remove =
-    typeof Audio !== "undefined"
-      ? useMemo(() => new Audio("/remove.mp3"), [])
-      : undefined;
+    typeof Audio !== "undefined" ? new Audio("/remove.mp3") : undefined;
 
   function addLetter(letter: string) {
     add?.play();
@@ -560,7 +555,7 @@ export default memo(function SinglePlayerTrialModeComponent() {
                         key={i}
                         className={`h-16 ${
                           letterSizeForMobile[wordLength]
-                        } aspect-square  text-center flex justify-center items-center text-3xl max-md:text-xl font-bold rounded-lg /border-4 /border-foreground/10 
+                        } aspect-square  text-center flex justify-center items-center text-3xl max-md:text-xl font-bold rounded-sm /border-4 /border-foreground/10 
                         ${
                           j === life
                             ? word.letter === ""
@@ -611,7 +606,7 @@ export default memo(function SinglePlayerTrialModeComponent() {
                 onClick={() => {
                   resetWord();
                 }}
-                className="bg-correct/10 text-correct p-3 rounded-full border-3 border-correct/40 flex gap-3 text-sm items-center"
+                className="bg-correct/10 text-correct p-3 rounded-md border-3 border-correct/40 flex gap-3 text-sm items-center"
               >
                 <RefreshCcw size={20}></RefreshCcw>
                 Play again
@@ -634,7 +629,7 @@ export default memo(function SinglePlayerTrialModeComponent() {
                 whileTap={{
                   scale: 0.98,
                 }}
-                className="bg-correct/10 text-correct p-3 rounded-full border-3 border-correct/40 w-fit text-sm items-center flex gap-2"
+                className="bg-correct/10 text-correct p-3 rounded-md border-3 border-correct/40 w-fit text-sm items-center flex gap-2"
               >
                 <Lightbulb size={20}></Lightbulb>
                 Hint
@@ -659,7 +654,7 @@ export default memo(function SinglePlayerTrialModeComponent() {
               onClick={() => {
                 setShowGameSettings(true);
               }}
-              className="bg-correct/10 text-correct p-3 rounded-full border-3 border-correct/40 w-fit text-sm flex items-center gap-2"
+              className="bg-correct/10 text-correct p-3 rounded-md border-3 border-correct/40 w-fit text-sm flex items-center gap-2"
             >
               <Settings2 size={20}></Settings2>
               Settings
