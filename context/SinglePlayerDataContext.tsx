@@ -50,7 +50,17 @@ function SinglePlayerDataProvider({
   /**
    The word length has to be between 3 and 9
    */
-  const [wordLength, setWordLength] = useState(5);
+
+  const initialWordlength =
+    typeof window !== "undefined"
+      ? parseInt(localStorage.getItem("length") || "") || 5
+      : 0;
+  const initialChances =
+    typeof window !== "undefined"
+      ? parseInt(localStorage.getItem("chances") || "") || 5
+      : 0;
+
+  const [wordLength, setWordLength] = useState(initialWordlength);
   const letterSizeForMobile = [
     "",
     "",
@@ -64,9 +74,6 @@ function SinglePlayerDataProvider({
     "max-md:h-9",
   ];
 
-  const add = typeof Audio !== "undefined" ? new Audio("/add.mp3") : undefined;
-  const remove =
-    typeof Audio !== "undefined" ? new Audio("/remove.mp3") : undefined;
   const hintSound =
     typeof Audio !== "undefined"
       ? useMemo(() => new Audio("/hint.mp3"), [])
@@ -75,7 +82,7 @@ function SinglePlayerDataProvider({
   const [hint, setHint] = useState("");
   console.log(word);
 
-  const [chances, setChances] = useState(5);
+  const [chances, setChances] = useState(initialChances);
   const [life, setLife] = useState(0);
 
   const [win, setWin] = useState(false);

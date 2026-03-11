@@ -1,11 +1,17 @@
 "use client";
 
-import { SinglePlayerTrialMode } from "@/components/GameModes/SinglePlayerTrialMode";
+import dynamic from "next/dynamic";
+
+const SinglePlayerTrialModeSSR = dynamic(
+  () => import("@/components/GameModes/SinglePlayerTrialMode"),
+  { ssr: false },
+);
 
 export default function Home() {
   return (
     <>
-      <SinglePlayerTrialMode />
+      {/* suppressHydrationWarning  */}
+      <SinglePlayerTrialModeSSR />
     </>
   );
 }

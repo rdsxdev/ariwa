@@ -24,7 +24,7 @@ import { Keyboard } from "@/components/Keyboard";
 import useSinglePlayerData from "@/context/SinglePlayerDataContext";
 import ModalContainer from "../Modal";
 
-function SinglePlayerTrialModeComponent() {
+export default memo(function SinglePlayerTrialModeComponent() {
   const [showHint, setShowHint] = useState(false);
   const [showGameSettings, setShowGameSettings] = useState(false);
   const [showHintsMenu, setShowHintsMenu] = useState(false);
@@ -225,30 +225,7 @@ function SinglePlayerTrialModeComponent() {
       }}
       className="overflow-hidden  flex justify-center items-center flex-col  bg-background"
     >
-      {/* <motion.div
-        initial={{
-          opacity: 0,
-        }}
-        animate={{
-          opacity: 1,
-        }}
-        exit={{
-          opacity: 0,
-        }}
-        transition={{
-          duration: 0.8,
-          delay: 0.8,
-        }}
-        className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-99999"
-      >
-        <div className="bg-black/50 w-screen h-screen flex justify-center items-center">
-          <div className="bg-correct rounded-lg text-xl font-semibold text-background p-6">
-            Guess the word!
-          </div>
-        </div>
-      </motion.div> */}
-
-      {/* <div className="absolute left-0 top-0 text-white">{word}</div> */}
+      <div className="absolute left-0 top-0 text-white">{word}</div>
 
       <ModalContainer
         preventClosingByClickingOnBackground
@@ -380,6 +357,8 @@ function SinglePlayerTrialModeComponent() {
               onClick={() => {
                 resetWord(localWordLength, localChances);
                 setShowGameSettings(false);
+                localStorage.setItem("length", localWordLength.toString());
+                localStorage.setItem("chances", localChances.toString());
               }}
               className="flex gap-3 text-sm bg-incorrect p-3 w-full rounded-md text-center justify-center items-center hover:opacity-70 duration-200"
             >
@@ -548,7 +527,17 @@ function SinglePlayerTrialModeComponent() {
           <div className="gap-1 flex flex-col    justify-center items-center">
             {attempts.map((atp, j) => {
               return (
-                <div
+                <motion.div
+                  initial={{
+                    opacity: 0,
+                  }}
+                  animate={{
+                    opacity: 1,
+                  }}
+                  transition={{
+                    duration: 0.5,
+                    delay: 0.1 * (j + 1),
+                  }}
                   key={j}
                   className="flex items-center justify-center  gap-1 "
                 >
@@ -586,19 +575,15 @@ function SinglePlayerTrialModeComponent() {
                             : ""
                         } duration-150 `}
                       >
-                        {/* <p className="text-sm ">
-                          {i}:{j} - {life}
-                        </p> */}
                         {word.letter}
-                        {/* { currentIndex === i ? word.letter : "-"} */}
                       </motion.div>
                     );
                   })}
-                </div>
+                </motion.div>
               );
             })}
           </div>
-          <div className="absolute -left-20 top-0 text-white py-2 flex flex-col -items-end gap-4 max-md:relative max-md:flex-row max-md:left-auto max-md:justify-end max-md:w-full max-md:px-3 ">
+          <div className="absolute -left-36 top-0 text-white py-2 flex flex-col -items-end gap-4 max-md:relative max-md:flex-row max-md:left-auto max-md:justify-end max-md:w-full max-md:px-3 ">
             {gameover && !win && !lose && (
               <motion.button
                 initial={{
@@ -612,6 +597,7 @@ function SinglePlayerTrialModeComponent() {
                 }}
                 transition={{
                   duration: 0.7,
+                  ease: "easeInOut",
                 }}
                 whileTap={{
                   scale: 0.8,
@@ -638,6 +624,7 @@ function SinglePlayerTrialModeComponent() {
                 }}
                 transition={{
                   duration: 0.7,
+                  ease: "easeInOut",
                 }}
                 whileTap={{
                   scale: 0.8,
@@ -677,6 +664,6 @@ function SinglePlayerTrialModeComponent() {
       </div>
     </main>
   );
-}
+});
 
-export const SinglePlayerTrialMode = memo(SinglePlayerTrialModeComponent);
+// export const SinglePlayerTrialMode = memo(SinglePlayerTrialModeComponent);
