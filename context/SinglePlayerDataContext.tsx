@@ -39,6 +39,9 @@ const SinglePlayerDataContext = createContext<{
   lose: boolean;
   setLose: React.Dispatch<React.SetStateAction<boolean>>;
   setWordLength: React.Dispatch<React.SetStateAction<number>>;
+  resetWord: (length?: number, chances?: number) => void;
+  gameover: boolean;
+  setGameover: React.Dispatch<React.SetStateAction<boolean>>;
 } | null>(null);
 
 function SinglePlayerDataProvider({
@@ -65,7 +68,9 @@ function SinglePlayerDataProvider({
   const remove =
     typeof Audio !== "undefined" ? new Audio("/remove.mp3") : undefined;
   const hintSound =
-    typeof Audio !== "undefined" ? new Audio("/hint.mp3") : undefined;
+    typeof Audio !== "undefined"
+      ? useMemo(() => new Audio("/hint.mp3"), [])
+      : undefined;
   const [word, setWord] = useState("");
   const [hint, setHint] = useState("");
   console.log(word);
@@ -77,6 +82,8 @@ function SinglePlayerDataProvider({
 
   const [lose, setLose] = useState(false);
 
+  const [gameover, setGameover] = useState(false);
+
   useEffect(() => {
     let latestAttempt =
       attempts
@@ -87,16 +94,43 @@ function SinglePlayerDataProvider({
     if (life === chances && !latestAttempt) {
       setTimeout(() => {
         setLose(true);
+        setGameover(true);
       }, 400);
     } else if (latestAttempt) {
       setTimeout(() => {
         setWin(true);
+        setGameover(true);
         hintSound?.play();
       }, 400);
     }
   }, [life]);
 
-  // const x = generateRandomWord(wordLength);
+  function resetWord(newWordLength?: number, newChances?: number) {
+    const lengthOfWordToGenerate = newWordLength || wordLength;
+    const newChancesLength = newChances || chances;
+
+    console.log(lengthOfWordToGenerate, newChancesLength);
+
+    setWordLength(lengthOfWordToGenerate);
+    setChances(newChancesLength);
+
+    const luckyLad = generateRandomWord(lengthOfWordToGenerate);
+    setWord(luckyLad.word.toUpperCase());
+    setHint(luckyLad.type);
+    setAttempts(
+      new Array(newChancesLength)
+        .fill("")
+        .map((x) => [
+          ...new Array(lengthOfWordToGenerate).fill({ letter: "", status: "" }),
+        ]),
+    );
+
+    setLife(0);
+    setCurrentIndex(0);
+    setLose(false);
+    setWin(false);
+    setGameover(false);
+  }
 
   const [layout, setLayout] = useState(
     new Array(chances)
@@ -141,6 +175,8 @@ function SinglePlayerDataProvider({
   return (
     <SinglePlayerDataContext.Provider
       value={{
+        gameover,
+        setGameover,
         setChances,
         setWordLength,
         setLayout,
@@ -163,6 +199,7 @@ function SinglePlayerDataProvider({
         attempts,
         layout,
         currentStatus,
+        resetWord,
       }}
     >
       {children}

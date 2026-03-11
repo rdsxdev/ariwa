@@ -14,7 +14,10 @@ import {
   RefreshCcw,
   RotateCw,
   Settings,
+  Settings2,
   Trophy,
+  Volume,
+  Volume2,
   X,
 } from "lucide-react";
 import { Keyboard } from "@/components/Keyboard";
@@ -53,6 +56,9 @@ function SinglePlayerTrialModeComponent() {
     layout,
     setWordLength,
     setLayout,
+    resetWord,
+    gameover,
+    setGameover,
   } = useSinglePlayerData()!;
 
   const [localWordLength, setLocalWordLength] = useState(wordLength);
@@ -64,9 +70,14 @@ function SinglePlayerTrialModeComponent() {
     setHint(luckyLad.type);
   }, []);
 
-  const add = typeof Audio !== "undefined" ? new Audio("/add.mp3") : undefined;
+  const add =
+    typeof Audio !== "undefined"
+      ? useMemo(() => new Audio("/add.mp3"), [])
+      : undefined;
   const remove =
-    typeof Audio !== "undefined" ? new Audio("/remove.mp3") : undefined;
+    typeof Audio !== "undefined"
+      ? useMemo(() => new Audio("/remove.mp3"), [])
+      : undefined;
 
   function addLetter(letter: string) {
     add?.play();
@@ -207,29 +218,6 @@ function SinglePlayerTrialModeComponent() {
     }
   }
 
-  function resetWord(newWordLength?: number, newChances?: number) {
-    const lengthOfWordToGenerate = newWordLength || wordLength;
-    const newChancesLength = newChances || chances;
-    console.log(newChances);
-    setWordLength(lengthOfWordToGenerate);
-    setChances(newChancesLength);
-    const luckyLad = generateRandomWord(lengthOfWordToGenerate);
-    setWord(luckyLad.word.toUpperCase());
-    setHint(luckyLad.type);
-    setAttempts(
-      new Array(newChances)
-        .fill("")
-        .map((x) => [
-          ...new Array(lengthOfWordToGenerate).fill({ letter: "", status: "" }),
-        ]),
-    );
-
-    setLife(0);
-    setCurrentIndex(0);
-    setLose(false);
-    setWin(false);
-  }
-
   return (
     <main
       onClick={() => {
@@ -237,12 +225,36 @@ function SinglePlayerTrialModeComponent() {
       }}
       className="overflow-hidden  flex justify-center items-center flex-col  bg-background"
     >
+      {/* <motion.div
+        initial={{
+          opacity: 0,
+        }}
+        animate={{
+          opacity: 1,
+        }}
+        exit={{
+          opacity: 0,
+        }}
+        transition={{
+          duration: 0.8,
+          delay: 0.8,
+        }}
+        className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-99999"
+      >
+        <div className="bg-black/50 w-screen h-screen flex justify-center items-center">
+          <div className="bg-correct rounded-lg text-xl font-semibold text-background p-6">
+            Guess the word!
+          </div>
+        </div>
+      </motion.div> */}
+
       {/* <div className="absolute left-0 top-0 text-white">{word}</div> */}
 
       <ModalContainer
         preventClosingByClickingOnBackground
         show={showGameSettings}
         setShow={setShowGameSettings}
+        className="max-h-[80vh] noscroll overflow-y-scroll overflow-x-hidden"
       >
         <motion.div
           initial={{
@@ -311,6 +323,7 @@ function SinglePlayerTrialModeComponent() {
                 </div>
               </div>
             </div>
+
             <div className="w-full space-y-5 flex items-center justify-between flex-col">
               <div className="flex justify-start items-center w-full gap-3">
                 <div className="text-correct bg-correct/10 p-2 rounded-md">
@@ -350,6 +363,18 @@ function SinglePlayerTrialModeComponent() {
                   +
                 </motion.button>
               </div>
+            </div>
+            <div className="w-full space-y-5 flex items-center justify-between flex-col">
+              <div className="flex justify-start items-center w-full gap-3">
+                <div className="text-correct bg-correct/10 p-2 rounded-md">
+                  <Volume2 size={26}></Volume2>
+                </div>
+                <div className="flex flex-col gap-px">
+                  <div className="text-sm">Sound effects</div>
+                  <div className="text-xs"></div>
+                </div>
+              </div>
+              <div className="flex justify-center gap-3 w-full  items-center"></div>
             </div>
             <button
               onClick={() => {
@@ -573,18 +598,80 @@ function SinglePlayerTrialModeComponent() {
               );
             })}
           </div>
-          <div className="absolute -left-20 top-0 text-white py-2 flex flex-col gap-4 max-md:relative max-md:flex-row max-md:left-auto max-md:justify-end max-md:w-full max-md:px-3">
-            <button className="bg-correct/10 text-correct p-3 rounded-full border-3 border-correct/40">
-              <Lightbulb size={26}></Lightbulb>
-            </button>
-            <button
+          <div className="absolute -left-20 top-0 text-white py-2 flex flex-col -items-end gap-4 max-md:relative max-md:flex-row max-md:left-auto max-md:justify-end max-md:w-full max-md:px-3 ">
+            {gameover && !win && !lose && (
+              <motion.button
+                initial={{
+                  opacity: 0,
+                }}
+                animate={{
+                  opacity: 1,
+                }}
+                exit={{
+                  opacity: 0,
+                }}
+                transition={{
+                  duration: 0.7,
+                }}
+                whileTap={{
+                  scale: 0.8,
+                }}
+                onClick={() => {
+                  resetWord();
+                }}
+                className="bg-correct/10 text-correct p-3 rounded-full border-3 border-correct/40 flex gap-3 text-sm items-center"
+              >
+                <RefreshCcw size={20}></RefreshCcw>
+                Play again
+              </motion.button>
+            )}
+            {!gameover && (
+              <motion.button
+                initial={{
+                  opacity: 0,
+                }}
+                animate={{
+                  opacity: 1,
+                }}
+                exit={{
+                  opacity: 0,
+                }}
+                transition={{
+                  duration: 0.7,
+                }}
+                whileTap={{
+                  scale: 0.8,
+                }}
+                className="bg-correct/10 text-correct p-3 rounded-full border-3 border-correct/40 w-fit text-sm items-center flex gap-2"
+              >
+                <Lightbulb size={20}></Lightbulb>
+                Hint
+              </motion.button>
+            )}
+            <motion.button
+              initial={{
+                opacity: 0,
+              }}
+              animate={{
+                opacity: 1,
+              }}
+              exit={{
+                opacity: 0,
+              }}
+              transition={{
+                duration: 0.7,
+              }}
+              whileTap={{
+                scale: 0.8,
+              }}
               onClick={() => {
                 setShowGameSettings(true);
               }}
-              className="bg-correct/10 text-correct p-3 rounded-full border-3 border-correct/40"
+              className="bg-correct/10 text-correct p-3 rounded-full border-3 border-correct/40 w-fit text-sm flex items-center gap-2"
             >
-              <Gamepad2 size={26}></Gamepad2>
-            </button>
+              <Settings2 size={20}></Settings2>
+              Settings
+            </motion.button>
           </div>
         </div>
       </div>

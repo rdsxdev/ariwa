@@ -7,11 +7,13 @@ export default function ModalContainer({
   show,
   setShow,
   preventClosingByClickingOnBackground,
+  className,
 }: {
   children: React.ReactNode;
   show: boolean;
   setShow: React.Dispatch<React.SetStateAction<boolean>>;
   preventClosingByClickingOnBackground?: boolean;
+  className?: string;
 }) {
   return (
     <AnimatePresence>
@@ -36,7 +38,9 @@ export default function ModalContainer({
             }}
             className="bg-black/90 w-full h-full shadow-xl"
           ></div>
-          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2">
+          <div
+            className={`absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 ${className}`}
+          >
             {children}
           </div>
         </motion.div>
