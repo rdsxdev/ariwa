@@ -75,6 +75,7 @@ export default memo(function SinglePlayerTrialModeComponent() {
     typeof Audio !== "undefined" ? new Audio("/remove.mp3") : undefined;
 
   function addLetter(letter: string) {
+    if (gameover) return;
     add?.play();
     if (currentIndex < wordLength) {
       let localIndex = currentIndex;
@@ -100,6 +101,8 @@ export default memo(function SinglePlayerTrialModeComponent() {
   }
 
   function removeLetter() {
+    if (gameover) return;
+
     remove?.play();
     if (currentIndex > 0) {
       let localIndex = currentIndex;
