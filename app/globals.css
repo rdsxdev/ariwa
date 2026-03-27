@@ -7,7 +7,7 @@
 
 /*  */
 @theme inline {
-  --color-background: #0f0f0f; /* true black */
+  --color-background: #050505; /* true black */
   --color-foreground: #f2f2f2; /* soft white */
   --color-bright: #0f0f0f; /* slightly lifted black surface */
 
@@ -17,7 +17,7 @@
   --color-correct: #00cfd4;
   --color-incorrect: #cc5522;
 }
-/*  */
+
 /* --color-background: #0f1414;
 --color-foreground: #ecffff;
 --color-bright: #182020;

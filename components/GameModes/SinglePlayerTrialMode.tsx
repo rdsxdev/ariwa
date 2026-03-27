@@ -11,11 +11,14 @@ import {
   Heart,
   LetterText,
   Lightbulb,
+  Lock,
   RefreshCcw,
   RotateCw,
   Settings,
   Settings2,
+  SwatchBook,
   Trophy,
+  User,
   Volume,
   Volume2,
   X,
@@ -25,7 +28,6 @@ import useSinglePlayerData from "@/context/SinglePlayerDataContext";
 import ModalContainer from "../Modal";
 
 export default memo(function SinglePlayerTrialModeComponent() {
-  const [showHint, setShowHint] = useState(false);
   const [showGameSettings, setShowGameSettings] = useState(false);
   const [showHintsMenu, setShowHintsMenu] = useState(false);
 
@@ -59,15 +61,21 @@ export default memo(function SinglePlayerTrialModeComponent() {
     resetWord,
     gameover,
     setGameover,
+    setSoundEffect,
+    soundEffect,
+    setShowAuthModal,
+    showAuthModal,
   } = useSinglePlayerData()!;
 
   const [localWordLength, setLocalWordLength] = useState(wordLength);
   const [localChances, setLocalChances] = useState(chances);
 
   useEffect(() => {
-    const luckyLad = generateRandomWord(wordLength);
-    setWord(luckyLad.word.toUpperCase());
-    setHint(luckyLad.type);
+    (async function () {
+      const luckyLad = await generateRandomWord(wordLength);
+      setWord(luckyLad.word.toUpperCase());
+      setHint(luckyLad.type);
+    });
   }, []);
 
   const add = typeof Audio !== "undefined" ? new Audio("/add.mp3") : undefined;
@@ -76,7 +84,7 @@ export default memo(function SinglePlayerTrialModeComponent() {
 
   function addLetter(letter: string) {
     if (gameover) return;
-    add?.play();
+    if (soundEffect) add?.play();
     if (currentIndex < wordLength) {
       let localIndex = currentIndex;
 
@@ -103,7 +111,7 @@ export default memo(function SinglePlayerTrialModeComponent() {
   function removeLetter() {
     if (gameover) return;
 
-    remove?.play();
+    if (soundEffect) remove?.play();
     if (currentIndex > 0) {
       let localIndex = currentIndex;
       setCurrentIndex((org) => org - 1);
@@ -223,7 +231,73 @@ export default memo(function SinglePlayerTrialModeComponent() {
       }}
       className="overflow-hidden  flex justify-center items-center flex-col  bg-background"
     >
-      <div className="absolute left-0 top-0 text-white">{word}</div>
+      {/* <div className="absolute left-0 top-0 text-white">{word}</div> */}
+
+      <ModalContainer
+        // preventClosingByClickingOnBackground
+        show={showHintsMenu}
+        setShow={setShowHintsMenu}
+        className="max-h-[80vh] noscroll overflow-y-scroll overflow-x-hidden"
+      >
+        <motion.div
+          initial={{
+            opacity: 0,
+          }}
+          animate={{
+            opacity: 1,
+          }}
+          exit={{
+            opacity: 0,
+          }}
+          className="text-white bg-background p-8 px-5 max-md:px-3 rounded-xl  flex justify-center items-center z-9999999999999999 pt-8"
+        >
+          <div className="flex justify-center items-center flex-col gap-8 w-full min-w-110 max-md:min-w-84 max-md:w-fit">
+            <button
+              onClick={() => {
+                setShowHintsMenu(false);
+              }}
+              className="flex justify-end items-center w-full text-foreground/50 absolute top-3 right-3 cursor-pointer"
+            >
+              <X></X>
+            </button>
+            <div className="w-full space-y-8">
+              <div className="">
+                <div className="text-xl font-semibold text-left w-full">
+                  Need A Nudge?
+                </div>
+                <div className="text-sm  text-left w-full ">
+                  Choose one of the hint types below
+                </div>
+              </div>
+              <div className="mt-6 flex justify-start items-center hover:bg-foreground/10 p-3 rounded-md duration-200 cursor-pointer">
+                <div className="flex items-center justify-start gap-2">
+                  <SwatchBook
+                    className="bg-green-600/20 text-green-600 p-1 rounded-md"
+                    size={40}
+                  ></SwatchBook>
+                  <div className="">
+                    <div className="text-sm text-green-500">
+                      Get the word type
+                    </div>
+                    <div className="text-xs text-foreground/80">
+                      Check if the word is noun, pronoun, adverb, etc.
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <button
+                onClick={() => {
+                  setShowHintsMenu(false);
+                  setShowAuthModal(true);
+                }}
+                className="text-sm bg-incorrect text-white px-3 py-2 rounded-md flex justify-center items-center gap-2 disabled:opacity-50 w-full"
+              >
+                <Lock size={16}></Lock> <p>Log in to unlock more hints</p>
+              </button>
+            </div>
+          </div>
+        </motion.div>
+      </ModalContainer>
 
       <ModalContainer
         preventClosingByClickingOnBackground
@@ -241,7 +315,7 @@ export default memo(function SinglePlayerTrialModeComponent() {
           exit={{
             opacity: 0,
           }}
-          className="text-white bg-background p-8 px-5 max-md:px-3 rounded-lg  flex justify-center items-center z-9999999999999999 pt-8"
+          className="text-white bg-background p-8 px-5 max-md:px-3 rounded-xl  flex justify-center items-center z-9999999999999999 pt-8"
         >
           <div className="flex justify-center items-center flex-col gap-8 w-full min-w-110 max-md:min-w-84 max-md:w-fit">
             <button
@@ -264,7 +338,7 @@ export default memo(function SinglePlayerTrialModeComponent() {
             </div>
             <div className="w-full space-y-5">
               <div className="flex justify-start items-center w-full gap-3">
-                <div className="text-correct bg-correct/10 p-2 rounded-md">
+                <div className="text-correct bg-correct/10 p-2 rounded-lg">
                   <ALargeSmall size={26}></ALargeSmall>
                 </div>
                 <div className="flex flex-col gap-px">
@@ -289,7 +363,7 @@ export default memo(function SinglePlayerTrialModeComponent() {
                           setLocalWordLength(x);
                         }}
                         key={x}
-                        className={`w-10 text-center aspect-square  rounded-md cursor-pointer ${localWordLength === x ? "bg-foreground text-background" : "bg-foreground/10"}`}
+                        className={`w-10 text-center aspect-square  rounded-lg cursor-pointer ${localWordLength === x ? "bg-foreground text-background" : "bg-foreground/10"}`}
                       >
                         {x}
                       </motion.button>
@@ -301,7 +375,7 @@ export default memo(function SinglePlayerTrialModeComponent() {
 
             <div className="w-full space-y-5 flex items-center justify-between flex-col">
               <div className="flex justify-start items-center w-full gap-3">
-                <div className="text-correct bg-correct/10 p-2 rounded-md">
+                <div className="text-correct bg-correct/10 p-2 rounded-lg">
                   <Heart size={26}></Heart>
                 </div>
                 <div className="flex flex-col gap-px">
@@ -320,7 +394,7 @@ export default memo(function SinglePlayerTrialModeComponent() {
                   onClick={() => {
                     if (localChances > 1) setLocalChances((org) => org - 1);
                   }}
-                  className="cursor-pointer border border-foreground/10 bg-foreground/20 p-2 rounded-md  text-center flex justify-center items-center min-w-8 w-1/4 h-full select-none disabled:opacity-45 "
+                  className="cursor-pointer border border-foreground/10 bg-foreground/20 p-2 rounded-lg  text-center flex justify-center items-center min-w-8 w-1/4 h-full select-none disabled:opacity-45 "
                 >
                   -
                 </motion.button>
@@ -333,29 +407,41 @@ export default memo(function SinglePlayerTrialModeComponent() {
                   onClick={() => {
                     if (localChances < 10) setLocalChances((org) => org + 1);
                   }}
-                  className="cursor-pointer border border-foreground/10 bg-foreground/20 p-2 rounded-md  text-center flex justify-center items-center min-w-8 w-1/4 h-full select-none disabled:opacity-45 "
+                  className="cursor-pointer border border-foreground/10 bg-foreground/20 p-2 rounded-lg  text-center flex justify-center items-center min-w-8 w-1/4 h-full select-none disabled:opacity-45 "
                 >
                   +
                 </motion.button>
               </div>
             </div>
-            <div className="w-full space-y-5 flex items-center justify-between flex-col">
+            <div className="w-full flex items-center justify-between ">
               <div className="flex justify-start items-center w-full gap-3">
-                <div className="text-correct bg-correct/10 p-2 rounded-md">
+                <div className="text-correct bg-correct/10 p-2 rounded-lg">
                   <Volume2 size={26}></Volume2>
                 </div>
                 <div className="flex flex-col gap-px">
                   <div className="text-sm">Sound effects</div>
-                  {/* <div className="text-xs"></div> */}
                 </div>
               </div>
-              <div className="flex justify-between gap-3 w-full  items-center">
-                <div className="text-sm">Volume</div>
-                <div className="flex items-center justify-center gap-2">
-                  <div>Off</div>
-                  <input type="range" min={0} max={10} />
-                  <div>Full</div>
-                </div>
+              <div className="flex w-full space-x-2 text-center bg-foreground/10 p-1 rounded-lg">
+                <button
+                  onClick={() => {
+                    setSoundEffect(1);
+                    localStorage.setItem("sounds", "1");
+                  }}
+                  className={`w-1/2  text-sm  duration-200 h-full rounded-md p-1 ${soundEffect === 1 && "bg-correct/30 shadow-lg shadow-black/5 text-correct "} `}
+                >
+                  On
+                </button>
+                <button
+                  onClick={() => {
+                    setSoundEffect(0);
+
+                    localStorage.setItem("sounds", "0");
+                  }}
+                  className={`w-1/2 text-foreground/50 text-sm  duration-200 h-full rounded-md p-1 ${soundEffect === 0 && "bg-background shadow-lg shadow-black/5 text-black"} `}
+                >
+                  Off
+                </button>
               </div>
             </div>
             <button
@@ -365,7 +451,7 @@ export default memo(function SinglePlayerTrialModeComponent() {
                 localStorage.setItem("length", localWordLength.toString());
                 localStorage.setItem("chances", localChances.toString());
               }}
-              className="flex gap-3 text-sm bg-incorrect p-3 w-full rounded-md text-center justify-center items-center hover:opacity-70 duration-200"
+              className="flex gap-3 text-sm bg-incorrect p-3 w-full rounded-lg text-center justify-center items-center hover:opacity-70 duration-200"
             >
               <p>Save Changes</p>
             </button>
@@ -388,7 +474,7 @@ export default memo(function SinglePlayerTrialModeComponent() {
           exit={{
             opacity: 0,
           }}
-          className="text-white bg-background p-8 px-5 max-md:px-3 rounded-lg  flex justify-center items-center z-9999999999999999 pt-8 border-t-4 border-incorrect/40"
+          className="text-white bg-background p-8 px-5 max-md:px-3 rounded-md  flex justify-center items-center z-9999999999999999 pt-8 border-t-4 border-incorrect/40"
         >
           <div className="flex justify-center items-center flex-col gap-6 w-full min-w-84">
             <button
@@ -399,7 +485,7 @@ export default memo(function SinglePlayerTrialModeComponent() {
             >
               <X></X>
             </button>
-            <div className="text-incorrect bg-incorrect/10 p-2 rounded-md w-fit">
+            <div className="text-incorrect bg-incorrect/10 p-2 rounded-lg w-fit">
               <Frown size={36}></Frown>
             </div>
             <div className="flex justify-center items-center flex-col">
@@ -408,7 +494,7 @@ export default memo(function SinglePlayerTrialModeComponent() {
                 Better luck next time! The word was:
               </div>
             </div>
-            <div className="text-correct bg-foreground/5 border-dashed border-2 border-foreground/10 p-3 w-full text-center text-4xl rounded-md gap-1 flex justify-center items-center font-semibold">
+            <div className="text-correct bg-foreground/5 border-dashed border-2 border-foreground/10 p-3 w-full text-center text-4xl rounded-lg gap-1 flex justify-center items-center font-semibold">
               {word.split("").map((x, i) => (
                 <p key={i}>{x}</p>
               ))}
@@ -417,7 +503,7 @@ export default memo(function SinglePlayerTrialModeComponent() {
               onClick={() => {
                 resetWord();
               }}
-              className="flex gap-3 text-sm bg-incorrect p-3 w-full rounded-md text-center justify-center items-center hover:opacity-70 duration-200"
+              className="flex gap-3 text-sm bg-incorrect p-3 w-full rounded-lg text-center justify-center items-center hover:opacity-70 duration-200"
             >
               <RotateCw size={20}></RotateCw> <p>Try again</p>
             </button>
@@ -439,7 +525,7 @@ export default memo(function SinglePlayerTrialModeComponent() {
           exit={{
             opacity: 0,
           }}
-          className="text-white bg-background p-8 px-5 max-md:px-3 rounded-lg  flex justify-center items-center z-9999999999999999 pt-8 border-t-4 border-correct/40"
+          className="text-white bg-background p-8 px-5 max-md:px-3 rounded-md  flex justify-center items-center z-9999999999999999 pt-8 border-t-4 border-correct/40"
         >
           <div className="flex justify-center items-center flex-col gap-6 w-full min-w-84">
             <button
@@ -450,18 +536,18 @@ export default memo(function SinglePlayerTrialModeComponent() {
             >
               <X></X>
             </button>
-            <div className="text-correct bg-correct/10 p-2 rounded-md w-fit">
+            <div className="text-correct bg-correct/10 p-2 rounded-lg w-fit">
               <Trophy size={36}></Trophy>
             </div>
             <div className="flex justify-center items-center flex-col">
               <div className="text-2xl">YOU GOT IT!</div>
               <div className="text-sm">You played well, your score was:</div>
             </div>
-            <div className="text-correct bg-foreground/5 border-dashed border-2 border-foreground/10 p-3 w-full text-center text-4xl rounded-md gap-6 flex justify-center items-center font-semibold ">
+            <div className="text-correct bg-foreground/5 border-dashed border-2 border-foreground/10 p-3 w-full text-center text-4xl rounded-lg gap-6 flex justify-center items-center font-semibold ">
               {life} <p className="text-xl">/</p> {chances}
             </div>
             <div>in finding the word:</div>
-            <div className="text-correct bg-foreground/5 border-dashed border-2 border-foreground/10 p-3 w-full text-center text-4xl rounded-md gap-1 flex justify-center items-center font-semibold">
+            <div className="text-correct bg-foreground/5 border-dashed border-2 border-foreground/10 p-3 w-full text-center text-4xl rounded-lg gap-1 flex justify-center items-center font-semibold">
               {word.split("").map((x, i) => (
                 <p key={i}>{x}</p>
               ))}
@@ -470,7 +556,7 @@ export default memo(function SinglePlayerTrialModeComponent() {
               onClick={() => {
                 resetWord();
               }}
-              className="flex gap-3 text-sm bg-correct text-background p-3 w-full rounded-md text-center justify-center items-center hover:opacity-70 duration-200"
+              className="flex gap-3 text-sm bg-correct text-background p-3 w-full rounded-lg text-center justify-center items-center hover:opacity-70 duration-200"
             >
               <RotateCw size={20}></RotateCw> <p>New word</p>
             </button>
@@ -519,15 +605,21 @@ export default memo(function SinglePlayerTrialModeComponent() {
             ></Keyboard>
           )}
 
-          <div className="flex text-correct  min-h-10 gap-px text-xl">
-            {currentStatus.map((x, i) => {
-              if (x) {
-                return <p key={i}>{x}</p>;
-              } else {
-                return <p key={i}>_</p>;
-              }
-            })}
-          </div>
+          {gameover ? (
+            <div className="flex text-correct  min-h-10 gap-px text-xl">
+              {word}
+            </div>
+          ) : (
+            <div className="flex text-correct  min-h-10 gap-px text-xl">
+              {currentStatus.map((x, i) => {
+                if (x) {
+                  return <p key={i}>{x}</p>;
+                } else {
+                  return <p key={i}>_</p>;
+                }
+              })}
+            </div>
+          )}
 
           <div className="gap-1 flex flex-col    justify-center items-center">
             {attempts.map((atp, j) => {
@@ -558,7 +650,7 @@ export default memo(function SinglePlayerTrialModeComponent() {
                         key={i}
                         className={`h-16 ${
                           letterSizeForMobile[wordLength]
-                        } aspect-square  text-center flex justify-center items-center text-3xl max-md:text-xl font-bold rounded-sm /border-4 /border-foreground/10 
+                        } aspect-square  text-center flex justify-center items-center text-3xl max-md:text-xl font-bold rounded-md /border-4 /border-foreground/10 
                         ${
                           j === life
                             ? word.letter === ""
@@ -588,7 +680,7 @@ export default memo(function SinglePlayerTrialModeComponent() {
               );
             })}
           </div>
-          <div className="absolute -left-36 top-0 text-white py-2 flex flex-col -items-end gap-4 max-md:relative max-md:flex-row max-md:left-auto max-md:justify-end max-md:w-full max-md:px-3 ">
+          <div className="absolute -left-36 top-0 text-white py-2 flex flex-col -items-end gap-3 max-md:relative max-md:flex-row max-md:left-auto max-md:justify-end max-md:w-full max-md:px-3 ">
             {gameover && !win && !lose && (
               <motion.button
                 initial={{
@@ -600,16 +692,13 @@ export default memo(function SinglePlayerTrialModeComponent() {
                 exit={{
                   opacity: 0,
                 }}
-                transition={{
-                  ease: "easeInOut",
-                }}
                 whileTap={{
                   scale: 0.98,
                 }}
                 onClick={() => {
                   resetWord();
                 }}
-                className="bg-correct/10 text-correct p-3 rounded-md border-3 border-correct/40 flex gap-3 text-sm items-center"
+                className="bg-correct/10 text-correct p-3 rounded-lg border  border-correct/40 flex gap-3 text-sm items-center"
               >
                 <RefreshCcw size={20}></RefreshCcw>
                 Play again
@@ -626,13 +715,13 @@ export default memo(function SinglePlayerTrialModeComponent() {
                 exit={{
                   opacity: 0,
                 }}
-                transition={{
-                  ease: "easeInOut",
-                }}
                 whileTap={{
                   scale: 0.98,
                 }}
-                className="bg-correct/10 text-correct p-3 rounded-md border-3 border-correct/40 w-fit text-sm items-center flex gap-2"
+                onClick={() => {
+                  setShowHintsMenu(true);
+                }}
+                className="bg-correct/10 text-correct p-3 rounded-lg border border-correct/40 w-fit text-sm items-center flex gap-2"
               >
                 <Lightbulb size={20}></Lightbulb>
                 Hint
@@ -648,16 +737,13 @@ export default memo(function SinglePlayerTrialModeComponent() {
               exit={{
                 opacity: 0,
               }}
-              transition={{
-                ease: "easeInOut",
-              }}
               whileTap={{
                 scale: 0.98,
               }}
               onClick={() => {
                 setShowGameSettings(true);
               }}
-              className="bg-correct/10 text-correct p-3 rounded-md border-3 border-correct/40 w-fit text-sm flex items-center gap-2"
+              className="bg-correct/10 text-correct p-3 rounded-lg border border-correct/40 w-fit text-sm flex items-center gap-2"
             >
               <Settings2 size={20}></Settings2>
               Settings

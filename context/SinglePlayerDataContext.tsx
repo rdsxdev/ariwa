@@ -42,6 +42,10 @@ const SinglePlayerDataContext = createContext<{
   resetWord: (length?: number, chances?: number) => void;
   gameover: boolean;
   setGameover: React.Dispatch<React.SetStateAction<boolean>>;
+  soundEffect: number;
+  setSoundEffect: React.Dispatch<React.SetStateAction<number>>;
+  showAuthModal: boolean;
+  setShowAuthModal: React.Dispatch<React.SetStateAction<boolean>>;
 } | null>(null);
 
 function SinglePlayerDataProvider({
@@ -59,8 +63,15 @@ function SinglePlayerDataProvider({
     typeof window !== "undefined"
       ? parseInt(localStorage.getItem("chances") || "") || 5
       : 0;
+  const initialSoundSetting =
+    typeof window !== "undefined"
+      ? parseInt(localStorage.getItem("sounds") || "")
+      : 0;
+
+  const [soundEffect, setSoundEffect] = useState(initialSoundSetting);
 
   const [wordLength, setWordLength] = useState(initialWordlength);
+
   const letterSizeForMobile = [
     "",
     "",
@@ -84,12 +95,13 @@ function SinglePlayerDataProvider({
 
   const [chances, setChances] = useState(initialChances);
   const [life, setLife] = useState(0);
-
   const [win, setWin] = useState(false);
 
   const [lose, setLose] = useState(false);
 
   const [gameover, setGameover] = useState(false);
+
+  const [showAuthModal, setShowAuthModal] = useState(false);
 
   useEffect(() => {
     let latestAttempt =
@@ -107,12 +119,12 @@ function SinglePlayerDataProvider({
       setTimeout(() => {
         setWin(true);
         setGameover(true);
-        hintSound?.play();
+        if (soundEffect) hintSound?.play();
       }, 400);
     }
   }, [life]);
 
-  function resetWord(newWordLength?: number, newChances?: number) {
+  async function resetWord(newWordLength?: number, newChances?: number) {
     const lengthOfWordToGenerate = newWordLength || wordLength;
     const newChancesLength = newChances || chances;
 
@@ -121,7 +133,7 @@ function SinglePlayerDataProvider({
     setWordLength(lengthOfWordToGenerate);
     setChances(newChancesLength);
 
-    const luckyLad = generateRandomWord(lengthOfWordToGenerate);
+    const luckyLad = await generateRandomWord(lengthOfWordToGenerate);
     setWord(luckyLad.word.toUpperCase());
     setHint(luckyLad.type);
     setAttempts(
@@ -207,6 +219,10 @@ function SinglePlayerDataProvider({
         layout,
         currentStatus,
         resetWord,
+        soundEffect,
+        setSoundEffect,
+        showAuthModal,
+        setShowAuthModal,
       }}
     >
       {children}

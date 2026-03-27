@@ -22,7 +22,7 @@ const poppins = Poppins({
 // });
 
 export const metadata: Metadata = {
-  title: "WordRush",
+  title: "WordRush - Race and Win!",
   description: "A Really Improved Wordle Alternative",
 };
 
@@ -32,8 +32,8 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html className="bg-background" lang="en">
-      <body className={`${poppins.className} antialiased`}>
+    <html className="bg-background overflow-x-hidden" lang="en">
+      <body className={`${poppins.className} antialiased `}>
         <SinglePlayerDataProvider>
           <Navbar></Navbar>
           <Toaster />
