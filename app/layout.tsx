@@ -23,7 +23,7 @@ const poppins = Poppins({
 
 export const metadata: Metadata = {
   title: "WordRush - Race and Win!",
-  description: "A Really Improved Wordle Alternative",
+  description: "Guess the word!",
 };
 
 export default function RootLayout({

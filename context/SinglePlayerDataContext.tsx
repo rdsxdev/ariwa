@@ -93,7 +93,7 @@ function SinglePlayerDataProvider({
       : undefined;
   const [word, setWord] = useState("");
   const [hint, setHint] = useState("");
-  console.log(word);
+  // console.log(word);
 
   const [chances, setChances] = useState(initialChances);
   const [life, setLife] = useState(0);
@@ -130,7 +130,7 @@ function SinglePlayerDataProvider({
     const lengthOfWordToGenerate = newWordLength || wordLength;
     const newChancesLength = newChances || chances;
 
-    console.log(lengthOfWordToGenerate, newChancesLength);
+    // console.log(lengthOfWordToGenerate, newChancesLength);
 
     setWordLength(lengthOfWordToGenerate);
     setChances(newChancesLength);
