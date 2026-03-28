@@ -502,6 +502,37 @@ export default memo(function SinglePlayerTrialModeComponent() {
           />
 
           <div className="flex flex-col-reverse justify-center items-center h-full max-w-fit w-fit gap-3 relative">
+            {typeHintTaken && wordTypes.length > 0 ? (
+              <div className="text-foreground text-sm mt-3 text-center space-x-1">
+                {/* The word is{" "} */}
+                {wordTypes.map((x, i) => (
+                  <span key={x} className="">
+                    {/* a{" "} */}
+                    <span className="capitalize bg-green-600/10 p-2 rounded-lg font-semibold border border-green-600 text-green-600">
+                      {x}
+                    </span>{" "}
+                    {/* {i + 1 < wordTypes.length && `or `} */}
+                  </span>
+                ))}
+              </div>
+            ) : typeHintTaken && wordTypes.length === 0 ? (
+              <div className="relative">
+                <div className="loader scale-75 translate-y-3"></div>
+              </div>
+            ) : (
+              <></>
+            )}
+            {definitionHintTaken && wordDefinition.length > 0 ? (
+              <div className=" text-sm mt-3 max-w-100 max-md:max-w-84 text-center bg-cyan-400/10 p-2 rounded-md border-cyan-400 border text-cyan-400">
+                {wordDefinition}
+              </div>
+            ) : definitionHintTaken && wordDefinition.length === 0 ? (
+              <div className="relative">
+                <div className="loader scale-75 translate-y-3"></div>
+              </div>
+            ) : (
+              <></>
+            )}
             {addLetter && (
               <Keyboard
                 submitAttempt={submitAttempt}
@@ -528,38 +559,6 @@ export default memo(function SinglePlayerTrialModeComponent() {
                   }
                 })}
               </div>
-            )}
-
-            {typeHintTaken && wordTypes.length > 0 ? (
-              <div className="text-foreground text-sm mt-3">
-                The word is{" "}
-                {wordTypes.map((x, i) => (
-                  <span key={x} className="">
-                    a{" "}
-                    <span className="capitalize bg-green-600/10 p-1 rounded-lg font-semibold border border-green-600 text-green-600">
-                      {x}
-                    </span>{" "}
-                    {i + 1 < wordTypes.length && `or `}
-                  </span>
-                ))}
-              </div>
-            ) : typeHintTaken && wordTypes.length === 0 ? (
-              <div className="relative">
-                <div className="loader scale-75 translate-y-3"></div>
-              </div>
-            ) : (
-              <></>
-            )}
-            {definitionHintTaken && wordDefinition.length > 0 ? (
-              <div className="text-foreground text-sm mt-3 max-w-lg max-md:max-w-84 text-center">
-                {wordDefinition}
-              </div>
-            ) : definitionHintTaken && wordDefinition.length === 0 ? (
-              <div className="relative">
-                <div className="loader scale-75 translate-y-3"></div>
-              </div>
-            ) : (
-              <></>
             )}
 
             <div className="gap-1 flex flex-col    justify-center items-center">
