@@ -26,5 +26,6 @@ import dictionary from "@/utils/words.json";
 export async function generateRandomWord(length: number) {
   const pot = dictionary.filter((x) => x.word.split("").length === length);
   const luckyLad = pot[Math.floor(Math.random() * pot.length + 0)];
+
   return luckyLad;
 }

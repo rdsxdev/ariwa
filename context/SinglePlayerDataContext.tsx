@@ -65,8 +65,10 @@ function SinglePlayerDataProvider({
       : 0;
   const initialSoundSetting =
     typeof window !== "undefined"
-      ? parseInt(localStorage.getItem("sounds") || "")
-      : 0;
+      ? localStorage.getItem("sounds") === "0"
+        ? 0
+        : 1
+      : 1;
 
   const [soundEffect, setSoundEffect] = useState(initialSoundSetting);
 

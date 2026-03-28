@@ -28,8 +28,28 @@ import useSinglePlayerData from "@/context/SinglePlayerDataContext";
 import ModalContainer from "../Modal";
 
 export default memo(function SinglePlayerTrialModeComponent() {
-  const [showGameSettings, setShowGameSettings] = useState(false);
   const [showHintsMenu, setShowHintsMenu] = useState(false);
+
+  const [typeHintTaken, setTypeHintTaken] = useState(false);
+
+  const [wordTypes, setWordTypes] = useState([]);
+
+  async function activateTypeHint() {
+    setTypeHintTaken(true);
+    setShowHintsMenu(false);
+    const fetchedWordType = await (
+      await fetch("/api/getHintWordType", {
+        method: "POST",
+        body: JSON.stringify({
+          word,
+        }),
+      })
+    ).json();
+
+    setWordTypes(fetchedWordType.wordTypes);
+  }
+
+  console.log(wordTypes);
 
   const keyboardRef = useRef<HTMLInputElement>(null);
 
@@ -67,15 +87,12 @@ export default memo(function SinglePlayerTrialModeComponent() {
     showAuthModal,
   } = useSinglePlayerData()!;
 
-  const [localWordLength, setLocalWordLength] = useState(wordLength);
-  const [localChances, setLocalChances] = useState(chances);
-
   useEffect(() => {
     (async function () {
       const luckyLad = await generateRandomWord(wordLength);
       setWord(luckyLad.word.toUpperCase());
       setHint(luckyLad.type);
-    });
+    })();
   }, []);
 
   const add = typeof Audio !== "undefined" ? new Audio("/add.mp3") : undefined;
@@ -223,434 +240,322 @@ export default memo(function SinglePlayerTrialModeComponent() {
       }
     }
   }
-
-  return (
-    <main
-      onClick={() => {
-        if (keyboardRef.current) keyboardRef.current.focus();
-      }}
-      className="overflow-hidden  flex justify-center items-center flex-col  bg-background"
-    >
-      {/* <div className="absolute left-0 top-0 text-white">{word}</div> */}
-
-      <ModalContainer
-        // preventClosingByClickingOnBackground
-        show={showHintsMenu}
-        setShow={setShowHintsMenu}
-        className="max-h-[80vh] noscroll overflow-y-scroll overflow-x-hidden"
+  if (word)
+    return (
+      <main
+        onClick={() => {
+          if (keyboardRef.current) keyboardRef.current.focus();
+        }}
+        className="overflow-hidden  flex justify-center items-center flex-col  bg-background"
       >
-        <motion.div
-          initial={{
-            opacity: 0,
-          }}
-          animate={{
-            opacity: 1,
-          }}
-          exit={{
-            opacity: 0,
-          }}
-          className="text-white bg-background p-8 px-5 max-md:px-3 rounded-xl  flex justify-center items-center z-9999999999999999 pt-8"
+        {/* <div className="absolute left-0 top-0 text-white">{word}</div> */}
+
+        <ModalContainer
+          // preventClosingByClickingOnBackground
+          show={showHintsMenu}
+          setShow={setShowHintsMenu}
+          className="max-h-[80vh] noscroll overflow-y-scroll overflow-x-hidden"
         >
-          <div className="flex justify-center items-center flex-col gap-8 w-full min-w-110 max-md:min-w-84 max-md:w-fit">
-            <button
-              onClick={() => {
-                setShowHintsMenu(false);
-              }}
-              className="flex justify-end items-center w-full text-foreground/50 absolute top-3 right-3 cursor-pointer"
-            >
-              <X></X>
-            </button>
-            <div className="w-full space-y-8">
-              <div className="">
-                <div className="text-xl font-semibold text-left w-full">
-                  Need A Nudge?
-                </div>
-                <div className="text-sm  text-left w-full ">
-                  Choose one of the hint types below
-                </div>
-              </div>
-              <div className="mt-6 flex justify-start items-center hover:bg-foreground/10 p-3 rounded-md duration-200 cursor-pointer">
-                <div className="flex items-center justify-start gap-2">
-                  <SwatchBook
-                    className="bg-green-600/20 text-green-600 p-1 rounded-md"
-                    size={40}
-                  ></SwatchBook>
-                  <div className="">
-                    <div className="text-sm text-green-500">
-                      Get the word type
-                    </div>
-                    <div className="text-xs text-foreground/80">
-                      Check if the word is noun, pronoun, adverb, etc.
-                    </div>
-                  </div>
-                </div>
-              </div>
+          <motion.div
+            initial={{
+              opacity: 0,
+            }}
+            animate={{
+              opacity: 1,
+            }}
+            exit={{
+              opacity: 0,
+            }}
+            className="text-white bg-background p-8 px-5 max-md:px-3 rounded-xl  flex justify-center items-center z-9999999999999999 pt-8"
+          >
+            <div className="flex justify-center items-center flex-col gap-8 w-full min-w-110 max-md:min-w-84 max-md:w-fit">
               <button
                 onClick={() => {
                   setShowHintsMenu(false);
-                  setShowAuthModal(true);
                 }}
-                className="text-sm bg-incorrect text-white px-3 py-2 rounded-md flex justify-center items-center gap-2 disabled:opacity-50 w-full"
+                className="flex justify-end items-center w-full text-foreground/50 absolute top-3 right-3 cursor-pointer"
               >
-                <Lock size={16}></Lock> <p>Log in to unlock more hints</p>
+                <X></X>
+              </button>
+              <div className="w-full space-y-8">
+                <div className="">
+                  <div className="text-xl font-semibold text-left w-full">
+                    Need A Nudge?
+                  </div>
+                  <div className="text-sm  text-left w-full ">
+                    Choose one of the hint types below
+                  </div>
+                </div>
+                <div className="space-y-0">
+                  <button
+                    onClick={async () => {
+                      await activateTypeHint();
+                    }}
+                    disabled={typeHintTaken}
+                    className="flex justify-start items-center hover:bg-foreground/10 p-3 rounded-md duration-200 cursor-pointer text-left w-full"
+                  >
+                    <div className="flex items-center justify-start gap-2">
+                      <SwatchBook
+                        className="bg-green-600/20 text-green-600 p-1 rounded-md"
+                        size={40}
+                      ></SwatchBook>
+                      <div className="">
+                        <div className="text-sm text-green-500 ">
+                          Part of Speech
+                        </div>
+                        <div className="text-xs text-foreground/80">
+                          Check if the word's part of speech
+                        </div>
+                      </div>
+                    </div>
+                  </button>
+                  <button
+                    onClick={async () => {
+                      // await activateTypeHint();
+                    }}
+                    className=" flex justify-start items-center hover:bg-foreground/10 p-3 rounded-md duration-200 cursor-pointer text-left w-full"
+                  >
+                    <div className="flex items-center justify-start gap-2">
+                      <SwatchBook
+                        className="bg-cyan-400/20 text-cyan-400 p-1 rounded-md"
+                        size={40}
+                      ></SwatchBook>
+                      <div className="">
+                        <div className="text-sm text-cyan-400">
+                          Word Definition
+                        </div>
+                        <div className="text-xs text-foreground/80">
+                          Definition can be relative to any of the parts of
+                          speech
+                        </div>
+                      </div>
+                    </div>
+                  </button>
+                </div>
+                <button
+                  onClick={() => {
+                    setShowHintsMenu(false);
+                    setShowAuthModal(true);
+                  }}
+                  className="text-sm bg-incorrect text-white px-3 py-2 rounded-md flex justify-center items-center gap-2 disabled:opacity-50 w-full"
+                >
+                  <Lock size={16}></Lock> <p>Log in to unlock more hints</p>
+                </button>
+              </div>
+            </div>
+          </motion.div>
+        </ModalContainer>
+
+        <ModalContainer
+          show={lose}
+          setShow={setLose}
+          preventClosingByClickingOnBackground
+        >
+          <motion.div
+            initial={{
+              opacity: 0,
+            }}
+            animate={{
+              opacity: 1,
+            }}
+            exit={{
+              opacity: 0,
+            }}
+            className="text-white bg-background p-8 px-5 max-md:px-3 rounded-md  flex justify-center items-center z-9999999999999999 pt-8 border-t-4 border-incorrect/40"
+          >
+            <div className="flex justify-center items-center flex-col gap-6 w-full min-w-84">
+              <button
+                onClick={() => {
+                  setLose(false);
+                }}
+                className="flex justify-end items-center w-full text-foreground/50 absolute top-3 right-3 cursor-pointer"
+              >
+                <X></X>
+              </button>
+              <div className="text-incorrect bg-incorrect/10 p-2 rounded-lg w-fit">
+                <Frown size={36}></Frown>
+              </div>
+              <div className="flex justify-center items-center flex-col">
+                <div className="text-2xl">SO CLOSE!</div>
+                <div className="text-sm">
+                  Better luck next time! The word was:
+                </div>
+              </div>
+              <div className="text-correct bg-foreground/5 border-dashed border-2 border-foreground/10 p-3 w-full text-center text-4xl rounded-lg gap-1 flex justify-center items-center font-semibold">
+                {word.split("").map((x, i) => (
+                  <p key={i}>{x}</p>
+                ))}
+              </div>
+              <button
+                onClick={() => {
+                  resetWord();
+                }}
+                className="flex gap-3 text-sm bg-incorrect p-3 w-full rounded-lg text-center justify-center items-center hover:opacity-70 duration-200"
+              >
+                <RotateCw size={20}></RotateCw> <p>Try again</p>
               </button>
             </div>
-          </div>
-        </motion.div>
-      </ModalContainer>
-
-      <ModalContainer
-        preventClosingByClickingOnBackground
-        show={showGameSettings}
-        setShow={setShowGameSettings}
-        className="max-h-[80vh] noscroll overflow-y-scroll overflow-x-hidden"
-      >
-        <motion.div
-          initial={{
-            opacity: 0,
-          }}
-          animate={{
-            opacity: 1,
-          }}
-          exit={{
-            opacity: 0,
-          }}
-          className="text-white bg-background p-8 px-5 max-md:px-3 rounded-xl  flex justify-center items-center z-9999999999999999 pt-8"
+          </motion.div>
+        </ModalContainer>
+        <ModalContainer
+          show={win}
+          setShow={setWin}
+          preventClosingByClickingOnBackground
         >
-          <div className="flex justify-center items-center flex-col gap-8 w-full min-w-110 max-md:min-w-84 max-md:w-fit">
-            <button
-              onClick={() => {
-                setShowGameSettings(false);
-                setLocalWordLength(wordLength);
-                setLocalChances(chances);
-              }}
-              className="flex justify-end items-center w-full text-foreground/50 absolute top-3 right-3 cursor-pointer"
-            >
-              <X></X>
-            </button>
-            <div className="w-full">
-              <div className="text-xl font-semibold text-left w-full">
-                Game Settings
+          <motion.div
+            initial={{
+              opacity: 0,
+            }}
+            animate={{
+              opacity: 1,
+            }}
+            exit={{
+              opacity: 0,
+            }}
+            className="text-white bg-background p-8 px-5 max-md:px-3 rounded-md  flex justify-center items-center z-9999999999999999 pt-8 border-t-4 border-correct/40"
+          >
+            <div className="flex justify-center items-center flex-col gap-6 w-full min-w-84">
+              <button
+                onClick={() => {
+                  setWin(false);
+                }}
+                className="flex justify-end items-center w-full text-foreground/50 absolute top-3 right-3 cursor-pointer"
+              >
+                <X></X>
+              </button>
+              <div className="text-correct bg-correct/10 p-2 rounded-lg w-fit">
+                <Trophy size={36}></Trophy>
               </div>
-              <div className="text-sm  text-left w-full">
-                Saving these will reset the current game state.
+              <div className="flex justify-center items-center flex-col">
+                <div className="text-2xl">YOU GOT IT!</div>
+                <div className="text-sm">You played well, your score was:</div>
               </div>
+              <div className="text-correct bg-foreground/5 border-dashed border-2 border-foreground/10 p-3 w-full text-center text-4xl rounded-lg gap-6 flex justify-center items-center font-semibold ">
+                {life} <p className="text-xl">/</p> {chances}
+              </div>
+              <div>in finding the word:</div>
+              <div className="text-correct bg-foreground/5 border-dashed border-2 border-foreground/10 p-3 w-full text-center text-4xl rounded-lg gap-1 flex justify-center items-center font-semibold">
+                {word.split("").map((x, i) => (
+                  <p key={i}>{x}</p>
+                ))}
+              </div>
+              <button
+                onClick={() => {
+                  resetWord();
+                }}
+                className="flex gap-3 text-sm bg-correct text-background p-3 w-full rounded-lg text-center justify-center items-center hover:opacity-70 duration-200"
+              >
+                <RotateCw size={20}></RotateCw> <p>New word</p>
+              </button>
             </div>
-            <div className="w-full space-y-5">
-              <div className="flex justify-start items-center w-full gap-3">
-                <div className="text-correct bg-correct/10 p-2 rounded-lg">
-                  <ALargeSmall size={26}></ALargeSmall>
-                </div>
-                <div className="flex flex-col gap-px">
-                  <div className="text-sm">Word Length</div>
-                  <div className="text-xs">
-                    Choose how many letters to guess
-                  </div>
-                </div>
-              </div>
-              <div className="flex justify-between w-full items-center flex-col">
-                <div className="flex gap-3 w-full justify-center items-center">
-                  {[3, 4, 5, 6, 7, 8].map((x) => {
-                    return (
-                      <motion.button
-                        whileTap={{
-                          scale: 0.95,
-                        }}
-                        transition={{
-                          duration: 0.4,
-                        }}
-                        onClick={() => {
-                          setLocalWordLength(x);
-                        }}
-                        key={x}
-                        className={`w-10 text-center aspect-square  rounded-lg cursor-pointer ${localWordLength === x ? "bg-foreground text-background" : "bg-foreground/10"}`}
-                      >
-                        {x}
-                      </motion.button>
-                    );
-                  })}
-                </div>
-              </div>
-            </div>
+          </motion.div>
+        </ModalContainer>
 
-            <div className="w-full space-y-5 flex items-center justify-between flex-col">
-              <div className="flex justify-start items-center w-full gap-3">
-                <div className="text-correct bg-correct/10 p-2 rounded-lg">
-                  <Heart size={26}></Heart>
-                </div>
-                <div className="flex flex-col gap-px">
-                  <div className="text-sm">Attempts</div>
-                  <div className="text-xs">
-                    Choose how many times you can try
-                  </div>
-                </div>
-              </div>
-              <div className="flex justify-center gap-3 w-full  items-center">
-                <motion.button
-                  whileTap={{
-                    scale: 0.95,
-                  }}
-                  disabled={localChances === 1}
-                  onClick={() => {
-                    if (localChances > 1) setLocalChances((org) => org - 1);
-                  }}
-                  className="cursor-pointer border border-foreground/10 bg-foreground/20 p-2 rounded-lg  text-center flex justify-center items-center min-w-8 w-1/4 h-full select-none disabled:opacity-45 "
-                >
-                  -
-                </motion.button>
-                <div className="text-center min-w-6 ">{localChances}</div>
-                <motion.button
-                  whileTap={{
-                    scale: 0.95,
-                  }}
-                  disabled={localChances === 10}
-                  onClick={() => {
-                    if (localChances < 10) setLocalChances((org) => org + 1);
-                  }}
-                  className="cursor-pointer border border-foreground/10 bg-foreground/20 p-2 rounded-lg  text-center flex justify-center items-center min-w-8 w-1/4 h-full select-none disabled:opacity-45 "
-                >
-                  +
-                </motion.button>
-              </div>
-            </div>
-            <div className="w-full flex items-center justify-between ">
-              <div className="flex justify-start items-center w-full gap-3">
-                <div className="text-correct bg-correct/10 p-2 rounded-lg">
-                  <Volume2 size={26}></Volume2>
-                </div>
-                <div className="flex flex-col gap-px">
-                  <div className="text-sm">Sound effects</div>
-                </div>
-              </div>
-              <div className="flex w-full space-x-2 text-center bg-foreground/10 p-1 rounded-lg">
-                <button
-                  onClick={() => {
-                    setSoundEffect(1);
-                    localStorage.setItem("sounds", "1");
-                  }}
-                  className={`w-1/2  text-sm  duration-200 h-full rounded-md p-1 ${soundEffect === 1 && "bg-correct/30 shadow-lg shadow-black/5 text-correct "} `}
-                >
-                  On
-                </button>
-                <button
-                  onClick={() => {
-                    setSoundEffect(0);
+        <div className="h-full pt-16 pb-6  min-h-screen w-full flex justify-center items-center relative">
+          <input
+            readOnly
+            ref={keyboardRef}
+            autoFocus
+            type="text"
+            className="opacity-0 pointer-events-none fixed"
+            onKeyDown={(e) => {
+              const code = e.code.replaceAll("Key", "");
 
-                    localStorage.setItem("sounds", "0");
-                  }}
-                  className={`w-1/2 text-foreground/50 text-sm  duration-200 h-full rounded-md p-1 ${soundEffect === 0 && "bg-background shadow-lg shadow-black/5 text-black"} `}
-                >
-                  Off
-                </button>
-              </div>
-            </div>
-            <button
-              onClick={() => {
-                resetWord(localWordLength, localChances);
-                setShowGameSettings(false);
-                localStorage.setItem("length", localWordLength.toString());
-                localStorage.setItem("chances", localChances.toString());
-              }}
-              className="flex gap-3 text-sm bg-incorrect p-3 w-full rounded-lg text-center justify-center items-center hover:opacity-70 duration-200"
-            >
-              <p>Save Changes</p>
-            </button>
-          </div>
-        </motion.div>
-      </ModalContainer>
-
-      <ModalContainer
-        show={lose}
-        setShow={setLose}
-        preventClosingByClickingOnBackground
-      >
-        <motion.div
-          initial={{
-            opacity: 0,
-          }}
-          animate={{
-            opacity: 1,
-          }}
-          exit={{
-            opacity: 0,
-          }}
-          className="text-white bg-background p-8 px-5 max-md:px-3 rounded-md  flex justify-center items-center z-9999999999999999 pt-8 border-t-4 border-incorrect/40"
-        >
-          <div className="flex justify-center items-center flex-col gap-6 w-full min-w-84">
-            <button
-              onClick={() => {
-                setLose(false);
-              }}
-              className="flex justify-end items-center w-full text-foreground/50 absolute top-3 right-3 cursor-pointer"
-            >
-              <X></X>
-            </button>
-            <div className="text-incorrect bg-incorrect/10 p-2 rounded-lg w-fit">
-              <Frown size={36}></Frown>
-            </div>
-            <div className="flex justify-center items-center flex-col">
-              <div className="text-2xl">SO CLOSE!</div>
-              <div className="text-sm">
-                Better luck next time! The word was:
-              </div>
-            </div>
-            <div className="text-correct bg-foreground/5 border-dashed border-2 border-foreground/10 p-3 w-full text-center text-4xl rounded-lg gap-1 flex justify-center items-center font-semibold">
-              {word.split("").map((x, i) => (
-                <p key={i}>{x}</p>
-              ))}
-            </div>
-            <button
-              onClick={() => {
-                resetWord();
-              }}
-              className="flex gap-3 text-sm bg-incorrect p-3 w-full rounded-lg text-center justify-center items-center hover:opacity-70 duration-200"
-            >
-              <RotateCw size={20}></RotateCw> <p>Try again</p>
-            </button>
-          </div>
-        </motion.div>
-      </ModalContainer>
-      <ModalContainer
-        show={win}
-        setShow={setWin}
-        preventClosingByClickingOnBackground
-      >
-        <motion.div
-          initial={{
-            opacity: 0,
-          }}
-          animate={{
-            opacity: 1,
-          }}
-          exit={{
-            opacity: 0,
-          }}
-          className="text-white bg-background p-8 px-5 max-md:px-3 rounded-md  flex justify-center items-center z-9999999999999999 pt-8 border-t-4 border-correct/40"
-        >
-          <div className="flex justify-center items-center flex-col gap-6 w-full min-w-84">
-            <button
-              onClick={() => {
-                setWin(false);
-              }}
-              className="flex justify-end items-center w-full text-foreground/50 absolute top-3 right-3 cursor-pointer"
-            >
-              <X></X>
-            </button>
-            <div className="text-correct bg-correct/10 p-2 rounded-lg w-fit">
-              <Trophy size={36}></Trophy>
-            </div>
-            <div className="flex justify-center items-center flex-col">
-              <div className="text-2xl">YOU GOT IT!</div>
-              <div className="text-sm">You played well, your score was:</div>
-            </div>
-            <div className="text-correct bg-foreground/5 border-dashed border-2 border-foreground/10 p-3 w-full text-center text-4xl rounded-lg gap-6 flex justify-center items-center font-semibold ">
-              {life} <p className="text-xl">/</p> {chances}
-            </div>
-            <div>in finding the word:</div>
-            <div className="text-correct bg-foreground/5 border-dashed border-2 border-foreground/10 p-3 w-full text-center text-4xl rounded-lg gap-1 flex justify-center items-center font-semibold">
-              {word.split("").map((x, i) => (
-                <p key={i}>{x}</p>
-              ))}
-            </div>
-            <button
-              onClick={() => {
-                resetWord();
-              }}
-              className="flex gap-3 text-sm bg-correct text-background p-3 w-full rounded-lg text-center justify-center items-center hover:opacity-70 duration-200"
-            >
-              <RotateCw size={20}></RotateCw> <p>New word</p>
-            </button>
-          </div>
-        </motion.div>
-      </ModalContainer>
-
-      <div className="h-full pt-16 pb-6  min-h-screen w-full flex justify-center items-center relative">
-        <input
-          readOnly
-          ref={keyboardRef}
-          autoFocus
-          type="text"
-          className="opacity-0 pointer-events-none fixed"
-          onKeyDown={(e) => {
-            const code = e.code.replaceAll("Key", "");
-
-            if (e.code === "Enter") {
-              submitAttempt();
-            }
-            if (!e.ctrlKey) {
-              setLastPressedKey(code);
-              if (letters.includes(code)) {
-                addLetter(code);
+              if (e.code === "Enter") {
+                submitAttempt();
               }
-              if (e.code === "Backspace") {
-                removeLetter();
-              }
-            }
-            setTimeout(() => {
-              setLastPressedKey(null);
-            }, 100);
-          }}
-          name=""
-          id=""
-        />
-
-        <div className="flex flex-col-reverse justify-center items-center h-full max-w-fit w-fit gap-3 relative">
-          {addLetter && (
-            <Keyboard
-              submitAttempt={submitAttempt}
-              letterStatus={attempts.flat().filter((x) => x.letter && x.status)}
-              addLetter={addLetter}
-              removeLetter={removeLetter}
-              lastPressedKey={lastPressedKey}
-            ></Keyboard>
-          )}
-
-          {gameover ? (
-            <div className="flex text-correct  min-h-10 gap-px text-xl">
-              {word}
-            </div>
-          ) : (
-            <div className="flex text-correct  min-h-10 gap-px text-xl">
-              {currentStatus.map((x, i) => {
-                if (x) {
-                  return <p key={i}>{x}</p>;
-                } else {
-                  return <p key={i}>_</p>;
+              if (!e.ctrlKey) {
+                setLastPressedKey(code);
+                if (letters.includes(code)) {
+                  addLetter(code);
                 }
-              })}
-            </div>
-          )}
+                if (e.code === "Backspace") {
+                  removeLetter();
+                }
+              }
+              setTimeout(() => {
+                setLastPressedKey(null);
+              }, 100);
+            }}
+            name=""
+            id=""
+          />
 
-          <div className="gap-1 flex flex-col    justify-center items-center">
-            {attempts.map((atp, j) => {
-              return (
-                <motion.div
-                  initial={{
-                    opacity: 0,
-                  }}
-                  animate={{
-                    opacity: 1,
-                  }}
-                  transition={{
-                    duration: 0.5,
-                    delay: 0.1 * (j + 1),
-                  }}
-                  key={j}
-                  className="flex items-center justify-center  gap-1 "
-                >
-                  {atp.map((word, i) => {
-                    return (
-                      <motion.div
-                        initial={{
-                          scale: 1,
-                        }}
-                        animate={{
-                          scale: j !== life ? 1 : currentIndex === i ? 0.96 : 1,
-                        }}
-                        key={i}
-                        className={`h-16 ${
-                          letterSizeForMobile[wordLength]
-                        } aspect-square  text-center flex justify-center items-center text-3xl max-md:text-xl font-bold rounded-md /border-4 /border-foreground/10 
+          <div className="flex flex-col-reverse justify-center items-center h-full max-w-fit w-fit gap-3 relative">
+            {addLetter && (
+              <Keyboard
+                submitAttempt={submitAttempt}
+                letterStatus={attempts
+                  .flat()
+                  .filter((x) => x.letter && x.status)}
+                addLetter={addLetter}
+                removeLetter={removeLetter}
+                lastPressedKey={lastPressedKey}
+              ></Keyboard>
+            )}
+
+            {gameover ? (
+              <div className="flex text-correct  min-h-10 gap-px text-xl">
+                {word}
+              </div>
+            ) : (
+              <div className="flex text-correct  min-h-10 gap-px text-xl">
+                {currentStatus.map((x, i) => {
+                  if (x) {
+                    return <p key={i}>{x}</p>;
+                  } else {
+                    return <p key={i}>_</p>;
+                  }
+                })}
+              </div>
+            )}
+
+            {typeHintTaken && wordTypes.length > 0 && (
+              <div className="text-foreground text-sm mt-3">
+                The word is{" "}
+                {wordTypes.map((x, i) => (
+                  <span key={x} className="">
+                    a{" "}
+                    <span className="capitalize bg-green-600/10 p-1 rounded-lg font-semibold border border-green-600 text-green-600">
+                      {x}
+                    </span>{" "}
+                    {i + 1 < wordTypes.length && `or `}
+                  </span>
+                ))}
+              </div>
+            )}
+
+            <div className="gap-1 flex flex-col    justify-center items-center">
+              {attempts.map((atp, j) => {
+                return (
+                  <motion.div
+                    initial={{
+                      opacity: 0,
+                    }}
+                    animate={{
+                      opacity: 1,
+                    }}
+                    transition={{
+                      duration: 0.5,
+                      delay: 0.1 * (j + 1),
+                    }}
+                    key={j}
+                    className="flex items-center justify-center  gap-1 "
+                  >
+                    {atp.map((word, i) => {
+                      return (
+                        <motion.div
+                          initial={{
+                            scale: 1,
+                          }}
+                          animate={{
+                            scale:
+                              j !== life ? 1 : currentIndex === i ? 0.96 : 1,
+                          }}
+                          key={i}
+                          className={`h-16 ${
+                            letterSizeForMobile[wordLength]
+                          } aspect-square  text-center flex justify-center items-center text-3xl max-md:text-xl font-bold rounded-md /border-4 /border-foreground/10 
                         ${
                           j === life
                             ? word.letter === ""
@@ -671,88 +576,67 @@ export default memo(function SinglePlayerTrialModeComponent() {
                               : "bg-foreground/20 "
                             : ""
                         } duration-150 `}
-                      >
-                        {word.letter}
-                      </motion.div>
-                    );
-                  })}
-                </motion.div>
-              );
-            })}
-          </div>
-          <div className="absolute -left-36 top-0 text-white py-2 flex flex-col -items-end gap-3 max-md:relative max-md:flex-row max-md:left-auto max-md:justify-end max-md:w-full max-md:px-3 ">
-            {gameover && !win && !lose && (
-              <motion.button
-                initial={{
-                  opacity: 0,
-                }}
-                animate={{
-                  opacity: 1,
-                }}
-                exit={{
-                  opacity: 0,
-                }}
-                whileTap={{
-                  scale: 0.98,
-                }}
-                onClick={() => {
-                  resetWord();
-                }}
-                className="bg-correct/10 text-correct p-3 rounded-lg border  border-correct/40 flex gap-3 text-sm items-center"
-              >
-                <RefreshCcw size={20}></RefreshCcw>
-                Play again
-              </motion.button>
-            )}
-            {!gameover && (
-              <motion.button
-                initial={{
-                  opacity: 0,
-                }}
-                animate={{
-                  opacity: 1,
-                }}
-                exit={{
-                  opacity: 0,
-                }}
-                whileTap={{
-                  scale: 0.98,
-                }}
-                onClick={() => {
-                  setShowHintsMenu(true);
-                }}
-                className="bg-correct/10 text-correct p-3 rounded-lg border border-correct/40 w-fit text-sm items-center flex gap-2"
-              >
-                <Lightbulb size={20}></Lightbulb>
-                Hint
-              </motion.button>
-            )}
-            <motion.button
-              initial={{
-                opacity: 0,
-              }}
-              animate={{
-                opacity: 1,
-              }}
-              exit={{
-                opacity: 0,
-              }}
-              whileTap={{
-                scale: 0.98,
-              }}
-              onClick={() => {
-                setShowGameSettings(true);
-              }}
-              className="bg-correct/10 text-correct p-3 rounded-lg border border-correct/40 w-fit text-sm flex items-center gap-2"
-            >
-              <Settings2 size={20}></Settings2>
-              Settings
-            </motion.button>
+                        >
+                          {word.letter}
+                        </motion.div>
+                      );
+                    })}
+                  </motion.div>
+                );
+              })}
+            </div>
+            <div className="absolute -left-36 top-0 text-white py-2 flex flex-col -items-end gap-3 max-md:relative max-md:flex-row max-md:left-auto max-md:justify-end max-md:w-full max-md:px-3 ">
+              {gameover && !win && !lose && (
+                <motion.button
+                  initial={{
+                    opacity: 0,
+                  }}
+                  animate={{
+                    opacity: 1,
+                  }}
+                  exit={{
+                    opacity: 0,
+                  }}
+                  whileTap={{
+                    scale: 0.98,
+                  }}
+                  onClick={() => {
+                    resetWord();
+                  }}
+                  className="bg-correct/10 text-correct p-3 rounded-lg border  border-correct/40 flex gap-3 text-sm items-center"
+                >
+                  <RefreshCcw size={20}></RefreshCcw>
+                  Play again
+                </motion.button>
+              )}
+              {!gameover && (
+                <motion.button
+                  initial={{
+                    opacity: 0,
+                  }}
+                  animate={{
+                    opacity: 1,
+                  }}
+                  exit={{
+                    opacity: 0,
+                  }}
+                  whileTap={{
+                    scale: 0.98,
+                  }}
+                  onClick={() => {
+                    setShowHintsMenu(true);
+                  }}
+                  className="bg-correct/10 text-correct p-3 rounded-lg border border-correct/40 w-fit text-sm items-center flex gap-2"
+                >
+                  <Lightbulb size={20}></Lightbulb>
+                  Hint
+                </motion.button>
+              )}
+            </div>
           </div>
         </div>
-      </div>
-    </main>
-  );
+      </main>
+    );
 });
 
 // export const SinglePlayerTrialMode = memo(SinglePlayerTrialModeComponent);
