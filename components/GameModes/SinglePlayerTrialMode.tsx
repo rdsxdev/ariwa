@@ -64,6 +64,11 @@ export default memo(function SinglePlayerTrialModeComponent() {
 
       setWordDefinition(fetchedWordType.definition);
     }
+
+    window.scrollTo({
+      top: 1000,
+      behavior: "smooth",
+    });
   }
 
   const keyboardRef = useRef<HTMLInputElement>(null);
