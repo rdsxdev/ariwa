@@ -229,6 +229,7 @@ export default function Navbar() {
             Settings
           </motion.button>
           <button
+            disabled
             onClick={() => {
               setShowAuthModal(true);
             }}

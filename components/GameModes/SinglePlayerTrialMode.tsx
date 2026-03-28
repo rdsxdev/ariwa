@@ -357,11 +357,12 @@ export default memo(function SinglePlayerTrialModeComponent() {
                   </button>
                 </div>
                 <button
+                  disabled
                   onClick={() => {
                     setShowHintsMenu(false);
                     setShowAuthModal(true);
                   }}
-                  className="text-sm bg-incorrect text-white px-3 py-2 rounded-md flex justify-center items-center gap-2 disabled:opacity-50 w-full"
+                  className="text-sm bg-incorrect text-white px-3 py-2 rounded-md flex justify-center items-center gap-2 disabled:opacity-50 w-full disabled:pointer-events-none"
                 >
                   <Lock size={16}></Lock> <p>Log in to unlock more hints</p>
                 </button>
