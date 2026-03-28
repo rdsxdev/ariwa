@@ -31,25 +31,40 @@ export default memo(function SinglePlayerTrialModeComponent() {
   const [showHintsMenu, setShowHintsMenu] = useState(false);
 
   const [typeHintTaken, setTypeHintTaken] = useState(false);
+  const [definitionHintTaken, setDefinitionHintTaken] = useState(false);
 
   const [wordTypes, setWordTypes] = useState([]);
+  const [wordDefinition, setWordDefinition] = useState("");
 
-  async function activateTypeHint() {
-    setTypeHintTaken(true);
+  async function activateHint(type: "type" | "definition") {
     setShowHintsMenu(false);
-    const fetchedWordType = await (
-      await fetch("/api/getHintWordType", {
-        method: "POST",
-        body: JSON.stringify({
-          word,
-        }),
-      })
-    ).json();
 
-    setWordTypes(fetchedWordType.wordTypes);
+    if (type === "type") {
+      setTypeHintTaken(true);
+      const fetchedWordType = await (
+        await fetch("/api/getHintWordType", {
+          method: "POST",
+          body: JSON.stringify({
+            word,
+          }),
+        })
+      ).json();
+
+      setWordTypes(fetchedWordType.wordTypes);
+    } else if (type === "definition") {
+      setDefinitionHintTaken(true);
+      const fetchedWordType = await (
+        await fetch("/api/getHintWordDefinition", {
+          method: "POST",
+          body: JSON.stringify({
+            word,
+          }),
+        })
+      ).json();
+
+      setWordDefinition(fetchedWordType.definition);
+    }
   }
-
-  console.log(wordTypes);
 
   const keyboardRef = useRef<HTMLInputElement>(null);
 
@@ -94,6 +109,14 @@ export default memo(function SinglePlayerTrialModeComponent() {
       setHint(luckyLad.type);
     })();
   }, []);
+
+  function callEndgame() {
+    resetWord();
+    setTypeHintTaken(false);
+    setDefinitionHintTaken(false);
+    setWordTypes([]);
+    setWordDefinition("");
+  }
 
   const add = typeof Audio !== "undefined" ? new Audio("/add.mp3") : undefined;
   const remove =
@@ -289,10 +312,10 @@ export default memo(function SinglePlayerTrialModeComponent() {
                 <div className="space-y-0">
                   <button
                     onClick={async () => {
-                      await activateTypeHint();
+                      await activateHint("type");
                     }}
                     disabled={typeHintTaken}
-                    className="flex justify-start items-center hover:bg-foreground/10 p-3 rounded-md duration-200 cursor-pointer text-left w-full"
+                    className="flex justify-start items-center hover:bg-foreground/10 p-3 rounded-md duration-200 cursor-pointer text-left w-full disabled:pointer-events-none disabled:opacity-40"
                   >
                     <div className="flex items-center justify-start gap-2">
                       <SwatchBook
@@ -311,9 +334,10 @@ export default memo(function SinglePlayerTrialModeComponent() {
                   </button>
                   <button
                     onClick={async () => {
-                      // await activateTypeHint();
+                      await activateHint("definition");
                     }}
-                    className=" flex justify-start items-center hover:bg-foreground/10 p-3 rounded-md duration-200 cursor-pointer text-left w-full"
+                    disabled={definitionHintTaken}
+                    className=" flex justify-start items-center hover:bg-foreground/10 p-3 rounded-md duration-200 cursor-pointer text-left w-full disabled:pointer-events-none disabled:opacity-40"
                   >
                     <div className="flex items-center justify-start gap-2">
                       <SwatchBook
@@ -387,9 +411,7 @@ export default memo(function SinglePlayerTrialModeComponent() {
                 ))}
               </div>
               <button
-                onClick={() => {
-                  resetWord();
-                }}
+                onClick={callEndgame}
                 className="flex gap-3 text-sm bg-incorrect p-3 w-full rounded-lg text-center justify-center items-center hover:opacity-70 duration-200"
               >
                 <RotateCw size={20}></RotateCw> <p>Try again</p>
@@ -440,9 +462,7 @@ export default memo(function SinglePlayerTrialModeComponent() {
                 ))}
               </div>
               <button
-                onClick={() => {
-                  resetWord();
-                }}
+                onClick={callEndgame}
                 className="flex gap-3 text-sm bg-correct text-background p-3 w-full rounded-lg text-center justify-center items-center hover:opacity-70 duration-200"
               >
                 <RotateCw size={20}></RotateCw> <p>New word</p>
@@ -510,7 +530,7 @@ export default memo(function SinglePlayerTrialModeComponent() {
               </div>
             )}
 
-            {typeHintTaken && wordTypes.length > 0 && (
+            {typeHintTaken && wordTypes.length > 0 ? (
               <div className="text-foreground text-sm mt-3">
                 The word is{" "}
                 {wordTypes.map((x, i) => (
@@ -523,6 +543,23 @@ export default memo(function SinglePlayerTrialModeComponent() {
                   </span>
                 ))}
               </div>
+            ) : typeHintTaken && wordTypes.length === 0 ? (
+              <div className="relative">
+                <div className="loader scale-75 translate-y-3"></div>
+              </div>
+            ) : (
+              <></>
+            )}
+            {definitionHintTaken && wordDefinition.length > 0 ? (
+              <div className="text-foreground text-sm mt-3 max-w-lg max-md:max-w-84 text-center">
+                {wordDefinition}
+              </div>
+            ) : definitionHintTaken && wordDefinition.length === 0 ? (
+              <div className="relative">
+                <div className="loader scale-75 translate-y-3"></div>
+              </div>
+            ) : (
+              <></>
             )}
 
             <div className="gap-1 flex flex-col    justify-center items-center">
@@ -600,9 +637,7 @@ export default memo(function SinglePlayerTrialModeComponent() {
                   whileTap={{
                     scale: 0.98,
                   }}
-                  onClick={() => {
-                    resetWord();
-                  }}
+                  onClick={callEndgame}
                   className="bg-correct/10 text-correct p-3 rounded-lg border  border-correct/40 flex gap-3 text-sm items-center"
                 >
                   <RefreshCcw size={20}></RefreshCcw>
