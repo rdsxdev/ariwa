@@ -5,6 +5,7 @@ import wordExists from "@/utils/checkWord";
 import { generateRandomWord } from "@/utils/generateRandomWord";
 import {
   ALargeSmall,
+  Book,
   Frown,
   Gamepad,
   Gamepad2,
@@ -37,7 +38,7 @@ export default memo(function SinglePlayerTrialModeComponent() {
   const [wordDefinition, setWordDefinition] = useState("");
 
   async function activateHint(type: "type" | "definition") {
-    setShowHintsMenu(false);
+    // setShowHintsMenu(false);
 
     if (type === "type") {
       setTypeHintTaken(true);
@@ -320,21 +321,39 @@ export default memo(function SinglePlayerTrialModeComponent() {
                       await activateHint("type");
                     }}
                     disabled={typeHintTaken}
-                    className="flex justify-start items-center hover:bg-foreground/10 p-3 rounded-md duration-200 cursor-pointer text-left w-full disabled:pointer-events-none disabled:opacity-40"
+                    className="flex justify-start items-center hover:bg-foreground/10 p-3 rounded-md duration-200 cursor-pointer text-left w-full disabled:pointer-events-none -disabled:opacity-40 max-md:px-0"
                   >
                     <div className="flex items-center justify-start gap-2">
                       <SwatchBook
-                        className="bg-green-600/20 text-green-600 p-1 rounded-md"
+                        className="bg-green-600/20 text-teal-600 p-1 rounded-md"
                         size={40}
                       ></SwatchBook>
-                      <div className="">
-                        <div className="text-sm text-green-500 ">
-                          Part of Speech
+
+                      {typeHintTaken && wordTypes.length > 0 ? (
+                        <div className="text-foreground text-sm  text-center space-x-1">
+                          {wordTypes.map((x, i) => (
+                            <span key={x} className="">
+                              {/* a{" "} */}
+                              <span className="capitalize bg-green-600/10 p-2 rounded-lg font-semibold border border-teal-500 text-teal-500">
+                                {x}
+                              </span>{" "}
+                            </span>
+                          ))}
                         </div>
-                        <div className="text-xs text-foreground/80">
-                          Check if the word's part of speech
+                      ) : typeHintTaken && wordTypes.length === 0 ? (
+                        <div className="relative">
+                          <div className="loader scale-50 translate-y-1"></div>
                         </div>
-                      </div>
+                      ) : (
+                        <div className="">
+                          <div className="text-sm text-teal-500 ">
+                            Part of Speech
+                          </div>
+                          <div className="text-xs text-foreground/80">
+                            Check if the word's part of speech
+                          </div>
+                        </div>
+                      )}
                     </div>
                   </button>
                   <button
@@ -342,32 +361,42 @@ export default memo(function SinglePlayerTrialModeComponent() {
                       await activateHint("definition");
                     }}
                     disabled={definitionHintTaken}
-                    className=" flex justify-start items-center hover:bg-foreground/10 p-3 rounded-md duration-200 cursor-pointer text-left w-full disabled:pointer-events-none disabled:opacity-40"
+                    className=" flex justify-start items-center hover:bg-foreground/10 p-3 rounded-md duration-200 cursor-pointer text-left w-full disabled:pointer-events-none -disabled:opacity-40 max-md:px-0"
                   >
                     <div className="flex items-center justify-start gap-2">
-                      <SwatchBook
+                      <Book
                         className="bg-cyan-400/20 text-cyan-400 p-1 rounded-md"
                         size={40}
-                      ></SwatchBook>
-                      <div className="">
-                        <div className="text-sm text-cyan-400">
-                          Word Definition
+                      ></Book>
+                      {definitionHintTaken && wordDefinition.length > 0 ? (
+                        <div className=" text-sm  max-w-84 max-md:max-w-84   text-cyan-400">
+                          {wordDefinition}
                         </div>
-                        <div className="text-xs text-foreground/80">
-                          Definition can be relative to any of the parts of
-                          speech
+                      ) : definitionHintTaken && wordDefinition.length === 0 ? (
+                        <div className="relative">
+                          <div className="loader scale-50 translate-y-1"></div>
                         </div>
-                      </div>
+                      ) : (
+                        <div className="">
+                          <div className="text-sm text-cyan-400">
+                            Word Definition
+                          </div>
+                          <div className="text-xs text-foreground/80">
+                            Definition can be relative to any of the parts of
+                            speech
+                          </div>
+                        </div>
+                      )}
                     </div>
                   </button>
                 </div>
                 <button
-                  disabled
+                  // disabled
                   onClick={() => {
                     setShowHintsMenu(false);
                     setShowAuthModal(true);
                   }}
-                  className="text-sm bg-incorrect text-white px-3 py-2 rounded-md flex justify-center items-center gap-2 disabled:opacity-50 w-full disabled:pointer-events-none"
+                  className="text-sm bg-foreground text-background px-3 py-2 rounded-md flex justify-center items-center gap-2 disabled:opacity-50 w-full disabled:pointer-events-none"
                 >
                   <Lock size={16}></Lock> <p>Log in to unlock more hints</p>
                 </button>
@@ -508,37 +537,6 @@ export default memo(function SinglePlayerTrialModeComponent() {
           />
 
           <div className="flex flex-col-reverse justify-center items-center h-full max-w-fit w-fit gap-3 relative">
-            {typeHintTaken && wordTypes.length > 0 ? (
-              <div className="text-foreground text-sm mt-3 text-center space-x-1">
-                {/* The word is{" "} */}
-                {wordTypes.map((x, i) => (
-                  <span key={x} className="">
-                    {/* a{" "} */}
-                    <span className="capitalize bg-green-600/10 p-2 rounded-lg font-semibold border border-green-600 text-green-600">
-                      {x}
-                    </span>{" "}
-                    {/* {i + 1 < wordTypes.length && `or `} */}
-                  </span>
-                ))}
-              </div>
-            ) : typeHintTaken && wordTypes.length === 0 ? (
-              <div className="relative">
-                <div className="loader scale-75 translate-y-3"></div>
-              </div>
-            ) : (
-              <></>
-            )}
-            {definitionHintTaken && wordDefinition.length > 0 ? (
-              <div className=" text-sm mt-3 max-w-100 max-md:max-w-84 text-center bg-cyan-400/10 p-2 rounded-md border-cyan-400 border text-cyan-400">
-                {wordDefinition}
-              </div>
-            ) : definitionHintTaken && wordDefinition.length === 0 ? (
-              <div className="relative">
-                <div className="loader scale-75 translate-y-3"></div>
-              </div>
-            ) : (
-              <></>
-            )}
             {addLetter && (
               <Keyboard
                 submitAttempt={submitAttempt}
@@ -592,7 +590,7 @@ export default memo(function SinglePlayerTrialModeComponent() {
                           }}
                           animate={{
                             scale:
-                              j !== life ? 1 : currentIndex === i ? 0.96 : 1,
+                              j !== life ? 1 : currentIndex === i ? 0.94 : 1,
                           }}
                           key={i}
                           className={`h-16 ${
@@ -666,7 +664,7 @@ export default memo(function SinglePlayerTrialModeComponent() {
                   onClick={() => {
                     setShowHintsMenu(true);
                   }}
-                  className="bg-correct/10 text-correct p-3 rounded-lg border border-correct/40 w-fit text-sm items-center flex gap-2"
+                  className="bg-foreground/10 text-foreground p-3 rounded-lg border border-foreground/40 w-fit text-sm items-center flex gap-2"
                 >
                   <Lightbulb size={20}></Lightbulb>
                   Hint

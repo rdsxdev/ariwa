@@ -3,6 +3,7 @@
 import { AnimatePresence, motion } from "motion/react";
 import {
   ALargeSmall,
+  CircleQuestionMark,
   Heart,
   Settings2,
   User,
@@ -31,6 +32,8 @@ export default function Navbar() {
 
   const [localWordLength, setLocalWordLength] = useState(wordLength);
   const [localChances, setLocalChances] = useState(chances);
+
+  const [showGuide, setShowGuide] = useState(false);
 
   return (
     <div className="relative">
@@ -73,7 +76,7 @@ export default function Navbar() {
             </div>
             <div className="w-full space-y-5">
               <div className="flex justify-start items-center w-full gap-3">
-                <div className="text-correct bg-correct/10 p-2 rounded-lg">
+                <div className="text-foreground bg-foreground/10 p-2 rounded-lg">
                   <ALargeSmall size={26}></ALargeSmall>
                 </div>
                 <div className="flex flex-col gap-px">
@@ -110,7 +113,7 @@ export default function Navbar() {
 
             <div className="w-full space-y-5 flex items-center justify-between flex-col">
               <div className="flex justify-start items-center w-full gap-3">
-                <div className="text-correct bg-correct/10 p-2 rounded-lg">
+                <div className="text-foreground bg-foreground/10 p-2 rounded-lg">
                   <Heart size={26}></Heart>
                 </div>
                 <div className="flex flex-col gap-px">
@@ -150,7 +153,7 @@ export default function Navbar() {
             </div>
             <div className="w-full flex items-center justify-between ">
               <div className="flex justify-start items-center w-full gap-3">
-                <div className="text-correct bg-correct/10 p-2 rounded-lg">
+                <div className="text-foreground bg-foreground/10 p-2 rounded-lg">
                   <Volume2 size={26}></Volume2>
                 </div>
                 <div className="flex flex-col gap-px">
@@ -163,7 +166,7 @@ export default function Navbar() {
                     setSoundEffect(1);
                     localStorage.setItem("sounds", "1");
                   }}
-                  className={`w-1/2  text-sm  duration-200 h-full rounded-md p-1 ${soundEffect === 1 && "bg-correct/30 shadow-lg shadow-black/5 text-correct "} `}
+                  className={`w-1/2  text-sm  duration-200 h-full rounded-md p-1 ${soundEffect === 1 && "bg-foreground/30 shadow-lg shadow-black/5 text-foreground "} `}
                 >
                   On
                 </button>
@@ -186,11 +189,36 @@ export default function Navbar() {
                 localStorage.setItem("length", localWordLength.toString());
                 localStorage.setItem("chances", localChances.toString());
               }}
-              className="flex gap-3 text-sm bg-incorrect p-3 w-full rounded-lg text-center justify-center items-center hover:opacity-70 duration-200"
+              className="flex gap-3 text-sm bg-foreground p-3 w-full rounded-lg text-center justify-center items-center hover:opacity-70 duration-200 text-background"
             >
               <p>Save Changes</p>
             </button>
           </div>
+        </motion.div>
+      </ModalContainer>
+      <ModalContainer
+        // preventClosingByClickingOnBackground
+        show={showGuide}
+        setShow={setShowGuide}
+        className="max-h-[80vh] noscroll overflow-y-scroll overflow-x-hidden"
+      >
+        <motion.div
+          initial={{
+            opacity: 0,
+          }}
+          animate={{
+            opacity: 1,
+          }}
+          exit={{
+            opacity: 0,
+          }}
+          className="text-white bg-background p-8 px-5 max-md:px-3 rounded-xl  flex justify-center items-center z-9999999999999999 pt-8"
+        >
+          <div className="">
+            <div className="text-lg font-semibold capitalize">How to play?</div>
+            <div>Guess the word in {wordLength} of tries</div>
+          </div>
+          <div></div>
         </motion.div>
       </ModalContainer>
       <ModalContainer show={showAuthModal} setShow={setShowAuthModal}>
@@ -200,13 +228,21 @@ export default function Navbar() {
         <div className="w-1/3 max-md:hidden"></div>
         <div className="flex justify-center items-center gap-3 w-1/3 max-md:w-fit">
           <Logo size={36}></Logo>
-          <div className="font-bold flex text-xl max-md:hidden">
-            <p className="text-correct">WORD</p>
-            <p className="text-incorrect">RUSH</p>
+          <div className="font-bold flex text-xl max-md:hidden hidden">
+            <p className="text-correct ">WORD</p>
+            <p className="text-incorrect ">RUSH</p>
           </div>
         </div>
 
-        <div className="w-1/3 flex justify-end items-center gap-3 max-md:w-2/3">
+        <div className="w-1/3 flex justify-end items-center gap-3 max-md:w-3/4">
+          <button
+            onClick={() => {
+              setShowGuide(true);
+            }}
+            className="text-white/70 hidden"
+          >
+            <CircleQuestionMark size={30}></CircleQuestionMark>
+          </button>
           <motion.button
             initial={{
               opacity: 0,
@@ -223,17 +259,17 @@ export default function Navbar() {
             onClick={() => {
               setShowGameSettings(true);
             }}
-            className="bg-incorrect/10 text-incorrect p-2 rounded-lg border border-incorrect/40 w-fit text-sm flex items-center gap-2"
+            className="bg-foreground/10 text-foreground p-2 rounded-lg border border-foreground/40 w-fit text-sm flex items-center gap-2"
           >
             <Settings2 size={20}></Settings2>
             Settings
           </motion.button>
           <button
-            disabled
+            // disabled
             onClick={() => {
               setShowAuthModal(true);
             }}
-            className="text-sm bg-incorrect text-white px-3 py-2 rounded-md flex justify-center items-center gap-2 disabled:opacity-50"
+            className="text-sm bg-foreground text-background px-3 py-2 rounded-md flex justify-center items-center gap-2 disabled:opacity-50"
           >
             <User size={16}></User> <p>Log in</p>
           </button>

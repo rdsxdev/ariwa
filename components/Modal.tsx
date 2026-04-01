@@ -36,10 +36,10 @@ export default function ModalContainer({
                 setShow(false);
               }
             }}
-            className="bg-black/90 w-full h-full shadow-xl"
+            className="bg-black/70 w-full h-full"
           ></div>
           <div
-            className={`absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 border-2 border-foreground/20 rounded-lg ${className}`}
+            className={`absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 border-2 border-foreground/5 rounded-lg ${className}`}
           >
             {children}
           </div>

@@ -19,7 +19,7 @@ export default function AuthPopup() {
           <div className="text-base font-semibold flex gap-1">
             Welcome to{" "}
             <div className="flex">
-              <p className="text-correct">Word</p>
+              <p className="text-foreground">Word</p>
               <p className="text-incorrect">Rush</p>
             </div>
           </div>
@@ -49,7 +49,7 @@ export default function AuthPopup() {
           <div className="flex flex-col justify-start items-start w-full relative gap-2">
             <label htmlFor="email">Email Address</label>
             <div className="relative w-full">
-              <div className="absolute top-1/2 -translate-y-1/2 left-2 text-correct/80">
+              <div className="absolute top-1/2 -translate-y-1/2 left-2 text-foreground/80">
                 <Mail size={18}></Mail>
               </div>
               <input
@@ -63,7 +63,7 @@ export default function AuthPopup() {
           <div className="flex flex-col justify-start items-start w-full relative gap-2">
             <label htmlFor="password">Password</label>
             <div className="relative w-full">
-              <div className="absolute top-1/2 -translate-y-1/2 left-2 text-correct/80">
+              <div className="absolute top-1/2 -translate-y-1/2 left-2 text-foreground/80">
                 <Lock size={18}></Lock>
               </div>
               <input
@@ -76,7 +76,7 @@ export default function AuthPopup() {
           </div>
           <button
             type="submit"
-            className="px-3 py-3 bg-incorrect w-full rounded-md text-foreground hover:opacity-70 duration-200"
+            className="px-3 py-3 bg-foreground text-background w-full rounded-md hover:opacity-70 duration-200"
           >
             Continue
           </button>
@@ -91,7 +91,7 @@ export default function AuthPopup() {
           <div className="flex flex-col justify-start items-start w-full relative gap-2">
             <div className="text-foreground">Details</div>
             <div className="relative w-full">
-              <div className="absolute top-1/2 -translate-y-1/2 left-2 text-correct/80">
+              <div className="absolute top-1/2 -translate-y-1/2 left-2 text-foreground/80">
                 <User size={18}></User>
               </div>
               <input
@@ -102,7 +102,7 @@ export default function AuthPopup() {
               />
             </div>
             <div className="relative w-full">
-              <div className="absolute top-1/2 -translate-y-1/2 left-2 text-correct/80">
+              <div className="absolute top-1/2 -translate-y-1/2 left-2 text-foreground/80">
                 <Mail size={18}></Mail>
               </div>
               <input
@@ -118,7 +118,7 @@ export default function AuthPopup() {
               Password
             </label>
             <div className="relative w-full">
-              <div className="absolute top-1/2 -translate-y-1/2 left-2 text-correct/80">
+              <div className="absolute top-1/2 -translate-y-1/2 left-2 text-foreground/80">
                 <Lock size={18}></Lock>
               </div>
               <input
@@ -131,7 +131,7 @@ export default function AuthPopup() {
           </div>
           <button
             type="submit"
-            className="px-3 py-3 bg-incorrect w-full rounded-md text-white hover:opacity-70 duration-200"
+            className="px-3 py-3 bg-foreground  w-full rounded-md text-background hover:opacity-70 duration-200"
           >
             Continue
           </button>
