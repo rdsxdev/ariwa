@@ -13,13 +13,13 @@
 
   /* --color-correct: #08cb00; */
   /* --color-incorrect: #fcb53b; */
-
-  --color-correct: #15f5ba;
-  /* --color-incorrect: #8fa1f7; */
-  --color-incorrect: #f51550;
   /*  */
-  /* --color-correct: #00cfd4;
-  --color-incorrect: #cc5522; */
+  /* --color-correct: #15f5ba; */
+  /* --color-incorrect: #8fa1f7; */
+  /* --color-incorrect: #f51550; */
+
+  --color-correct: #00cfd4;
+  --color-incorrect: #cc5522;
 }
 
 /* --color-background: #0f1414;

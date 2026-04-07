@@ -391,7 +391,16 @@ export default memo(function SinglePlayerTrialModeComponent() {
                   </button>
                 </div>
                 <button
-                  // disabled
+                  onClick={() => {
+                    setShowHintsMenu(false);
+                    // setShowAuthModal(true);
+                  }}
+                  className="text-sm bg-foreground/30 text-foreground px-3 py-2 rounded-md flex justify-center items-center gap-2 disabled:opacity-50 w-full disabled:pointer-events-none"
+                >
+                  {/* <Lock size={16}></Lock>  */}
+                  <p>Cancel</p>
+                </button>
+                {/* <button
                   onClick={() => {
                     setShowHintsMenu(false);
                     setShowAuthModal(true);
@@ -399,7 +408,7 @@ export default memo(function SinglePlayerTrialModeComponent() {
                   className="text-sm bg-foreground text-background px-3 py-2 rounded-md flex justify-center items-center gap-2 disabled:opacity-50 w-full disabled:pointer-events-none"
                 >
                   <Lock size={16}></Lock> <p>Log in to unlock more hints</p>
-                </button>
+                </button> */}
               </div>
             </div>
           </motion.div>
@@ -590,12 +599,12 @@ export default memo(function SinglePlayerTrialModeComponent() {
                           }}
                           animate={{
                             scale:
-                              j !== life ? 1 : currentIndex === i ? 0.94 : 1,
+                              j !== life ? 1 : currentIndex === i ? 0.98 : 1,
                           }}
                           key={i}
                           className={`h-16 ${
                             letterSizeForMobile[wordLength]
-                          } aspect-square  text-center flex justify-center items-center text-3xl max-md:text-xl font-bold rounded-md /border-4 /border-foreground/10 
+                          } aspect-square   text-center flex justify-center items-center text-3xl max-md:text-xl font-bold rounded-md /border-4 /border-foreground/10 
                         ${
                           j === life
                             ? word.letter === ""

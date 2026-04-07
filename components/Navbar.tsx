@@ -8,6 +8,7 @@ import {
   Settings2,
   User,
   UserCircle,
+  Users,
   Volume2,
   X,
 } from "lucide-react";
@@ -29,6 +30,8 @@ export default function Navbar() {
   } = useSinglePlayerData()!;
 
   const [showGameSettings, setShowGameSettings] = useState(false);
+
+  const [createRoomPrompt, setCreateRoomPrompt] = useState(false);
 
   const [localWordLength, setLocalWordLength] = useState(wordLength);
   const [localChances, setLocalChances] = useState(chances);
@@ -197,6 +200,60 @@ export default function Navbar() {
         </motion.div>
       </ModalContainer>
       <ModalContainer
+        preventClosingByClickingOnBackground
+        show={createRoomPrompt}
+        setShow={setCreateRoomPrompt}
+        className="max-h-[80vh] noscroll overflow-y-scroll overflow-x-hidden"
+      >
+        <motion.div
+          initial={{
+            opacity: 0,
+          }}
+          animate={{
+            opacity: 1,
+          }}
+          exit={{
+            opacity: 0,
+          }}
+          className="text-white bg-background p-8 px-5 max-md:px-3 rounded-xl  flex justify-center items-center z-9999999999999999 pt-8"
+        >
+          <div className="flex justify-center items-center flex-col gap-8 w-full min-w-110 max-md:min-w-84 max-md:w-fit">
+            <button
+              onClick={() => {
+                setCreateRoomPrompt(false);
+              }}
+              className="flex justify-end items-center w-full text-foreground/50 absolute top-3 right-3 cursor-pointer"
+            >
+              <X></X>
+            </button>
+            <div className="w-full">
+              <div className="text-xl font-semibold text-left w-full capitalize">
+                Start a new room
+              </div>
+              <div className="text-sm  text-left w-full ">
+                and play with friends
+              </div>
+            </div>
+
+            <div className="flex flex-col justify-start items-start w-full text-sm gap-2">
+              <div>Choose a name</div>
+              <input
+                type="text"
+                placeholder="Unga Bunga"
+                className="w-full bg-foreground/10 py-2 rounded-lg border border-foreground/5 pl-2 "
+              />
+            </div>
+
+            <button
+              onClick={() => {}}
+              className="flex gap-3 text-sm bg-correct p-3 w-full rounded-lg text-center justify-center items-center hover:opacity-70 duration-200 text-background"
+            >
+              <p>Create Room</p>
+            </button>
+          </div>
+        </motion.div>
+      </ModalContainer>
+      <ModalContainer
         // preventClosingByClickingOnBackground
         show={showGuide}
         setShow={setShowGuide}
@@ -257,6 +314,27 @@ export default function Navbar() {
               scale: 0.98,
             }}
             onClick={() => {
+              setCreateRoomPrompt(true);
+            }}
+            className="bg-foreground text-background p-2 rounded-lg border border-foreground/40 w-fit text-sm flex items-center gap-2 capitalize"
+          >
+            {/* <Users size={20}></Users> */}
+            Make a room
+          </motion.button>
+          <motion.button
+            initial={{
+              opacity: 0,
+            }}
+            animate={{
+              opacity: 1,
+            }}
+            exit={{
+              opacity: 0,
+            }}
+            whileTap={{
+              scale: 0.98,
+            }}
+            onClick={() => {
               setShowGameSettings(true);
             }}
             className="bg-foreground/10 text-foreground p-2 rounded-lg border border-foreground/40 w-fit text-sm flex items-center gap-2"
@@ -264,15 +342,14 @@ export default function Navbar() {
             <Settings2 size={20}></Settings2>
             Settings
           </motion.button>
-          <button
-            // disabled
+          {/* <button
             onClick={() => {
               setShowAuthModal(true);
             }}
             className="text-sm bg-foreground text-background px-3 py-2 rounded-md flex justify-center items-center gap-2 disabled:opacity-50"
           >
             <User size={16}></User> <p>Log in</p>
-          </button>
+          </button> */}
         </div>
       </div>
     </div>
