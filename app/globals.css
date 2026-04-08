@@ -121,3 +121,34 @@ button {
   }
 }
 /*  */
+
+.noscroll::-webkit-scrollbar {
+  display: none;
+}
+
+/* .customscroll::-webkit-scrollbar-button {
+  display: none;
+} */
+
+/* ===== Scrollbar CSS ===== */
+/* Firefox */
+.customscroll {
+  scrollbar-width: thin;
+  scrollbar-color: #2e2e2e #000000;
+}
+
+/* Chrome, Edge, and Safari */
+.customscroll::-webkit-scrollbar {
+  width: 10px;
+}
+
+.customscroll::-webkit-scrollbar-track {
+  background: #000000;
+}
+
+.customscroll::-webkit-scrollbar-thumb {
+  background-color: #2e2e2e;
+  border-radius: 10px;
+  border: 3px solid #ffffff;
+}
+/*  */

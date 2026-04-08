@@ -3,6 +3,7 @@
 import { AnimatePresence, motion } from "motion/react";
 import {
   ALargeSmall,
+  ChevronRight,
   CircleQuestionMark,
   Heart,
   Settings2,
@@ -37,6 +38,12 @@ export default function Navbar() {
   const [localChances, setLocalChances] = useState(chances);
 
   const [showGuide, setShowGuide] = useState(false);
+
+  const [initialRoomSettings, setInitialRoomSettings] = useState({
+    avatar: 1,
+    wordLength: 4,
+    chances: 6,
+  });
 
   return (
     <div className="relative">
@@ -200,10 +207,10 @@ export default function Navbar() {
         </motion.div>
       </ModalContainer>
       <ModalContainer
-        preventClosingByClickingOnBackground
+        // preventClosingByClickingOnBackground
         show={createRoomPrompt}
         setShow={setCreateRoomPrompt}
-        className="max-h-[80vh] noscroll overflow-y-scroll overflow-x-hidden"
+        className="max-h-[90vh] noscroll overflow-y-scroll overflow-x-hidden"
       >
         <motion.div
           initial={{
@@ -215,7 +222,7 @@ export default function Navbar() {
           exit={{
             opacity: 0,
           }}
-          className="text-white bg-background p-8 px-5 max-md:px-3 rounded-xl  flex justify-center items-center z-9999999999999999 pt-8"
+          className="text-white bg-background p-8 px-5 max-md:px-6 rounded-xl  flex justify-center items-center z-9999999999999999 pt-8"
         >
           <div className="flex justify-center items-center flex-col gap-8 w-full min-w-110 max-md:min-w-84 max-md:w-fit">
             <button
@@ -235,13 +242,129 @@ export default function Navbar() {
               </div>
             </div>
 
-            <div className="flex flex-col justify-start items-start w-full text-sm gap-2">
-              <div>Choose a name</div>
-              <input
-                type="text"
-                placeholder="Unga Bunga"
-                className="w-full bg-foreground/10 py-2 rounded-lg border border-foreground/5 pl-2 "
-              />
+            <div className="space-y-4 w-full">
+              <div className="flex flex-col justify-start items-start w-full text-sm gap-2">
+                <div>Choose a name</div>
+                <input
+                  type="text"
+                  placeholder="Unga Bunga"
+                  className="w-full bg-foreground/10 py-2 rounded-lg border border-foreground/5 pl-2 "
+                />
+              </div>
+              <div className="flex flex-col justify-start items-start w-full text-sm gap-2">
+                <div>Choose an avatar</div>
+                <div className="flex max-w-110 overflow-x-scroll gap-3 customscroll py-3 px-3">
+                  {new Array(16).fill("").map((x, i) => {
+                    return (
+                      <motion.img
+                        key={i + 1}
+                        whileTap={{
+                          scale: 0.95,
+                        }}
+                        onClick={() => {
+                          setInitialRoomSettings((org) => ({
+                            ...org,
+                            avatar: i + 1,
+                          }));
+                        }}
+                        className={`w-16 cursor-pointer ${initialRoomSettings.avatar === i + 1 ? "border-4 border-correct rounded-full scale-120" : "scale-90 opacity-80"}`}
+                        src={`/avatars/${i + 1}.svg`}
+                        alt=""
+                      />
+                    );
+                  })}
+                </div>
+              </div>
+              <div className="w-full space-y-5">
+                <div className="flex justify-start items-center w-full gap-3">
+                  <div className="text-foreground bg-foreground/10 p-2 rounded-lg">
+                    <ALargeSmall size={26}></ALargeSmall>
+                  </div>
+                  <div className="flex flex-col gap-px">
+                    <div className="text-sm">Word Length</div>
+                    <div className="text-xs">
+                      Choose how many letters to guess
+                    </div>
+                  </div>
+                </div>
+                <div className="flex justify-between w-full items-center flex-col">
+                  <div className="flex gap-3 w-full justify-center items-center">
+                    {[3, 4, 5, 6, 7, 8].map((x) => {
+                      return (
+                        <motion.button
+                          whileTap={{
+                            scale: 0.95,
+                          }}
+                          transition={{
+                            duration: 0.4,
+                          }}
+                          onClick={() => {
+                            setInitialRoomSettings((org) => ({
+                              ...org,
+                              wordLength: x,
+                            }));
+                            // setLocalWordLength(x);
+                          }}
+                          key={x}
+                          className={`w-10 text-center aspect-square  rounded-lg cursor-pointer ${initialRoomSettings.wordLength === x ? "bg-foreground text-background" : "bg-foreground/10"}`}
+                        >
+                          {x}
+                        </motion.button>
+                      );
+                    })}
+                  </div>
+                </div>
+                <div className="w-full space-y-5 flex items-center justify-between flex-col">
+                  <div className="flex justify-start items-center w-full gap-3">
+                    <div className="text-foreground bg-foreground/10 p-2 rounded-lg">
+                      <Heart size={26}></Heart>
+                    </div>
+                    <div className="flex flex-col gap-px">
+                      <div className="text-sm">Attempts</div>
+                      <div className="text-xs">
+                        Choose how many times you can try
+                      </div>
+                    </div>
+                  </div>
+                  <div className="flex justify-center gap-3 w-full  items-center">
+                    <motion.button
+                      whileTap={{
+                        scale: 0.95,
+                      }}
+                      disabled={initialRoomSettings.chances === 1}
+                      onClick={() => {
+                        if (initialRoomSettings.chances > 1)
+                          setInitialRoomSettings((org) => ({
+                            ...org,
+                            chances: org.chances - 1,
+                          }));
+                      }}
+                      className="cursor-pointer border border-foreground/10 bg-foreground/20 p-2 rounded-lg  text-center flex justify-center items-center min-w-8 w-1/4 h-full select-none disabled:opacity-45 "
+                    >
+                      -
+                    </motion.button>
+                    <div className="text-center min-w-6 ">
+                      {initialRoomSettings.chances}
+                    </div>
+                    <motion.button
+                      whileTap={{
+                        scale: 0.95,
+                      }}
+                      disabled={initialRoomSettings.chances === 10}
+                      onClick={() => {
+                        if (initialRoomSettings.chances < 10)
+                          setInitialRoomSettings((org) => ({
+                            ...org,
+                            chances: org.chances + 1,
+                          }));
+                      }}
+                      className="cursor-pointer border border-foreground/10 bg-foreground/20 p-2 rounded-lg  text-center flex justify-center items-center min-w-8 w-1/4 h-full select-none disabled:opacity-45 "
+                    >
+                      +
+                    </motion.button>
+                  </div>
+                </div>
+              </div>
             </div>
 
             <button
