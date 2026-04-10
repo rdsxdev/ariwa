@@ -3,6 +3,7 @@
 import { AnimatePresence, motion } from "motion/react";
 import {
   ALargeSmall,
+  ChevronDown,
   ChevronRight,
   CircleQuestionMark,
   Heart,
@@ -41,9 +42,12 @@ export default function Navbar() {
 
   const [initialRoomSettings, setInitialRoomSettings] = useState({
     avatar: 1,
-    wordLength: 4,
+    wordLength: 5,
     chances: 6,
+    rounds: 1,
   });
+
+  const [isSettingsExpanded, setIsSettingsExpanded] = useState(false);
 
   return (
     <div className="relative">
@@ -275,104 +279,168 @@ export default function Navbar() {
                   })}
                 </div>
               </div>
-              <div className="w-full space-y-5">
-                <div className="flex justify-start items-center w-full gap-3">
-                  <div className="text-foreground bg-foreground/10 p-2 rounded-lg">
-                    <ALargeSmall size={26}></ALargeSmall>
-                  </div>
-                  <div className="flex flex-col gap-px">
-                    <div className="text-sm">Word Length</div>
-                    <div className="text-xs">
-                      Choose how many letters to guess
-                    </div>
-                  </div>
-                </div>
-                <div className="flex justify-between w-full items-center flex-col">
-                  <div className="flex gap-3 w-full justify-center items-center">
-                    {[3, 4, 5, 6, 7, 8].map((x) => {
-                      return (
-                        <motion.button
-                          whileTap={{
-                            scale: 0.95,
-                          }}
-                          transition={{
-                            duration: 0.4,
-                          }}
-                          onClick={() => {
-                            setInitialRoomSettings((org) => ({
-                              ...org,
-                              wordLength: x,
-                            }));
-                            // setLocalWordLength(x);
-                          }}
-                          key={x}
-                          className={`w-10 text-center aspect-square  rounded-lg cursor-pointer ${initialRoomSettings.wordLength === x ? "bg-foreground text-background" : "bg-foreground/10"}`}
-                        >
-                          {x}
-                        </motion.button>
-                      );
-                    })}
-                  </div>
-                </div>
-                <div className="w-full space-y-5 flex items-center justify-between flex-col">
+              <button
+                onClick={() => {}}
+                className="flex gap-3 text-sm bg-correct p-3 w-full rounded-lg text-center justify-center items-center hover:opacity-70 duration-200 text-background "
+              >
+                <p>Create Room</p>
+              </button>
+              <button
+                onClick={() => {
+                  setIsSettingsExpanded((x) => !x);
+                }}
+                className="flex text-sm items-center gap-3"
+              >
+                Room Settings{" "}
+                {!isSettingsExpanded ? (
+                  <ChevronRight size={16}></ChevronRight>
+                ) : (
+                  <ChevronDown></ChevronDown>
+                )}
+              </button>
+              {isSettingsExpanded && (
+                <div className="w-full space-y-5">
                   <div className="flex justify-start items-center w-full gap-3">
                     <div className="text-foreground bg-foreground/10 p-2 rounded-lg">
-                      <Heart size={26}></Heart>
+                      <ALargeSmall size={26}></ALargeSmall>
                     </div>
                     <div className="flex flex-col gap-px">
-                      <div className="text-sm">Attempts</div>
+                      <div className="text-sm">Word Length</div>
                       <div className="text-xs">
-                        Choose how many times you can try
+                        Choose how many letters to guess
                       </div>
                     </div>
                   </div>
-                  <div className="flex justify-center gap-3 w-full  items-center">
-                    <motion.button
-                      whileTap={{
-                        scale: 0.95,
-                      }}
-                      disabled={initialRoomSettings.chances === 1}
-                      onClick={() => {
-                        if (initialRoomSettings.chances > 1)
-                          setInitialRoomSettings((org) => ({
-                            ...org,
-                            chances: org.chances - 1,
-                          }));
-                      }}
-                      className="cursor-pointer border border-foreground/10 bg-foreground/20 p-2 rounded-lg  text-center flex justify-center items-center min-w-8 w-1/4 h-full select-none disabled:opacity-45 "
-                    >
-                      -
-                    </motion.button>
-                    <div className="text-center min-w-6 ">
-                      {initialRoomSettings.chances}
+                  <div className="flex justify-between w-full items-center flex-col">
+                    <div className="flex gap-3 w-full justify-center items-center">
+                      {[3, 4, 5, 6, 7, 8].map((x) => {
+                        return (
+                          <motion.button
+                            whileTap={{
+                              scale: 0.95,
+                            }}
+                            transition={{
+                              duration: 0.4,
+                            }}
+                            onClick={() => {
+                              setInitialRoomSettings((org) => ({
+                                ...org,
+                                wordLength: x,
+                              }));
+                              // setLocalWordLength(x);
+                            }}
+                            key={x}
+                            className={`w-10 text-center aspect-square  rounded-lg cursor-pointer ${initialRoomSettings.wordLength === x ? "bg-foreground text-background" : "bg-foreground/10"}`}
+                          >
+                            {x}
+                          </motion.button>
+                        );
+                      })}
                     </div>
-                    <motion.button
-                      whileTap={{
-                        scale: 0.95,
-                      }}
-                      disabled={initialRoomSettings.chances === 10}
-                      onClick={() => {
-                        if (initialRoomSettings.chances < 10)
-                          setInitialRoomSettings((org) => ({
-                            ...org,
-                            chances: org.chances + 1,
-                          }));
-                      }}
-                      className="cursor-pointer border border-foreground/10 bg-foreground/20 p-2 rounded-lg  text-center flex justify-center items-center min-w-8 w-1/4 h-full select-none disabled:opacity-45 "
-                    >
-                      +
-                    </motion.button>
+                  </div>
+                  <div className="w-full space-y-5 flex items-center justify-between flex-col">
+                    <div className="flex justify-start items-center w-full gap-3">
+                      <div className="text-foreground bg-foreground/10 p-2 rounded-lg">
+                        <Heart size={26}></Heart>
+                      </div>
+                      <div className="flex flex-col gap-px">
+                        <div className="text-sm">Attempts</div>
+                        <div className="text-xs">
+                          Choose how many times you can try
+                        </div>
+                      </div>
+                    </div>
+                    <div className="flex justify-center gap-3 w-full  items-center">
+                      <motion.button
+                        whileTap={{
+                          scale: 0.95,
+                        }}
+                        disabled={initialRoomSettings.chances === 1}
+                        onClick={() => {
+                          if (initialRoomSettings.chances > 1)
+                            setInitialRoomSettings((org) => ({
+                              ...org,
+                              chances: org.chances - 1,
+                            }));
+                        }}
+                        className="cursor-pointer border border-foreground/10 bg-foreground/20 p-2 rounded-lg  text-center flex justify-center items-center min-w-8 w-1/4 h-full select-none disabled:opacity-45 "
+                      >
+                        -
+                      </motion.button>
+                      <div className="text-center min-w-6 ">
+                        {initialRoomSettings.chances}
+                      </div>
+                      <motion.button
+                        whileTap={{
+                          scale: 0.95,
+                        }}
+                        disabled={initialRoomSettings.chances === 10}
+                        onClick={() => {
+                          if (initialRoomSettings.chances < 10)
+                            setInitialRoomSettings((org) => ({
+                              ...org,
+                              chances: org.chances + 1,
+                            }));
+                        }}
+                        className="cursor-pointer border border-foreground/10 bg-foreground/20 p-2 rounded-lg  text-center flex justify-center items-center min-w-8 w-1/4 h-full select-none disabled:opacity-45 "
+                      >
+                        +
+                      </motion.button>
+                    </div>
+                  </div>
+                  <div className="w-full space-y-5 flex items-center justify-between flex-col">
+                    <div className="flex justify-start items-center w-full gap-3">
+                      <div className="text-foreground bg-foreground/10 p-2 rounded-lg">
+                        <Heart size={26}></Heart>
+                      </div>
+                      <div className="flex flex-col gap-px">
+                        <div className="text-sm">Rounds</div>
+                        <div className="text-xs">
+                          How many rounds in the game
+                        </div>
+                      </div>
+                    </div>
+                    <div className="flex justify-center gap-3 w-full  items-center">
+                      <motion.button
+                        whileTap={{
+                          scale: 0.95,
+                        }}
+                        disabled={initialRoomSettings.rounds === 1}
+                        onClick={() => {
+                          if (initialRoomSettings.rounds > 1)
+                            setInitialRoomSettings((org) => ({
+                              ...org,
+                              rounds: org.rounds - 1,
+                            }));
+                        }}
+                        className="cursor-pointer border border-foreground/10 bg-foreground/20 p-2 rounded-lg  text-center flex justify-center items-center min-w-8 w-1/4 h-full select-none disabled:opacity-45 "
+                      >
+                        -
+                      </motion.button>
+                      <div className="text-center min-w-6 ">
+                        {initialRoomSettings.rounds}
+                      </div>
+                      <motion.button
+                        whileTap={{
+                          scale: 0.95,
+                        }}
+                        disabled={initialRoomSettings.rounds === 10}
+                        onClick={() => {
+                          if (initialRoomSettings.rounds < 10)
+                            setInitialRoomSettings((org) => ({
+                              ...org,
+                              rounds: org.rounds + 1,
+                            }));
+                        }}
+                        className="cursor-pointer border border-foreground/10 bg-foreground/20 p-2 rounded-lg  text-center flex justify-center items-center min-w-8 w-1/4 h-full select-none disabled:opacity-45 "
+                      >
+                        +
+                      </motion.button>
+                    </div>
                   </div>
                 </div>
-              </div>
+              )}
             </div>
-
-            <button
-              onClick={() => {}}
-              className="flex gap-3 text-sm bg-correct p-3 w-full rounded-lg text-center justify-center items-center hover:opacity-70 duration-200 text-background"
-            >
-              <p>Create Room</p>
-            </button>
           </div>
         </motion.div>
       </ModalContainer>
