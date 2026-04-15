@@ -588,7 +588,7 @@ export default memo(function MultiPlayerTrialModeComponent() {
               wordLength={wordLength}
             ></GameGridComponent>
             <div className="absolute -left-36 top-0 text-white py-2 flex flex-col -items-end gap-3 max-md:relative max-md:flex-row max-md:left-auto max-md:justify-end max-md:w-full max-md:px-3 ">
-              {gameover && !win && !lose && (
+              {/* {gameover && !win && !lose && (
                 <motion.button
                   initial={{
                     opacity: 0,
@@ -608,7 +608,7 @@ export default memo(function MultiPlayerTrialModeComponent() {
                   <RefreshCcw size={20}></RefreshCcw>
                   Play again
                 </motion.button>
-              )}
+              )} */}
               {/* {!gameover && (
                 <motion.button
                   initial={{
