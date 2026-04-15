@@ -1,11 +1,12 @@
 import { Delete } from "lucide-react";
 import { motion } from "motion/react";
+import { memo } from "react";
 
 const qwertyLettersRow1 = ["q", "w", "e", "r", "t", "y", "u", "i", "o", "p"];
 const qwertyLettersRow2 = ["a", "s", "d", "f", "g", "h", "j", "k", "l"];
 const qwertyLettersRow3 = ["z", "x", "c", "v", "b", "n", "m"];
 
-export function Keyboard({
+export const Keyboard = memo(function KeyboardComponent({
   lastPressedKey,
   addLetter,
   removeLetter,
@@ -147,9 +148,9 @@ export function Keyboard({
       </motion.div>
     </div>
   );
-}
+});
 
-export function Key({
+export const Key = memo(function KeyComponent({
   letter,
   lastPressedKey,
   addLetter,
@@ -185,10 +186,10 @@ export function Key({
       animate={{
         scale: lastPressedKey?.toLowerCase() === letter.toLowerCase() ? 0.8 : 1,
       }}
-      className={`p-3 py-3 border border-foreground/5    min-w-12 max-md:min-w-8 max-md:w-full  max-md:h-16  ${(letter === "Enter" || letter === "Backspace") && "max-md:min-w-16"}  max-md:px-2 max-md:text-sm w-fit   flex justify-center items-center  rounded-md uppercase font-bold cursor-pointer select-none duration-100 border 
+      className={`p-3 py-3 border border-foreground/5    min-w-12 max-md:min-w-8 max-md:w-full  max-md:h-16  ${(letter === "Enter" || letter === "Backspace") && "max-md:min-w-16"}  max-md:px-2 max-md:text-sm w-fit   flex justify-center items-center  rounded-md uppercase font-bold cursor-pointer select-none duration-100 md:border 
 ${
   lastPressedKey?.toLowerCase() === letter.toLowerCase()
-    ? "border-foreground/60 bg-foreground/40"
+    ? "md:border-foreground/60 bg-foreground/40"
     : "border-background "
 }
                     
@@ -208,4 +209,4 @@ ${
       {letter !== "Backspace" ? letter : <Delete className="max-md:size-5" />}
     </motion.div>
   );
-}
+});

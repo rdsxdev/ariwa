@@ -28,10 +28,9 @@ import {
 import { Keyboard } from "@/components/Keyboard";
 import useSinglePlayerData from "@/context/SinglePlayerDataContext";
 import ModalContainer from "../Modal";
-import Navbar from "../Navbar";
-import GameGridComponent from "@/components/GameGrid";
+import GameGridComponent from "../GameGrid";
 
-export default memo(function SinglePlayerTrialModeComponent() {
+export default memo(function MultiPlayerTrialModeComponent() {
   const [showHintsMenu, setShowHintsMenu] = useState(false);
 
   const [typeHintTaken, setTypeHintTaken] = useState(false);
@@ -284,6 +283,8 @@ export default memo(function SinglePlayerTrialModeComponent() {
         }}
         className="overflow-hidden  flex justify-center items-center flex-col  bg-background"
       >
+        {/* <div className="absolute left-0 top-0 text-white">{word}</div> */}
+
         <ModalContainer
           // preventClosingByClickingOnBackground
           show={showHintsMenu}
@@ -586,7 +587,6 @@ export default memo(function SinglePlayerTrialModeComponent() {
               life={life}
               wordLength={wordLength}
             ></GameGridComponent>
-
             <div className="absolute -left-36 top-0 text-white py-2 flex flex-col -items-end gap-3 max-md:relative max-md:flex-row max-md:left-auto max-md:justify-end max-md:w-full max-md:px-3 ">
               {gameover && !win && !lose && (
                 <motion.button
@@ -609,7 +609,7 @@ export default memo(function SinglePlayerTrialModeComponent() {
                   Play again
                 </motion.button>
               )}
-              {!gameover && (
+              {/* {!gameover && (
                 <motion.button
                   initial={{
                     opacity: 0,
@@ -631,7 +631,7 @@ export default memo(function SinglePlayerTrialModeComponent() {
                   <Lightbulb size={20}></Lightbulb>
                   Hint
                 </motion.button>
-              )}
+              )} */}
             </div>
           </div>
         </div>

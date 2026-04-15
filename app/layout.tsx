@@ -36,7 +36,9 @@ export default function RootLayout({
       <body className={`${poppins.className} antialiased `}>
         <SinglePlayerDataProvider>
           <Navbar></Navbar>
-          <Toaster />
+          <div className="z-99999999999999 relative">
+            <Toaster />
+          </div>
           {children}
         </SinglePlayerDataProvider>
       </body>

@@ -1,8 +1,10 @@
 "use client";
 
 import { AnimatePresence, motion } from "motion/react";
+import { doc, setDoc } from "firebase/firestore";
 import {
   ALargeSmall,
+  Annoyed,
   ChevronDown,
   ChevronRight,
   CircleQuestionMark,
@@ -14,11 +16,16 @@ import {
   Volume2,
   X,
 } from "lucide-react";
+import { db } from "@/firebase";
 import { useState } from "react";
 import ModalContainer from "./Modal";
 import AuthPopup from "./AuthModalUI";
 import Logo from "@/public/Logo";
 import useSinglePlayerData from "@/context/SinglePlayerDataContext";
+import Image from "next/image";
+import { gameRoomID } from "@/lib/generateRoomID";
+import toast from "react-hot-toast";
+import { usePathname, useRouter } from "next/navigation";
 
 export default function Navbar() {
   const {
@@ -30,6 +37,8 @@ export default function Navbar() {
     soundEffect,
     resetWord,
   } = useSinglePlayerData()!;
+
+  const router = useRouter();
 
   const [showGameSettings, setShowGameSettings] = useState(false);
 
@@ -45,9 +54,15 @@ export default function Navbar() {
     wordLength: 5,
     chances: 6,
     rounds: 1,
+    name: "",
   });
 
   const [isSettingsExpanded, setIsSettingsExpanded] = useState(false);
+
+  const [showNameError, setShowNameError] = useState(false);
+
+  const path = usePathname();
+  console.log(path);
 
   return (
     <div className="relative">
@@ -228,7 +243,7 @@ export default function Navbar() {
           }}
           className="text-white bg-background p-8 px-5 max-md:px-6 rounded-xl  flex justify-center items-center z-9999999999999999 pt-8"
         >
-          <div className="flex justify-center items-center flex-col gap-8 w-full min-w-110 max-md:min-w-84 max-md:w-fit">
+          <div className="flex justify-center items-center flex-col gap-8 w-full min-w-110 max-md:min-w-84 max-md:w-70">
             <button
               onClick={() => {
                 setCreateRoomPrompt(false);
@@ -250,17 +265,27 @@ export default function Navbar() {
               <div className="flex flex-col justify-start items-start w-full text-sm gap-2">
                 <div>Choose a name</div>
                 <input
+                  value={initialRoomSettings.name}
+                  onChange={(e) => {
+                    setInitialRoomSettings((org) => ({
+                      ...org,
+                      name: e.target.value,
+                    }));
+                  }}
                   type="text"
                   placeholder="Unga Bunga"
-                  className="w-full bg-foreground/10 py-2 rounded-lg border border-foreground/5 pl-2 "
+                  className={`w-full bg-foreground/10 py-2 rounded-lg border border-foreground/5 pl-2 ${showNameError && "border-2 border-red-500"}`}
                 />
+                {showNameError && (
+                  <div className="text-red-500">Please fill in name</div>
+                )}
               </div>
               <div className="flex flex-col justify-start items-start w-full text-sm gap-2">
                 <div>Choose an avatar</div>
                 <div className="flex max-w-110 overflow-x-scroll gap-3 customscroll py-3 px-3">
                   {new Array(16).fill("").map((x, i) => {
                     return (
-                      <motion.img
+                      <motion.div
                         key={i + 1}
                         whileTap={{
                           scale: 0.95,
@@ -271,16 +296,65 @@ export default function Navbar() {
                             avatar: i + 1,
                           }));
                         }}
-                        className={`w-16 cursor-pointer ${initialRoomSettings.avatar === i + 1 ? "border-4 border-correct rounded-full scale-120" : "scale-90 opacity-80"}`}
-                        src={`/avatars/${i + 1}.svg`}
-                        alt=""
-                      />
+                      >
+                        <Image
+                          className={`min-w-16 cursor-pointer ${initialRoomSettings.avatar === i + 1 ? "border-4 border-correct rounded-full scale-120" : "scale-90 opacity-80"}`}
+                          src={`/avatars/${i + 1}.svg`}
+                          alt=""
+                          width={800}
+                          height={800}
+                        ></Image>
+                      </motion.div>
                     );
                   })}
                 </div>
               </div>
               <button
-                onClick={() => {}}
+                onClick={async () => {
+                  if (initialRoomSettings.name.length === 0) {
+                    setShowNameError(true);
+                    toast.error("What's your name?", {
+                      icon: (
+                        <Annoyed strokeWidth="1" color="#ffffff99"></Annoyed>
+                      ),
+                      style: {
+                        background: "#1a1a1a",
+                        color: "#ffffff99",
+                        boxShadow: "none",
+                        filter: "none",
+                        borderRadius: "8px",
+                        border: "1px solid #ffffff10",
+                      },
+                      position: "top-center",
+                    });
+                    return;
+                  }
+                  setShowNameError(false);
+
+                  try {
+                    const roomID = (await gameRoomID()).toUpperCase();
+                    await setDoc(doc(db, "gameRooms", roomID), {
+                      roomID,
+                      roomSettings: {
+                        wordLength: initialRoomSettings.wordLength,
+                        chances: initialRoomSettings.chances,
+                        rounds: initialRoomSettings.rounds,
+                      },
+                      roomMembers: [
+                        {
+                          id: 1,
+                          name: initialRoomSettings.name,
+                          avatar: `/avatars/${initialRoomSettings.avatar}.svg`,
+                          admin: true,
+                        },
+                      ],
+                    });
+
+                    router.push("/joinRoom/" + roomID);
+                  } catch (err) {
+                    console.log(err);
+                  }
+                }}
                 className="flex gap-3 text-sm bg-correct p-3 w-full rounded-lg text-center justify-center items-center hover:opacity-70 duration-200 text-background "
               >
                 <p>Create Room</p>
@@ -491,27 +565,28 @@ export default function Navbar() {
           >
             <CircleQuestionMark size={30}></CircleQuestionMark>
           </button>
-          <motion.button
-            initial={{
-              opacity: 0,
-            }}
-            animate={{
-              opacity: 1,
-            }}
-            exit={{
-              opacity: 0,
-            }}
-            whileTap={{
-              scale: 0.98,
-            }}
-            onClick={() => {
-              setCreateRoomPrompt(true);
-            }}
-            className="bg-foreground text-background p-2 rounded-lg border border-foreground/40 w-fit text-sm flex items-center gap-2 capitalize"
-          >
-            {/* <Users size={20}></Users> */}
-            Make a room
-          </motion.button>
+          {path === "/" && (
+            <motion.button
+              initial={{
+                opacity: 0,
+              }}
+              animate={{
+                opacity: 1,
+              }}
+              exit={{
+                opacity: 0,
+              }}
+              whileTap={{
+                scale: 0.98,
+              }}
+              onClick={() => {
+                setCreateRoomPrompt(true);
+              }}
+              className="bg-foreground text-background p-2 rounded-lg border border-foreground/40 w-fit text-sm flex items-center gap-2 capitalize"
+            >
+              Make a room
+            </motion.button>
+          )}
           <motion.button
             initial={{
               opacity: 0,
