@@ -350,6 +350,7 @@ export default function Navbar() {
                       ],
                     });
 
+                    setCreateRoomPrompt(false);
                     router.push("/joinRoom/" + roomID);
                   } catch (err) {
                     console.log(err);
