@@ -61,7 +61,7 @@ function SinglePlayerDataProvider({
       : 0;
   const initialChances =
     typeof window !== "undefined"
-      ? parseInt(localStorage.getItem("chances") || "") || 5
+      ? parseInt(localStorage.getItem("chances") || "") || 6
       : 0;
   const initialSoundSetting =
     typeof window !== "undefined"

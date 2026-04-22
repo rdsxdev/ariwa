@@ -9,6 +9,7 @@ import {
   ChevronRight,
   CircleQuestionMark,
   Heart,
+  Repeat,
   Settings2,
   User,
   UserCircle,
@@ -70,7 +71,7 @@ export default function Navbar() {
         preventClosingByClickingOnBackground
         show={showGameSettings}
         setShow={setShowGameSettings}
-        className="max-h-[80vh] noscroll overflow-y-scroll overflow-x-hidden"
+        className="max-h-[80vh] noscroll overflow-y-scroll overflow-x-hidden "
       >
         <motion.div
           initial={{
@@ -82,9 +83,9 @@ export default function Navbar() {
           exit={{
             opacity: 0,
           }}
-          className="text-white bg-background p-8 px-5 max-md:px-3 rounded-xl  flex justify-center items-center z-9999999999999999 pt-8"
+          className="text-white bg-background p-8 px-5 max-md:px-3 rounded-md  flex justify-center items-center z-9999999999999999 pt-8  "
         >
-          <div className="flex justify-center items-center flex-col gap-8 w-full min-w-110 max-md:min-w-84 max-md:w-fit">
+          <div className="flex justify-center items-center flex-col gap-8 w-full min-w-110 max-md:min-w-84 max-md:w-fit ">
             <button
               onClick={() => {
                 setShowGameSettings(false);
@@ -105,7 +106,7 @@ export default function Navbar() {
             </div>
             <div className="w-full space-y-5">
               <div className="flex justify-start items-center w-full gap-3">
-                <div className="text-foreground bg-foreground/10 p-2 rounded-lg">
+                <div className="text-foreground bg-foreground/10 p-2 rounded-lg shadow-inner shadow-foreground/20">
                   <ALargeSmall size={26}></ALargeSmall>
                 </div>
                 <div className="flex flex-col gap-px">
@@ -130,7 +131,7 @@ export default function Navbar() {
                           setLocalWordLength(x);
                         }}
                         key={x}
-                        className={`w-10 text-center aspect-square  rounded-lg cursor-pointer ${localWordLength === x ? "bg-foreground text-background" : "bg-foreground/10"}`}
+                        className={`w-10 duration-100 text-center shadow-inner  aspect-square  rounded-lg cursor-pointer ${localWordLength === x ? "bg-foreground/70 text-background shadow-foreground" : "bg-foreground/10 shadow-foreground/10"}`}
                       >
                         {x}
                       </motion.button>
@@ -142,7 +143,7 @@ export default function Navbar() {
 
             <div className="w-full space-y-5 flex items-center justify-between flex-col">
               <div className="flex justify-start items-center w-full gap-3">
-                <div className="text-foreground bg-foreground/10 p-2 rounded-lg">
+                <div className="text-foreground bg-foreground/10 p-2 rounded-lg shadow-inner shadow-foreground/20">
                   <Heart size={26}></Heart>
                 </div>
                 <div className="flex flex-col gap-px">
@@ -161,7 +162,7 @@ export default function Navbar() {
                   onClick={() => {
                     if (localChances > 1) setLocalChances((org) => org - 1);
                   }}
-                  className="cursor-pointer border border-foreground/10 bg-foreground/20 p-2 rounded-lg  text-center flex justify-center items-center min-w-8 w-1/4 h-full select-none disabled:opacity-45 "
+                  className="cursor-pointer border border-foreground/10 bg-foreground/30 p-2 rounded-lg  text-center flex justify-center items-center min-w-8 w-1/4 h-full select-none disabled:opacity-45 shadow-inner shadow-foreground/20"
                 >
                   -
                 </motion.button>
@@ -174,7 +175,7 @@ export default function Navbar() {
                   onClick={() => {
                     if (localChances < 10) setLocalChances((org) => org + 1);
                   }}
-                  className="cursor-pointer border border-foreground/10 bg-foreground/20 p-2 rounded-lg  text-center flex justify-center items-center min-w-8 w-1/4 h-full select-none disabled:opacity-45 "
+                  className="cursor-pointer border border-foreground/10 bg-foreground/30 p-2 rounded-lg  text-center flex justify-center items-center min-w-8 w-1/4 h-full select-none disabled:opacity-45 shadow-inner shadow-foreground/20"
                 >
                   +
                 </motion.button>
@@ -182,7 +183,7 @@ export default function Navbar() {
             </div>
             <div className="w-full flex items-center justify-between ">
               <div className="flex justify-start items-center w-full gap-3">
-                <div className="text-foreground bg-foreground/10 p-2 rounded-lg">
+                <div className="text-foreground bg-foreground/10 p-2 rounded-lg shadow-inner shadow-foreground/20">
                   <Volume2 size={26}></Volume2>
                 </div>
                 <div className="flex flex-col gap-px">
@@ -195,7 +196,7 @@ export default function Navbar() {
                     setSoundEffect(1);
                     localStorage.setItem("sounds", "1");
                   }}
-                  className={`w-1/2  text-sm  duration-200 h-full rounded-md p-1 ${soundEffect === 1 && "bg-foreground/30 shadow-lg shadow-black/5 text-foreground "} `}
+                  className={`w-1/2  text-sm  duration-200 h-full rounded-md p-1 ${soundEffect === 1 && "bg-correct  text-black shadow-inner shadow-foreground/40"} `}
                 >
                   On
                 </button>
@@ -205,7 +206,7 @@ export default function Navbar() {
 
                     localStorage.setItem("sounds", "0");
                   }}
-                  className={`w-1/2 text-foreground/50 text-sm  duration-200 h-full rounded-md p-1 ${soundEffect === 0 && "bg-background shadow-lg shadow-black/5 text-black"} `}
+                  className={`w-1/2 text-foreground/50 text-sm  duration-200 h-full rounded-md p-1 ${soundEffect === 0 && "bg-background/80  text-black shadow-inner shadow-foreground/5"} `}
                 >
                   Off
                 </button>
@@ -218,7 +219,7 @@ export default function Navbar() {
                 localStorage.setItem("length", localWordLength.toString());
                 localStorage.setItem("chances", localChances.toString());
               }}
-              className="flex gap-3 text-sm bg-foreground p-3 w-full rounded-lg text-center justify-center items-center hover:opacity-70 duration-200 text-background"
+              className="flex gap-3 text-sm bg-foreground/80 p-3 w-full rounded-lg text-center justify-center items-center hover:opacity-70 duration-200 text-background shadow-inner shadow-foreground"
             >
               <p>Save Changes</p>
             </button>
@@ -274,7 +275,7 @@ export default function Navbar() {
                   }}
                   type="text"
                   placeholder="Unga Bunga"
-                  className={`w-full bg-foreground/10 py-2 rounded-lg border border-foreground/5 pl-2 ${showNameError && "border-2 border-red-500"}`}
+                  className={`w-full bg-foreground/10 py-3 rounded-lg border shadow-inner shadow-foreground/10 border-foreground/5 pl-2 ${showNameError && "border-2 border-red-500 shadow-red-900"}`}
                 />
                 {showNameError && (
                   <div className="text-red-500">Please fill in name</div>
@@ -296,9 +297,10 @@ export default function Navbar() {
                             avatar: i + 1,
                           }));
                         }}
+                        className="shadow-inner shadow-foreground rounded-full"
                       >
                         <Image
-                          className={`min-w-16 cursor-pointer ${initialRoomSettings.avatar === i + 1 ? "border-4 border-correct rounded-full scale-120" : "scale-90 opacity-80"}`}
+                          className={`min-w-16 cursor-pointer ${initialRoomSettings.avatar === i + 1 ? "border-4 border-correct  shadow-inner shadow-foreground rounded-full scale-120" : "scale-90 opacity-80"}`}
                           src={`/avatars/${i + 1}.svg`}
                           alt=""
                           width={800}
@@ -356,7 +358,7 @@ export default function Navbar() {
                     console.log(err);
                   }
                 }}
-                className="flex gap-3 text-sm bg-correct p-3 w-full rounded-lg text-center justify-center items-center hover:opacity-70 duration-200 text-background "
+                className="flex gap-3 text-sm bg-correct p-3 w-full rounded-lg text-center justify-center items-center hover:opacity-70 duration-200 text-background shadow-inner shadow-foreground/30"
               >
                 <p>Create Room</p>
               </button>
@@ -376,7 +378,7 @@ export default function Navbar() {
               {isSettingsExpanded && (
                 <div className="w-full space-y-5">
                   <div className="flex justify-start items-center w-full gap-3">
-                    <div className="text-foreground bg-foreground/10 p-2 rounded-lg">
+                    <div className="text-foreground bg-foreground/10 p-2 rounded-lg shadow-inner shadow-foreground/20">
                       <ALargeSmall size={26}></ALargeSmall>
                     </div>
                     <div className="flex flex-col gap-px">
@@ -405,7 +407,7 @@ export default function Navbar() {
                               // setLocalWordLength(x);
                             }}
                             key={x}
-                            className={`w-10 text-center aspect-square  rounded-lg cursor-pointer ${initialRoomSettings.wordLength === x ? "bg-foreground text-background" : "bg-foreground/10"}`}
+                            className={`w-10 duration-100 text-center shadow-inner  aspect-square  rounded-lg cursor-pointer ${initialRoomSettings.wordLength === x ? "bg-foreground/70 text-background shadow-foreground" : "bg-foreground/10 shadow-foreground/10"}`}
                           >
                             {x}
                           </motion.button>
@@ -415,7 +417,7 @@ export default function Navbar() {
                   </div>
                   <div className="w-full space-y-5 flex items-center justify-between flex-col">
                     <div className="flex justify-start items-center w-full gap-3">
-                      <div className="text-foreground bg-foreground/10 p-2 rounded-lg">
+                      <div className="text-foreground bg-foreground/10 p-2 rounded-lg shadow-inner shadow-foreground/20">
                         <Heart size={26}></Heart>
                       </div>
                       <div className="flex flex-col gap-px">
@@ -438,7 +440,7 @@ export default function Navbar() {
                               chances: org.chances - 1,
                             }));
                         }}
-                        className="cursor-pointer border border-foreground/10 bg-foreground/20 p-2 rounded-lg  text-center flex justify-center items-center min-w-8 w-1/4 h-full select-none disabled:opacity-45 "
+                        className="cursor-pointer border border-foreground/10 bg-foreground/30 p-2 rounded-lg  text-center flex justify-center items-center min-w-8 w-1/4 h-full select-none disabled:opacity-45 shadow-inner shadow-foreground/20"
                       >
                         -
                       </motion.button>
@@ -457,7 +459,7 @@ export default function Navbar() {
                               chances: org.chances + 1,
                             }));
                         }}
-                        className="cursor-pointer border border-foreground/10 bg-foreground/20 p-2 rounded-lg  text-center flex justify-center items-center min-w-8 w-1/4 h-full select-none disabled:opacity-45 "
+                        className="cursor-pointer border border-foreground/10 bg-foreground/30 p-2 rounded-lg  text-center flex justify-center items-center min-w-8 w-1/4 h-full select-none disabled:opacity-45 shadow-inner shadow-foreground/20 "
                       >
                         +
                       </motion.button>
@@ -465,8 +467,8 @@ export default function Navbar() {
                   </div>
                   <div className="w-full space-y-5 flex items-center justify-between flex-col">
                     <div className="flex justify-start items-center w-full gap-3">
-                      <div className="text-foreground bg-foreground/10 p-2 rounded-lg">
-                        <Heart size={26}></Heart>
+                      <div className="text-foreground bg-foreground/10 p-2 rounded-lg shadow-inner shadow-foreground/20">
+                        <Repeat size={26}></Repeat>
                       </div>
                       <div className="flex flex-col gap-px">
                         <div className="text-sm">Rounds</div>
@@ -488,7 +490,7 @@ export default function Navbar() {
                               rounds: org.rounds - 1,
                             }));
                         }}
-                        className="cursor-pointer border border-foreground/10 bg-foreground/20 p-2 rounded-lg  text-center flex justify-center items-center min-w-8 w-1/4 h-full select-none disabled:opacity-45 "
+                        className="cursor-pointer border border-foreground/10 bg-foreground/30 p-2 rounded-lg  text-center flex justify-center items-center min-w-8 w-1/4 h-full select-none disabled:opacity-45 shadow-inner shadow-foreground/20"
                       >
                         -
                       </motion.button>
@@ -507,7 +509,7 @@ export default function Navbar() {
                               rounds: org.rounds + 1,
                             }));
                         }}
-                        className="cursor-pointer border border-foreground/10 bg-foreground/20 p-2 rounded-lg  text-center flex justify-center items-center min-w-8 w-1/4 h-full select-none disabled:opacity-45 "
+                        className="cursor-pointer border border-foreground/10 bg-foreground/30 p-2 rounded-lg  text-center flex justify-center items-center min-w-8 w-1/4 h-full select-none disabled:opacity-45 shadow-inner shadow-foreground/20"
                       >
                         +
                       </motion.button>
@@ -583,7 +585,7 @@ export default function Navbar() {
               onClick={() => {
                 setCreateRoomPrompt(true);
               }}
-              className="bg-foreground text-background p-2 rounded-lg border border-foreground/40 w-fit text-sm flex items-center gap-2 capitalize"
+              className="bg-foreground/80 text-background p-2 rounded-lg border border-foreground/40 w-fit text-sm flex items-center gap-2 capitalize shadow-inner shadow-foreground"
             >
               Make a room
             </motion.button>
@@ -604,7 +606,7 @@ export default function Navbar() {
             onClick={() => {
               setShowGameSettings(true);
             }}
-            className="bg-foreground/10 text-foreground p-2 rounded-lg border border-foreground/40 w-fit text-sm flex items-center gap-2"
+            className="bg-foreground/20 text-foreground p-2 rounded-lg border border-foreground/10 w-fit text-sm flex items-center gap-2 shadow-inner shadow-foreground/10"
           >
             <Settings2 size={20}></Settings2>
             Settings

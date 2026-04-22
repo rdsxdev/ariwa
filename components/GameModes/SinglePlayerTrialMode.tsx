@@ -626,7 +626,7 @@ export default memo(function SinglePlayerTrialModeComponent() {
                   onClick={() => {
                     setShowHintsMenu(true);
                   }}
-                  className="bg-foreground/10 text-foreground p-3 rounded-lg border border-foreground/40 w-fit text-sm items-center flex gap-2"
+                  className="bg-foreground/20 text-foreground p-3 rounded-lg border border-foreground/10 w-fit text-sm items-center flex gap-2 shadow-inner shadow-foreground/10"
                 >
                   <Lightbulb size={20}></Lightbulb>
                   Hint
