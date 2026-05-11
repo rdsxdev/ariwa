@@ -5,6 +5,7 @@ import {
   Poppins,
   Press_Start_2P,
   Rubik,
+  Fredoka,
 } from "next/font/google";
 import "./globals.css";
 import { Toaster } from "react-hot-toast";
@@ -14,9 +15,12 @@ const Press_Start_2P_FONT = Press_Start_2P({
   weight: ["400"],
 });
 
-const poppins = Poppins({
-  weight: ["300", "400", "500", "600", "700", "800", "900"],
+const poppins = Fredoka({
+  weight: ["300", "400", "500", "600", "700"],
 });
+// const poppins = Poppins({
+//   weight: ["300", "400", "500", "600", "700", "800", "900"],
+// });
 // const poppins = Rubik({
 //   weight: ["300", "400", "500", "600", "700", "800", "900"],
 // });

@@ -4,31 +4,19 @@ import toast from "react-hot-toast";
 import wordExists from "@/utils/checkWord";
 import { generateRandomWord } from "@/utils/generateRandomWord";
 import {
-  ALargeSmall,
   Annoyed,
   Book,
   Frown,
-  Gamepad,
-  Gamepad2,
-  Heart,
-  LetterText,
   Lightbulb,
-  Lock,
   RefreshCcw,
   RotateCw,
-  Settings,
-  Settings2,
   SwatchBook,
   Trophy,
-  User,
-  Volume,
-  Volume2,
   X,
 } from "lucide-react";
 import { Keyboard } from "@/components/Keyboard";
 import useSinglePlayerData from "@/context/SinglePlayerDataContext";
 import ModalContainer from "../Modal";
-import Navbar from "../Navbar";
 import GameGridComponent from "@/components/GameGrid";
 
 export default memo(function SinglePlayerTrialModeComponent() {
@@ -328,9 +316,9 @@ export default memo(function SinglePlayerTrialModeComponent() {
                     disabled={typeHintTaken}
                     className="flex justify-start items-center hover:bg-foreground/10 p-3 rounded-md duration-200 cursor-pointer text-left w-full disabled:pointer-events-none -disabled:opacity-40 max-md:px-0"
                   >
-                    <div className="flex items-center justify-start gap-2">
+                    <div className="flex items-center justify-start gap-2 ">
                       <SwatchBook
-                        className="bg-green-600/20 text-teal-600 p-1 rounded-md"
+                        className="bg-green-600/20 text-teal-600 p-1 rounded-md shadow-inner shadow-teal-600"
                         size={40}
                       ></SwatchBook>
 
@@ -339,7 +327,7 @@ export default memo(function SinglePlayerTrialModeComponent() {
                           {wordTypes.map((x, i) => (
                             <span key={x} className="">
                               {/* a{" "} */}
-                              <span className="capitalize bg-green-600/10 p-2 rounded-lg font-semibold border border-teal-500 text-teal-500">
+                              <span className="capitalize bg-green-600/10 p-2 rounded-lg font-semibold border border-teal-500/50 text-teal-500 shadow-inner shadow-teal-600/50">
                                 {x}
                               </span>{" "}
                             </span>
@@ -351,10 +339,8 @@ export default memo(function SinglePlayerTrialModeComponent() {
                         </div>
                       ) : (
                         <div className="">
-                          <div className="text-sm text-teal-500 ">
-                            Part of Speech
-                          </div>
-                          <div className="text-xs text-foreground/80">
+                          <div className=" text-teal-500 ">Part of Speech</div>
+                          <div className="text-sm text-foreground/80">
                             Check if the word's part of speech
                           </div>
                         </div>
@@ -370,7 +356,7 @@ export default memo(function SinglePlayerTrialModeComponent() {
                   >
                     <div className="flex items-center justify-start gap-2">
                       <Book
-                        className="bg-cyan-400/20 text-cyan-400 p-1 rounded-md"
+                        className="bg-cyan-400/20 text-cyan-400 p-1 rounded-md shadow-inner shadow-cyan-400"
                         size={40}
                       ></Book>
                       {definitionHintTaken && wordDefinition.length > 0 ? (
@@ -383,10 +369,8 @@ export default memo(function SinglePlayerTrialModeComponent() {
                         </div>
                       ) : (
                         <div className="">
-                          <div className="text-sm text-cyan-400">
-                            Word Definition
-                          </div>
-                          <div className="text-xs text-foreground/80">
+                          <div className=" text-cyan-400">Word Definition</div>
+                          <div className="text-sm text-foreground/80">
                             Definition can be relative to any of the parts of
                             speech
                           </div>
@@ -400,7 +384,7 @@ export default memo(function SinglePlayerTrialModeComponent() {
                     setShowHintsMenu(false);
                     // setShowAuthModal(true);
                   }}
-                  className="text-sm bg-foreground/30 text-foreground px-3 py-2 rounded-md flex justify-center items-center gap-2 disabled:opacity-50 w-full disabled:pointer-events-none"
+                  className="text-sm bg-foreground/30 text-foreground px-3 py-2 rounded-md flex justify-center items-center gap-2 disabled:opacity-50 w-full disabled:pointer-events-none shadow-inner shadow-foreground/30"
                 >
                   {/* <Lock size={16}></Lock>  */}
                   <p>Cancel</p>
@@ -454,7 +438,7 @@ export default memo(function SinglePlayerTrialModeComponent() {
                   Better luck next time! The word was:
                 </div>
               </div>
-              <div className="text-correct bg-foreground/5 border-dashed border-2 border-foreground/10 p-3 w-full text-center text-4xl rounded-lg gap-1 flex justify-center items-center font-semibold">
+              <div className="text-correct bg-foreground/5  border-correct p-3 w-full text-center text-4xl rounded-lg gap-1 flex justify-center items-center font-semibold shadow-inner shadow-foreground/20">
                 {word.split("").map((x, i) => (
                   <p key={i}>{x}</p>
                 ))}
@@ -603,7 +587,7 @@ export default memo(function SinglePlayerTrialModeComponent() {
                     scale: 0.98,
                   }}
                   onClick={callEndgame}
-                  className="bg-correct/10 text-correct p-3 rounded-lg border  border-correct/40 flex gap-3 text-sm items-center"
+                  className="bg-correct/10 text-correct p-3 rounded-lg border  border-correct/40 flex gap-3 text-sm items-center shadow-inner shadow-correct/50"
                 >
                   <RefreshCcw size={20}></RefreshCcw>
                   Play again

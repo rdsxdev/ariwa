@@ -63,7 +63,6 @@ export default function Navbar() {
   const [showNameError, setShowNameError] = useState(false);
 
   const path = usePathname();
-  console.log(path);
 
   return (
     <div className="relative">
@@ -297,7 +296,7 @@ export default function Navbar() {
                             avatar: i + 1,
                           }));
                         }}
-                        className="shadow-inner shadow-foreground rounded-full"
+                        className="shadow-inner shadow-foreground/50 rounded-full p-1"
                       >
                         <Image
                           className={`min-w-16 cursor-pointer ${initialRoomSettings.avatar === i + 1 ? "border-4 border-correct  shadow-inner shadow-foreground rounded-full scale-120" : "scale-90 opacity-80"}`}
@@ -316,13 +315,11 @@ export default function Navbar() {
                   if (initialRoomSettings.name.length === 0) {
                     setShowNameError(true);
                     toast.error("What's your name?", {
-                      icon: (
-                        <Annoyed strokeWidth="1" color="#ffffff99"></Annoyed>
-                      ),
+                      icon: <Annoyed strokeWidth="1" color="#ffffff"></Annoyed>,
                       style: {
                         background: "#1a1a1a",
-                        color: "#ffffff99",
-                        boxShadow: "none",
+                        color: "#ffffff",
+                        boxShadow: "inset 0 0 10px #ffffff30",
                         filter: "none",
                         borderRadius: "8px",
                         border: "1px solid #ffffff10",

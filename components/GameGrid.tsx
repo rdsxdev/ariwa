@@ -63,7 +63,7 @@ const GameGridComponent = memo(function GameGridComponent({
                         ${
                           j === life
                             ? currentIndex === i
-                              ? "bg-foreground/40"
+                              ? "bg-foreground/40 shadow-inner shadow-foreground/40"
                               : "bg-foreground/20 "
                             : ""
                         } duration-150 `}
