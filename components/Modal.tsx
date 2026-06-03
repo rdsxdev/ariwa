@@ -1,6 +1,6 @@
 "use client";
 
-import { AnimatePresence, motion } from "motion/react";
+import { AnimatePresence, motion, useMotionValueEvent } from "motion/react";
 
 export default function ModalContainer({
   children,
@@ -28,6 +28,9 @@ export default function ModalContainer({
           exit={{
             opacity: 0,
           }}
+          transition={{
+            duration: 0.1,
+          }}
           className="fixed top-0 left-0 w-screen h-screen z-999999999 "
         >
           <div
@@ -36,13 +39,19 @@ export default function ModalContainer({
                 setShow(false);
               }
             }}
-            className="bg-black/70 w-full h-full"
+            className="bg-black/90 w-full h-full"
           ></div>
-          <div
+          <motion.div
+            initial={{
+              scale: 0.9,
+            }}
+            animate={{
+              scale: 1,
+            }}
             className={`absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 border-2 border-foreground/10 rounded-lg ${className}`}
           >
             {children}
-          </div>
+          </motion.div>
         </motion.div>
       )}
     </AnimatePresence>

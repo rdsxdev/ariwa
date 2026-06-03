@@ -6,24 +6,20 @@ import {
   Press_Start_2P,
   Rubik,
   Fredoka,
+  Google_Sans,
+  Geom,
+  IBM_Plex_Mono,
+  Space_Grotesk,
+  Urbanist,
 } from "next/font/google";
 import "./globals.css";
 import { Toaster } from "react-hot-toast";
 import Navbar from "@/components/Navbar";
 import { SinglePlayerDataProvider } from "@/context/SinglePlayerDataContext";
-const Press_Start_2P_FONT = Press_Start_2P({
-  weight: ["400"],
-});
 
-const poppins = Fredoka({
-  weight: ["300", "400", "500", "600", "700"],
+const poppins = Space_Grotesk({
+  weight: ["400", "500", "600", "700", "300"],
 });
-// const poppins = Poppins({
-//   weight: ["300", "400", "500", "600", "700", "800", "900"],
-// });
-// const poppins = Rubik({
-//   weight: ["300", "400", "500", "600", "700", "800", "900"],
-// });
 
 export const metadata: Metadata = {
   title: "WordRush - Race and Win!",
@@ -38,13 +34,10 @@ export default function RootLayout({
   return (
     <html className="bg-background overflow-x-hidden" lang="en">
       <body className={`${poppins.className} antialiased `}>
-        <SinglePlayerDataProvider>
-          <Navbar></Navbar>
-          <div className="z-99999999999999 relative">
-            <Toaster />
-          </div>
-          {children}
-        </SinglePlayerDataProvider>
+        <div className="z-99999999999999 relative">
+          <Toaster />
+        </div>
+        {children}
       </body>
     </html>
   );

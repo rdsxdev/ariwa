@@ -186,7 +186,7 @@ export const Key = memo(function KeyComponent({
       animate={{
         scale: lastPressedKey?.toLowerCase() === letter.toLowerCase() ? 0.8 : 1,
       }}
-      className={`p-3 shadow-inner shadow-foreground/5 py-3 border border-foreground/5    min-w-12 max-md:min-w-8 max-md:w-full  max-md:h-16  ${(letter === "Enter" || letter === "Backspace") && "max-md:min-w-16"}  max-md:px-2 max-md:text-sm w-fit   flex justify-center items-center  rounded-lg uppercase font-bold cursor-pointer select-none duration-100 md:border max-md:border-none 
+      className={`p-3  --shadow-inner--  shadow-foreground/5 py-3 border border-foreground/5    min-w-12 max-md:min-w-8 max-md:w-full  max-md:h-16  ${(letter === "Enter" || letter === "Backspace") && "max-md:min-w-16"}  max-md:px-2 max-md:text-sm w-fit   flex justify-center items-center  rounded-lg uppercase font-bold cursor-pointer select-none duration-100 md:border max-md:border-none 
 ${
   lastPressedKey?.toLowerCase() === letter.toLowerCase()
     ? "md:border-foreground/60 bg-foreground/40"

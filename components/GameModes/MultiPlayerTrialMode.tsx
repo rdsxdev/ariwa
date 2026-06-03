@@ -29,6 +29,7 @@ import { Keyboard } from "@/components/Keyboard";
 import useSinglePlayerData from "@/context/SinglePlayerDataContext";
 import ModalContainer from "../Modal";
 import GameGridComponent from "../GameGrid";
+import useMultiPlayerData from "@/context/MultiPlayerDataContext";
 
 export default memo(function MultiPlayerTrialModeComponent() {
   const [showHintsMenu, setShowHintsMenu] = useState(false);
@@ -108,7 +109,7 @@ export default memo(function MultiPlayerTrialModeComponent() {
     soundEffect,
     setShowAuthModal,
     showAuthModal,
-  } = useSinglePlayerData()!;
+  } = useMultiPlayerData()!;
 
   useEffect(() => {
     (async function () {

@@ -1,7 +1,10 @@
 "use client";
 
+import { db } from "@/firebase";
 import wordExists from "@/utils/checkWord";
 import { generateRandomWord } from "@/utils/generateRandomWord";
+import { doc, getDoc } from "firebase/firestore";
+import { useParams } from "next/navigation";
 import {
   useContext,
   createContext,
@@ -12,7 +15,7 @@ import {
 } from "react";
 import toast from "react-hot-toast";
 
-const SinglePlayerDataContext = createContext<{
+const MultiPlayerDataContext = createContext<{
   wordLength: number;
   letterSizeForMobile: string[];
   word: string;
@@ -48,12 +51,33 @@ const SinglePlayerDataContext = createContext<{
   setShowAuthModal: React.Dispatch<React.SetStateAction<boolean>>;
 } | null>(null);
 
-function SinglePlayerDataProvider({
+function MultiPlayerDataProvider({
   children,
 }: Readonly<{ children: ReactNode }>) {
   /**
    The word length has to be between 3 and 9
    */
+
+  const { roomID } = useParams();
+  async function getRoomData() {
+    try {
+      if (typeof roomID === "string") {
+        const response = (await getDoc(doc(db, "gameRooms", roomID))).data();
+        console.log(response);
+        return null;
+      } else {
+        throw new Error("Room ID not found");
+      }
+    } catch (err) {
+      console.log(err);
+    }
+  }
+
+  useEffect(() => {
+    (async function () {
+      await getRoomData();
+    })();
+  }, []);
 
   const initialWordlength =
     typeof window !== "undefined"
@@ -196,7 +220,7 @@ function SinglePlayerDataProvider({
   }, [attempts]);
 
   return (
-    <SinglePlayerDataContext.Provider
+    <MultiPlayerDataContext.Provider
       value={{
         gameover,
         setGameover,
@@ -230,11 +254,11 @@ function SinglePlayerDataProvider({
       }}
     >
       {children}
-    </SinglePlayerDataContext.Provider>
+    </MultiPlayerDataContext.Provider>
   );
 }
 
-export default function useSinglePlayerData() {
-  return useContext(SinglePlayerDataContext);
+export default function useMultiPlayerData() {
+  return useContext(MultiPlayerDataContext);
 }
-export { SinglePlayerDataProvider };
+export { MultiPlayerDataProvider };
