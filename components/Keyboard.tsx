@@ -22,7 +22,10 @@ export const Keyboard = memo(function KeyboardComponent({
   // console.log(letterStatus);
 
   return (
-    <div className=" min-h-36 min-w-lg max-md:min-w-fit flex-col space-y-1 max-md:space-y-0.5 max-md:w-screen max-md:px-3">
+    <div
+      id="virtual-keyboard"
+      className=" min-h-36 min-w-lg max-md:min-w-fit flex-col space-y-1 max-md:space-y-0.5 max-md:w-screen max-md:px-3"
+    >
       <motion.div
         initial={{
           opacity: 0,

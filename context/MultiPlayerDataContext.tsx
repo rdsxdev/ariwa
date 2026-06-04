@@ -49,6 +49,7 @@ const MultiPlayerDataContext = createContext<{
   setSoundEffect: React.Dispatch<React.SetStateAction<number>>;
   showAuthModal: boolean;
   setShowAuthModal: React.Dispatch<React.SetStateAction<boolean>>;
+  gameResponse: boolean;
 } | null>(null);
 
 function MultiPlayerDataProvider({
@@ -59,11 +60,22 @@ function MultiPlayerDataProvider({
    */
 
   const { roomID } = useParams();
+
+  const [gameResponse, setGameResponse] = useState(false);
+
   async function getRoomData() {
     try {
       if (typeof roomID === "string") {
         const response = (await getDoc(doc(db, "gameRooms", roomID))).data();
+        console.log("===============");
         console.log(response);
+        if (!response) {
+          setGameResponse(false);
+        } else {
+          setGameResponse(true);
+        }
+        console.log("===============");
+
         return null;
       } else {
         throw new Error("Room ID not found");
@@ -251,6 +263,7 @@ function MultiPlayerDataProvider({
         setSoundEffect,
         showAuthModal,
         setShowAuthModal,
+        gameResponse,
       }}
     >
       {children}

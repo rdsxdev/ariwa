@@ -7,6 +7,7 @@ import {
   ALargeSmall,
   Annoyed,
   Book,
+  ChevronLeft,
   Frown,
   Gamepad,
   Gamepad2,
@@ -109,6 +110,7 @@ export default memo(function MultiPlayerTrialModeComponent() {
     soundEffect,
     setShowAuthModal,
     showAuthModal,
+    gameResponse,
   } = useMultiPlayerData()!;
 
   useEffect(() => {
@@ -276,7 +278,36 @@ export default memo(function MultiPlayerTrialModeComponent() {
       }
     }
   }
-  if (word)
+
+  if (!gameResponse) {
+    return (
+      <main
+        onClick={() => {
+          if (keyboardRef.current) keyboardRef.current.focus();
+        }}
+        className="overflow-hidden  flex justify-center items-center flex-col  bg-background text-foreground h-screen gap-3 "
+      >
+        <div className="flex flex-col gap-3 justify-center items-center ">
+          <div className="text-xl">Game not found</div>
+          <div>
+            <motion.button
+              whileTap={{
+                scale: 0.9,
+              }}
+              onClick={() => {
+                window.location.href = "/";
+              }}
+              className="p-2 px-3 bg-incorrect text-foreground rounded-lg  capitalize flex justify-center items-center gap-1"
+            >
+              <ChevronLeft></ChevronLeft> Go to singleplayer
+            </motion.button>
+          </div>
+        </div>
+      </main>
+    );
+  }
+
+  if (gameResponse)
     return (
       <main
         onClick={() => {

@@ -119,6 +119,8 @@ export default memo(function SinglePlayerTrialModeComponent() {
   const add = typeof Audio !== "undefined" ? new Audio("/add.mp3") : undefined;
   const remove =
     typeof Audio !== "undefined" ? new Audio("/remove.mp3") : undefined;
+  const error =
+    typeof Audio !== "undefined" ? new Audio("/error.mp3") : undefined;
 
   function addLetter(letter: string) {
     if (gameover) return;
@@ -175,20 +177,21 @@ export default memo(function SinglePlayerTrialModeComponent() {
     String.fromCharCode(65 + i),
   );
   function submitAttempt() {
+    function shakeKeyboard() {
+      if (soundEffect) error?.play();
+      document
+        .querySelector("#virtual-keyboard")
+        ?.classList.add("error-shake-set");
+      setTimeout(() => {
+        document
+          .querySelector("#virtual-keyboard")
+          ?.classList.remove("error-shake-set");
+      }, 200);
+    }
+
     if (life < chances) {
       if (attempts[life].filter((x) => x.letter === "").length > 0) {
-        toast.error("Finished the word?", {
-          icon: <Annoyed strokeWidth="1" color="#ffffff99"></Annoyed>,
-          style: {
-            background: "#1a1a1a",
-            color: "#ffffff99",
-            boxShadow: "none",
-            filter: "none",
-            borderRadius: "8px",
-            border: "1px solid #ffffff10",
-          },
-          position: "top-center",
-        });
+        shakeKeyboard();
       } else {
         if (
           wordExists(attempts[life].map((x) => x.letter).join(""))
@@ -249,18 +252,7 @@ export default memo(function SinglePlayerTrialModeComponent() {
           setLife((org) => org + 1);
           setCurrentIndex(0);
         } else {
-          toast.error("Not really a word bruv.", {
-            icon: <Annoyed strokeWidth="1" color="#ffffff99"></Annoyed>,
-            style: {
-              background: "#1a1a1a",
-              color: "#ffffff99",
-              boxShadow: "none",
-              filter: "none",
-              borderRadius: "8px",
-              border: "1px solid #ffffff10",
-            },
-            position: "top-center",
-          });
+          shakeKeyboard();
         }
       }
     }
@@ -533,18 +525,21 @@ export default memo(function SinglePlayerTrialModeComponent() {
               onKeyDown={(e) => {
                 const code = e.code.replaceAll("Key", "");
 
-                if (e.code === "Enter") {
-                  submitAttempt();
-                }
-                if (!e.ctrlKey) {
-                  setLastPressedKey(code);
-                  if (letters.includes(code)) {
-                    addLetter(code);
+                if (!gameover) {
+                  if (e.code === "Enter") {
+                    submitAttempt();
                   }
-                  if (e.code === "Backspace") {
-                    removeLetter();
+                  if (!e.ctrlKey) {
+                    setLastPressedKey(code);
+                    if (letters.includes(code)) {
+                      addLetter(code);
+                    }
+                    if (e.code === "Backspace") {
+                      removeLetter();
+                    }
                   }
                 }
+
                 setTimeout(() => {
                   setLastPressedKey(null);
                 }, 100);
