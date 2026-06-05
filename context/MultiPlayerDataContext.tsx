@@ -50,7 +50,27 @@ const MultiPlayerDataContext = createContext<{
   showAuthModal: boolean;
   setShowAuthModal: React.Dispatch<React.SetStateAction<boolean>>;
   gameResponse: boolean;
+  isLoading: boolean;
 } | null>(null);
+
+interface RoomSettings {
+  chances: number;
+  wordLength: number;
+  rounds: number;
+}
+
+interface RoomMember {
+  name: string;
+  avatar: string;
+  id: number;
+  admin: boolean;
+}
+
+interface RoomData {
+  roomSettings: RoomSettings;
+  roomMembers: RoomMember[];
+  roomID: string;
+}
 
 function MultiPlayerDataProvider({
   children,
@@ -62,34 +82,7 @@ function MultiPlayerDataProvider({
   const { roomID } = useParams();
 
   const [gameResponse, setGameResponse] = useState(false);
-
-  async function getRoomData() {
-    try {
-      if (typeof roomID === "string") {
-        const response = (await getDoc(doc(db, "gameRooms", roomID))).data();
-        console.log("===============");
-        console.log(response);
-        if (!response) {
-          setGameResponse(false);
-        } else {
-          setGameResponse(true);
-        }
-        console.log("===============");
-
-        return null;
-      } else {
-        throw new Error("Room ID not found");
-      }
-    } catch (err) {
-      console.log(err);
-    }
-  }
-
-  useEffect(() => {
-    (async function () {
-      await getRoomData();
-    })();
-  }, []);
+  const [isLoading, setIsLoading] = useState(true);
 
   const initialWordlength =
     typeof window !== "undefined"
@@ -231,6 +224,41 @@ function MultiPlayerDataProvider({
     return finalArray;
   }, [attempts]);
 
+  async function getRoomData() {
+    try {
+      if (typeof roomID === "string") {
+        const response = (
+          await getDoc(doc(db, "gameRooms", roomID))
+        ).data() as RoomData;
+        console.log("===============");
+        if (!response) {
+          setGameResponse(false);
+        } else {
+          console.log(response);
+          setWordLength(response.roomSettings.wordLength);
+          setChances(response.roomSettings.chances);
+          setGameResponse(true);
+        }
+        console.log("===============");
+        setIsLoading(false);
+        return null;
+      } else {
+        setIsLoading(false);
+        throw new Error("Room ID not found");
+      }
+    } catch (err) {
+      setIsLoading(false);
+
+      console.log(err);
+    }
+  }
+
+  useEffect(() => {
+    (async function () {
+      await getRoomData();
+    })();
+  }, []);
+
   return (
     <MultiPlayerDataContext.Provider
       value={{
@@ -264,6 +292,7 @@ function MultiPlayerDataProvider({
         showAuthModal,
         setShowAuthModal,
         gameResponse,
+        isLoading,
       }}
     >
       {children}

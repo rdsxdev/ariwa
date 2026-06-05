@@ -111,6 +111,7 @@ export default memo(function MultiPlayerTrialModeComponent() {
     setShowAuthModal,
     showAuthModal,
     gameResponse,
+    isLoading,
   } = useMultiPlayerData()!;
 
   useEffect(() => {
@@ -279,7 +280,21 @@ export default memo(function MultiPlayerTrialModeComponent() {
     }
   }
 
-  if (!gameResponse) {
+  if (isLoading)
+    return (
+      <main
+        onClick={() => {
+          if (keyboardRef.current) keyboardRef.current.focus();
+        }}
+        className="overflow-hidden  flex justify-center items-center flex-col  bg-background text-foreground h-screen gap-3 "
+      >
+        <div className="flex flex-col gap-3 justify-center items-center ">
+          <div className="loader"></div>
+        </div>
+      </main>
+    );
+
+  if (!gameResponse && !isLoading) {
     return (
       <main
         onClick={() => {

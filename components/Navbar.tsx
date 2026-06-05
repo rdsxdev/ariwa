@@ -567,7 +567,7 @@ export default function Navbar() {
           >
             <CircleQuestionMark size={30}></CircleQuestionMark>
           </button>
-          {path === "/" && (
+          {path === "/play" && (
             <div className="flex justify-center items-center gap-3">
               <motion.button
                 initial={{
