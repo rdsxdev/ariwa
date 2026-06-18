@@ -31,6 +31,7 @@ import useSinglePlayerData from "@/context/SinglePlayerDataContext";
 import ModalContainer from "../Modal";
 import GameGridComponent from "../GameGrid";
 import useMultiPlayerData from "@/context/MultiPlayerDataContext";
+import { playSound } from "@/lib/sounds";
 
 export default memo(function MultiPlayerTrialModeComponent() {
   const [showHintsMenu, setShowHintsMenu] = useState(false);
@@ -114,6 +115,8 @@ export default memo(function MultiPlayerTrialModeComponent() {
     isLoading,
   } = useMultiPlayerData()!;
 
+  // console.log(word);
+
   useEffect(() => {
     (async function () {
       const luckyLad = await generateRandomWord(wordLength);
@@ -130,13 +133,9 @@ export default memo(function MultiPlayerTrialModeComponent() {
     setWordDefinition("");
   }
 
-  const add = typeof Audio !== "undefined" ? new Audio("/add.mp3") : undefined;
-  const remove =
-    typeof Audio !== "undefined" ? new Audio("/remove.mp3") : undefined;
-
   function addLetter(letter: string) {
     if (gameover) return;
-    if (soundEffect) add?.play();
+    if (soundEffect) playSound("add");
     if (currentIndex < wordLength) {
       let localIndex = currentIndex;
 
@@ -163,7 +162,7 @@ export default memo(function MultiPlayerTrialModeComponent() {
   function removeLetter() {
     if (gameover) return;
 
-    if (soundEffect) remove?.play();
+    if (soundEffect) playSound("remove");
     if (currentIndex > 0) {
       let localIndex = currentIndex;
       setCurrentIndex((org) => org - 1);

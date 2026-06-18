@@ -569,7 +569,7 @@ export default function Navbar() {
           </button>
           {path === "/play" && (
             <div className="flex justify-center items-center gap-3">
-              <motion.button
+              {/* <motion.button
                 initial={{
                   opacity: 0,
                 }}
@@ -585,10 +585,12 @@ export default function Navbar() {
                 onClick={() => {
                   setCreateRoomPrompt(true);
                 }}
-                className="bg-foreground/80 text-background p-2 rounded-lg border border-foreground/40 w-fit text-sm flex items-center gap-2   --shadow-inner--  shadow-foreground"
+                disabled
+                className="bg-foreground/80 text-background p-2 rounded-lg border border-foreground/40 w-fit text-sm flex items-center gap-2   --shadow-inner--  shadow-foreground disabled:bg-foreground/0 disabled:border-foreground/20  disabled:cursor-default
+                "
               >
                 Join a Room
-              </motion.button>
+              </motion.button> */}
             </div>
           )}
           <motion.button

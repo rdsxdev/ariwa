@@ -19,6 +19,7 @@ import useSinglePlayerData from "@/context/SinglePlayerDataContext";
 import ModalContainer from "../Modal";
 import GameGridComponent from "@/components/GameGrid";
 import Navbar from "../Navbar";
+import { playSound } from "@/lib/sounds";
 
 export default memo(function SinglePlayerTrialModeComponent() {
   const [showHintsMenu, setShowHintsMenu] = useState(false);
@@ -116,15 +117,9 @@ export default memo(function SinglePlayerTrialModeComponent() {
     setWordDefinition("");
   }
 
-  const add = typeof Audio !== "undefined" ? new Audio("/add.mp3") : undefined;
-  const remove =
-    typeof Audio !== "undefined" ? new Audio("/remove.mp3") : undefined;
-  const error =
-    typeof Audio !== "undefined" ? new Audio("/error.mp3") : undefined;
-
   function addLetter(letter: string) {
     if (gameover) return;
-    if (soundEffect) add?.play();
+    if (soundEffect) playSound("add");
     if (currentIndex < wordLength) {
       let localIndex = currentIndex;
 
@@ -151,7 +146,7 @@ export default memo(function SinglePlayerTrialModeComponent() {
   function removeLetter() {
     if (gameover) return;
 
-    if (soundEffect) remove?.play();
+    if (soundEffect) playSound("remove");
     if (currentIndex > 0) {
       let localIndex = currentIndex;
       setCurrentIndex((org) => org - 1);
@@ -178,7 +173,7 @@ export default memo(function SinglePlayerTrialModeComponent() {
   );
   function submitAttempt() {
     function shakeKeyboard() {
-      if (soundEffect) error?.play();
+      if (soundEffect) playSound("error");
       document
         .querySelector("#virtual-keyboard")
         ?.classList.add("error-shake-set");
@@ -267,9 +262,9 @@ export default memo(function SinglePlayerTrialModeComponent() {
           }}
           className="overflow-hidden  flex justify-center items-center flex-col  bg-background"
         >
-          <div className="bg-red-500 text-white absolute top-0 left-0">
+          {/* <div className="bg-red-500 text-white absolute top-0 left-0">
             {word}
-          </div>
+          </div> */}
           <ModalContainer
             // preventClosingByClickingOnBackground
             show={showHintsMenu}
