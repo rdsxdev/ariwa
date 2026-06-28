@@ -1,7 +1,7 @@
 "use client";
 
 import Navbar from "@/components/Navbar";
-import { SinglePlayerDataProvider } from "@/context/SinglePlayerDataContext";
+import { SinglePlayerDataProvider } from "@/context/GameDataContext";
 import dynamic from "next/dynamic";
 
 const SinglePlayerTrialModeSSR = dynamic(
@@ -19,9 +19,7 @@ const SinglePlayerTrialModeSSR = dynamic(
 export default function Home() {
   return (
     <>
-      <SinglePlayerDataProvider>
-        <SinglePlayerTrialModeSSR />
-      </SinglePlayerDataProvider>
+      <SinglePlayerTrialModeSSR />
     </>
   );
 }

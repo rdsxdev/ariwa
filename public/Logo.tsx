@@ -12,7 +12,7 @@ export default function Logo({ size }: { size: number }) {
         <path
           className="fill-correct"
           d="M80.24 0L65.6 56.16H49.04L40.08 19.2L30.8 56.16H14.24L0 0H14.64L22.72 40.88L32.72 0H47.76L57.36 40.88L65.52 0H80.24Z"
-          //   fill="#01A8AD"
+          fill="#01A8AD"
         />
         <path
           className="fill-incorrect"

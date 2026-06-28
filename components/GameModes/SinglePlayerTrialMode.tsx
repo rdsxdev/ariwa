@@ -15,7 +15,7 @@ import {
   X,
 } from "lucide-react";
 import { Keyboard } from "@/components/Keyboard";
-import useSinglePlayerData from "@/context/SinglePlayerDataContext";
+import useSinglePlayerData from "@/context/GameDataContext";
 import ModalContainer from "../Modal";
 import GameGridComponent from "@/components/GameGrid";
 import Navbar from "../Navbar";

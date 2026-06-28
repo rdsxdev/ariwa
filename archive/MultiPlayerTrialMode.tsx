@@ -27,10 +27,10 @@ import {
   X,
 } from "lucide-react";
 import { Keyboard } from "@/components/Keyboard";
-import useSinglePlayerData from "@/context/SinglePlayerDataContext";
-import ModalContainer from "../Modal";
-import GameGridComponent from "../GameGrid";
-import useMultiPlayerData from "@/context/MultiPlayerDataContext";
+import useSinglePlayerData from "@/context/GameDataContext";
+import ModalContainer from "../components/Modal";
+import GameGridComponent from "../components/GameGrid";
+import useMultiPlayerData from "@/archive/MultiPlayerDataContext";
 import { playSound } from "@/lib/sounds";
 
 export default memo(function MultiPlayerTrialModeComponent() {

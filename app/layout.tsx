@@ -1,4 +1,6 @@
 import type { Metadata } from "next";
+// @ts-expect-error later idk wtf
+import "./globals.css";
 import {
   Geist,
   Geist_Mono,
@@ -11,18 +13,18 @@ import {
   IBM_Plex_Mono,
   Space_Grotesk,
   Urbanist,
+  Unbounded,
 } from "next/font/google";
-import "./globals.css";
 import { Toaster } from "react-hot-toast";
 import Navbar from "@/components/Navbar";
-import { SinglePlayerDataProvider } from "@/context/SinglePlayerDataContext";
+import { GameDataProvider } from "@/context/GameDataContext";
 
-const poppins = Space_Grotesk({
-  weight: ["400", "500", "600", "700", "300"],
+const poppins = Unbounded({
+  weight: ["400", "500", "600", "700"],
 });
 
 export const metadata: Metadata = {
-  title: "WordRush - Race and Win!",
+  title: "ARIWA - Guess and Win!",
   description: "Guess the word!",
 };
 
@@ -32,13 +34,16 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html className="bg-background overflow-x-hidden" lang="en">
-      <body className={`${poppins.className} antialiased `}>
-        <div className="z-99999999999999 relative">
-          <Toaster />
-        </div>
-        {children}
-      </body>
+    <html
+      className="bg-background overflow-x-hidden text-foreground "
+      lang="en"
+    >
+      <GameDataProvider>
+        <body className={`${poppins.className} antialiased h-dvh`}>
+          <Navbar></Navbar>
+          <main className="p-3">{children}</main>
+        </body>
+      </GameDataProvider>
     </html>
   );
 }

@@ -12,7 +12,7 @@ import {
 } from "react";
 import toast from "react-hot-toast";
 
-const SinglePlayerDataContext = createContext<{
+const GameDataContext = createContext<{
   wordLength: number;
   letterSizeForMobile: string[];
   word: string;
@@ -48,9 +48,7 @@ const SinglePlayerDataContext = createContext<{
   setShowAuthModal: React.Dispatch<React.SetStateAction<boolean>>;
 } | null>(null);
 
-function SinglePlayerDataProvider({
-  children,
-}: Readonly<{ children: ReactNode }>) {
+function GameDataProvider({ children }: Readonly<{ children: ReactNode }>) {
   /**
    The word length has to be between 3 and 9
    */
@@ -126,7 +124,7 @@ function SinglePlayerDataProvider({
     }
   }, [life]);
 
-  console.log(soundEffect);
+  // console.log(soundEffect);
 
   async function resetWord(newWordLength?: number, newChances?: number) {
     const lengthOfWordToGenerate = newWordLength || wordLength;
@@ -196,7 +194,7 @@ function SinglePlayerDataProvider({
   }, [attempts]);
 
   return (
-    <SinglePlayerDataContext.Provider
+    <GameDataContext.Provider
       value={{
         gameover,
         setGameover,
@@ -230,11 +228,11 @@ function SinglePlayerDataProvider({
       }}
     >
       {children}
-    </SinglePlayerDataContext.Provider>
+    </GameDataContext.Provider>
   );
 }
 
-export default function useSinglePlayerData() {
-  return useContext(SinglePlayerDataContext);
+export default function useGameData() {
+  return useContext(GameDataContext);
 }
-export { SinglePlayerDataProvider };
+export { GameDataProvider };
