@@ -24,7 +24,7 @@ export const Keyboard = memo(function KeyboardComponent({
   return (
     <div
       id="virtual-keyboard"
-      className=" min-h-36 min-w-lg max-md:min-w-fit flex-col space-y-1 max-md:space-y-0.5 max-md:w-screen max-md:px-3"
+      className=" min-h-36 min-w-lg max-md:min-w-fit flex-col space-y-1 max-md:space-y-0.5 max-md:w-screen max-md:px-3 "
     >
       <motion.div
         initial={{
@@ -37,7 +37,7 @@ export const Keyboard = memo(function KeyboardComponent({
           duration: 0.5,
           delay: 0.6,
         }}
-        className="flex gap-1 max-md:gap-0.5 justify-center items-center max-md:justify-stretch"
+        className="flex gap-1 max-md:gap-0.5 justify-center items-center max-md:justify-center"
       >
         {qwertyLettersRow1.map((letter) => {
           let status = letterStatus
@@ -74,7 +74,7 @@ export const Keyboard = memo(function KeyboardComponent({
           duration: 0.5,
           delay: 0.7,
         }}
-        className="flex gap-1 max-md:gap-0.5 justify-center items-center max-md:justify-stretch"
+        className="flex gap-1 max-md:gap-0.5 justify-center items-center max-md:justify-center"
       >
         {qwertyLettersRow2.map((letter) => {
           let status = letterStatus
@@ -110,7 +110,7 @@ export const Keyboard = memo(function KeyboardComponent({
           duration: 0.5,
           delay: 0.9,
         }}
-        className="flex gap-1 max-md:gap-0.5 justify-center items-center max-md:justify-stretch"
+        className="flex gap-1 max-md:gap-0.5 justify-center items-center max-md:justify-center"
       >
         <Key
           addLetter={addLetter}
@@ -189,20 +189,20 @@ export const Key = memo(function KeyComponent({
       animate={{
         scale: lastPressedKey?.toLowerCase() === letter.toLowerCase() ? 0.8 : 1,
       }}
-      className={`p-3  --shadow-inner--  shadow-foreground/5 py-3 border border-foreground/5    min-w-12 max-md:min-w-8 max-md:w-full  max-md:h-16  ${(letter === "Enter" || letter === "Backspace") && "max-md:min-w-16"}  max-md:px-2 max-md:text-sm w-fit   flex justify-center items-center  rounded-lg uppercase font-bold cursor-pointer select-none duration-100 md:border max-md:border-none 
+      className={`p-3    py-3 border border-foreground/30  max-md:text-xs text-sm  min-w-12 max-md:min-w-6 max-md:w-full  max-md:h-16  ${(letter === "Enter" || letter === "Backspace") && "max-md:min-w-13 max-md:text-[.6em]"}  max-md:px-0 w-fit   flex justify-center items-center  rounded-xl max-md:rounded-lg uppercase font-semibold cursor-pointer select-none    
 ${
   lastPressedKey?.toLowerCase() === letter.toLowerCase()
-    ? "md:border-foreground/60 bg-foreground/40"
-    : "border-background "
+    ? "md:border-foreground/60 bg-foreground/20"
+    : "border-background"
 }
                     
 ${
   !status
     ? "bg-foreground/10 text-foreground"
     : status === "CORRECT"
-      ? "bg-correct text-foreground shadow-foreground/40"
+      ? "bg-green text-background shadow-foreground/40"
       : status === "EXISTS"
-        ? "bg-incorrect text-foreground shadow-foreground/40"
+        ? "bg-yellow text-foreground"
         : status === "INCORRECT"
           ? "bg-foreground/50 text-background shadow-foreground/30"
           : "bg-foreground/10"

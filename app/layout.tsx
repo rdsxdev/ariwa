@@ -35,13 +35,13 @@ export default function RootLayout({
 }>) {
   return (
     <html
-      className="bg-background overflow-x-hidden text-foreground "
+      className="bg-background  overflow-x-hidden text-foreground "
       lang="en"
     >
       <GameDataProvider>
         <body className={`${poppins.className} antialiased h-dvh`}>
           <Navbar></Navbar>
-          <main className="p-3">{children}</main>
+          <main className="">{children}</main>
         </body>
       </GameDataProvider>
     </html>

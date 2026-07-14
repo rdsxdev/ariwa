@@ -46,25 +46,26 @@ const GameGridComponent = memo(function GameGridComponent({
                   key={i}
                   className={`h-16 ${
                     letterSizeForMobile[wordLength]
-                  } aspect-square   text-center flex justify-center items-center text-3xl max-md:text-xl font-bold rounded-lg  /border-4 /border-foreground/10  --shadow-inner--  shadow-foreground/5
+                  } aspect-square   text-center flex justify-center items-center text-xl max-md:text-xl font-bold rounded-xl  
+                  border border-foreground 
                         ${
                           j === life
                             ? word.letter === ""
                               ? "text-foreground"
                               : "bg-foreground/10 text-foreground"
                             : word.status === "CORRECT"
-                              ? "bg-correct text-foreground shadow-foreground/40"
+                              ? "bg-green text-background"
                               : word.status === "INCORRECT"
-                                ? "bg-foreground/40 text-foreground/90 shadow-foreground/30"
+                                ? "bg-foreground/60 text-background opacity-70 "
                                 : word.status === "EXISTS"
-                                  ? "bg-incorrect text-foreground shadow-foreground/40"
-                                  : "bg-foreground/10"
+                                  ? "bg-yellow text-foreground "
+                                  : "bg-background"
                         }
                         ${
                           j === life
                             ? currentIndex === i
-                              ? "bg-foreground/40  --shadow-inner--  shadow-foreground/40"
-                              : "bg-foreground/20 "
+                              ? "bg-foreground/30"
+                              : "bg-foreground/10 "
                             : ""
                         } duration-150 `}
                 >

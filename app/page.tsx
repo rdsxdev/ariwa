@@ -10,23 +10,7 @@ import {
   CarouselNext,
   CarouselPrevious,
 } from "@/components/Carousel";
-import {
-  AlarmCheck,
-  AlarmClock,
-  Calendar,
-  CalendarDays,
-  ChevronRight,
-  Clock,
-  ClockAlert,
-  Gamepad,
-  Gamepad2,
-  LucideProps,
-  Search,
-  ShoppingBasket,
-  ShoppingCart,
-  Sword,
-  Swords,
-} from "lucide-react";
+import { ChevronRight, Gamepad2, Search, ShoppingCart } from "lucide-react";
 import Link from "next/link";
 import {
   GameModeDisplay,
@@ -66,7 +50,7 @@ function QuickPlayCard({ mode }: { mode: GameModeDisplay }) {
 
 export default function Page() {
   return (
-    <main className="space-y-8 flex-col flex justify-between h-[calc(100dvh-8rem)]">
+    <main className="space-y-8 flex-col flex justify-between min-h-[calc(100dvh-8rem)] p-3">
       <div className="space-y-8 flex flex-col justify-between h-full">
         <div className="title">Quick Play</div>
         <div id="quickGames" className="relative">

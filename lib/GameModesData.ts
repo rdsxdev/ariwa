@@ -27,6 +27,7 @@ export const SinglePlayerGameModes: GameModeDisplay[] = [
     slug: "daily-word",
     cta: "Guess today's word",
     color: "bg-yellow-500",
+    disabled: true,
   },
   {
     title: "Race Against Time",
@@ -36,6 +37,7 @@ export const SinglePlayerGameModes: GameModeDisplay[] = [
     slug: "race-against-time",
     cta: "Start guessing",
     color: "bg-green-400",
+    disabled: true,
   },
   {
     title: "Casual",
@@ -54,6 +56,7 @@ export const SinglePlayerGameModes: GameModeDisplay[] = [
     slug: "scale-up",
     cta: "Play Now",
     color: "bg-teal-400",
+    disabled: true,
   },
 ];
 export const MultiPlayerGameModes: GameModeDisplay[] = [

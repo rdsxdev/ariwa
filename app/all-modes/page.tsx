@@ -13,7 +13,7 @@ export default function AllModesPage() {
   const [gameType, setGameType] = useState<"sp" | "mp">("sp");
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-6 p-3">
       <div className="flex gap-3 justify-start items-center">
         <Link href={"/"}>
           <ChevronLeft size={50}></ChevronLeft>
@@ -30,7 +30,7 @@ export default function AllModesPage() {
         <TabsList className="w-full bg-white  p-2 rounded-full">
           <TabsTrigger
             value="sp"
-            className={`w-full rounded-full p-3 py-5 text-foreground  border ${gameType === "sp" && "bg-blue  border-foreground"}`}
+            className={`w-full rounded-full p-3 py-5 text-foreground  border ${gameType === "sp" && "bg-yellow  border-foreground"}`}
           >
             Single Player
           </TabsTrigger>
@@ -51,6 +51,11 @@ export default function AllModesPage() {
                 disabled={mode.disabled}
                 className={`rounded-3xl border-2 border-foreground  ${mode.color} h-36 aspect-square w-full flex flex-col justify-center items-center font-semibold text-center gap-5 relative overflow-hidden p-3  disabled:brightness-30`}
               >
+                {mode.disabled && (
+                  <div className="z-999 absolute top-1/2 left-1/2 -translate-y-1/2 -translate-x-1/2 h-full w-full flex justify-center items-center bg-black/50">
+                    <Lock color="white" size={50} strokeWidth={3}></Lock>
+                  </div>
+                )}
                 <div className="text-foreground  z-99 text-xl">
                   {mode.title}
                 </div>
