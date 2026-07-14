@@ -1,5 +1,4 @@
 import type { Metadata } from "next";
-// @ts-expect-error later idk wtf
 import "./globals.css";
 import {
   Geist,
