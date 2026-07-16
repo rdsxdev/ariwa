@@ -6,10 +6,11 @@ import { playSound } from "@/lib/sounds";
 import wordExists from "@/utils/checkWord";
 import { generateRandomWord } from "@/utils/generateRandomWord";
 import { useEffect, useMemo, useRef, useState } from "react";
-
+import { AnimatePresence, motion } from "motion/react";
+import { Menu } from "lucide-react";
 export default function CasualGameMode() {
   const [currentIndex, setCurrentIndex] = useState(0);
-
+  const [settings, setSettings] = useState(false);
   const [wordLength, setWordLength] = useState(5);
   const [chances, setChances] = useState(6);
   const [life, setLife] = useState(0);
@@ -25,7 +26,8 @@ export default function CasualGameMode() {
     useState<{ letter: string; status: string }[][]>(layout);
 
   const [gameover, setGameover] = useState(false);
-
+  const [win, setWin] = useState(false);
+  const [lose, setLose] = useState(false);
   const letterSizeForMobile = [
     "",
     "",
@@ -207,23 +209,67 @@ export default function CasualGameMode() {
     if (life === chances && !latestAttempt) {
       setTimeout(() => {
         setGameover(true);
+        setLose(true);
       }, 400);
     } else if (latestAttempt) {
       setTimeout(() => {
         setGameover(true);
         hintSound?.play();
+        setWin(true);
       }, 400);
     }
   }, [life]);
   console.log(word);
+
+  const currentStatus = useMemo(() => {
+    const huh = new Array(wordLength).fill("").map((_, i) => {
+      return attempts
+        .filter((y, i) => i < life)
+        .map((huh) => {
+          if (huh[i].status === "CORRECT") {
+            return huh[i].letter;
+          } else {
+            return "_";
+          }
+        });
+    });
+
+    let finalArray: string[] = new Array(wordLength).fill("");
+
+    finalArray = huh.map((x) => {
+      if (x.filter((y) => y !== "_").length > 0) {
+        return x.filter((y) => y !== "_")[0];
+      } else {
+        return "";
+      }
+    });
+    return finalArray;
+  }, [attempts]);
+
   return (
     <div
-      className="  flex justify-center items-center flex-col  bg-background gap-6 
-      min-h-[calc(100vh-6em)] overflow-x-hidden py-6 px-3"
+      className="flex justify-center items-center flex-col  bg-background gap-6 min-h-[calc(100vh-6em)] overflow-x-hidden py-6 pb-18 px-3 relative"
       onClick={() => {
         if (keyboardRef.current) keyboardRef.current.focus();
       }}
     >
+      <AnimatePresence>
+        {settings && (
+          <motion.div
+            initial={{
+              opacity: 0,
+            }}
+            animate={{
+              opacity: 0.9,
+            }}
+            exit={{
+              opacity: 0,
+            }}
+            className="bg-background  fixed top-0 left-0 h-screen w-screen duration-200 z-9999"
+          ></motion.div>
+        )}
+      </AnimatePresence>
+
       <GameGridComponent
         attempts={attempts}
         currentIndex={currentIndex}
@@ -231,13 +277,56 @@ export default function CasualGameMode() {
         life={life}
         wordLength={wordLength}
       ></GameGridComponent>
-      <Keyboard
-        addLetter={addLetter}
-        removeLetter={removeLetter}
-        lastPressedKey={lastPressedKey}
-        letterStatus={attempts.flat().filter((x) => x.letter && x.status)}
-        submitAttempt={submitAttempt}
-      ></Keyboard>
+      {!gameover ? (
+        <div className="flex text-correct  min-h-10 gap-px text-xl">
+          {word.split("").map((x, i) => {
+            if (x) {
+              return <p key={i}>{x}</p>;
+            } else {
+              return <p key={i}>_</p>;
+            }
+          })}
+        </div>
+      ) : (
+        <div className="flex text-correct  min-h-10 gap-px text-xl">
+          {currentStatus.map((x, i) => {
+            if (x) {
+              return <p key={i}>{x}</p>;
+            } else {
+              return <p key={i}>_</p>;
+            }
+          })}
+        </div>
+      )}
+      <div className="relative h-full">
+        <Keyboard
+          addLetter={addLetter}
+          removeLetter={removeLetter}
+          lastPressedKey={lastPressedKey}
+          letterStatus={attempts.flat().filter((x) => x.letter && x.status)}
+          submitAttempt={submitAttempt}
+        ></Keyboard>
+        <motion.div
+          style={{
+            height: settings ? "50vh" : gameover ? "150%" : "56px",
+          }}
+          onClick={() => {
+            setSettings((x) => !x);
+          }}
+          className={`rounded-xl  w-[95%] left-1/2 -translate-x-1/2 p-4 text-sm flex gap-3 justify-center items-center text-background absolute -bottom-16 duration-300 ease-in-out z-99999 ${win ? "bg-green" : lose ? "bg-red" : "bg-foreground"}`}
+        >
+          {gameover ? (
+            <></>
+          ) : settings ? (
+            <></>
+          ) : (
+            <div className="flex items-center justify-between w-full">
+              <Menu></Menu>
+              Options
+            </div>
+          )}
+        </motion.div>
+      </div>
       <input
         readOnly
         ref={keyboardRef}
@@ -269,10 +358,6 @@ export default function CasualGameMode() {
         name=""
         id=""
       />
-
-      <div className="rounded-full bg-foreground w-full p-4 text-sm flex gap-3 justify-center items-center">
-        Settings
-      </div>
     </div>
   );
 }
