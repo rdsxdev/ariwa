@@ -7,7 +7,9 @@ import wordExists from "@/utils/checkWord";
 import { generateRandomWord } from "@/utils/generateRandomWord";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { AnimatePresence, motion } from "motion/react";
-import { Menu } from "lucide-react";
+import { ChevronRight, Crown, Menu, PartyPopper, Trophy } from "lucide-react";
+import confetti from "canvas-confetti";
+
 export default function CasualGameMode() {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [settings, setSettings] = useState(false);
@@ -194,11 +196,6 @@ export default function CasualGameMode() {
     })();
   }, []);
 
-  const hintSound =
-    typeof Audio !== "undefined"
-      ? useMemo(() => new Audio("/hint.mp3"), [])
-      : undefined;
-
   useEffect(() => {
     let latestAttempt =
       attempts
@@ -213,8 +210,11 @@ export default function CasualGameMode() {
       }, 400);
     } else if (latestAttempt) {
       setTimeout(() => {
+        confetti({
+          angle: 80,
+        });
         setGameover(true);
-        hintSound?.play();
+        playSound("hint");
         setWin(true);
       }, 400);
     }
@@ -313,18 +313,56 @@ export default function CasualGameMode() {
           onClick={() => {
             setSettings((x) => !x);
           }}
-          className={`rounded-xl  w-[95%] left-1/2 -translate-x-1/2 p-4 text-sm flex gap-3 justify-center items-center text-background absolute -bottom-16 duration-300 ease-in-out z-99999 ${win ? "bg-green" : lose ? "bg-red" : "bg-foreground"}`}
+          className={`rounded-xl  w-[95%] left-1/2 -translate-x-1/2 p-4 text-sm flex gap-3 justify-center items-center text-foreground absolute -bottom-16 duration-300 ease-in-out z-99999 ${win ? "bg-foreground" : lose ? "bg-foreground" : "bg-foreground"}`}
         >
-          {gameover ? (
-            <></>
-          ) : settings ? (
-            <></>
-          ) : (
-            <div className="flex items-center justify-between w-full">
-              <Menu></Menu>
-              Options
-            </div>
-          )}
+          <AnimatePresence>
+            {gameover ? (
+              win ? (
+                <motion.div
+                  initial={{
+                    opacity: 0,
+                  }}
+                  animate={{
+                    opacity: 1,
+                  }}
+                  transition={{
+                    delay: 0.3,
+                  }}
+                  className="flex flex-col justify-between items-between h-full p-3 w-full text-center"
+                >
+                  <div className="text-2xl font text-green  ">
+                    Guessed it right!
+                  </div>
+                  <div className="flex justify-center items-center h-full">
+                    <PartyPopper
+                      className="text-green "
+                      size={66}
+                    ></PartyPopper>
+                  </div>
+                  <div className="flex flex-col justify-end items-end gap-3  h-full w-full ">
+                    <button className="bg-background rounded-md p-3 w-full flex justify-center items-center gap-2">
+                      Options <Menu size={18}></Menu>
+                    </button>
+                    <button className="bg-green rounded-md p-3 w-full flex justify-center items-center gap-2">
+                      New Word <ChevronRight size={18}></ChevronRight>
+                    </button>
+                  </div>
+                  <div></div>
+                </motion.div>
+              ) : lose ? (
+                <></>
+              ) : (
+                <></>
+              )
+            ) : settings ? (
+              <></>
+            ) : (
+              <div className="flex items-center justify-between w-full text-background">
+                <Menu></Menu>
+                Options
+              </div>
+            )}
+          </AnimatePresence>
         </motion.div>
       </div>
       <input
