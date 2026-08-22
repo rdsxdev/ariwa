@@ -1,7 +1,7 @@
-"use client";
+// "use client";
+// //
+// import { MultiPlayerDataProvider } from "@/archive/MultiPlayerDataContext";
 
-import { MultiPlayerDataProvider } from "@/archive/MultiPlayerDataContext";
-
-export default function () {
-  return <></>;
-}
+// export default function () {
+//   return <></>;
+// }
